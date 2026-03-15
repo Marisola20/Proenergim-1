@@ -1,0 +1,89 @@
+@import "tailwindcss";
+
+/* Paleta: energía solar — moderna y vibrante */
+:root {
+  --color-primary: #0ea5e9;      /* Sky blue */
+  --color-primary-dark: #0369a1; /* Azul intenso */
+  --color-primary-light: #38bdf8;
+  --color-accent: #f59e0b;       /* Ámbar / sol */
+  --color-accent-light: #fcd34d;
+  --color-green: #16a34a;        /* Verde para "energía solar" */
+  --color-bg: #ffffff;
+  --color-bg-soft: #f0f9ff;
+  --color-text: #0f172a;
+  --color-text-muted: #64748b;
+  --whatsapp: #25d366;
+}
+
+* {
+  scroll-behavior: smooth;
+}
+
+body {
+  background-color: var(--color-bg);
+  color: var(--color-text);
+}
+
+/* ═══ Footer ═══ */
+
+/* Título de sección en el footer */
+.footer-section-title {
+  font-size: 0.65rem;
+  font-weight: 900;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.35);
+  margin-bottom: 1rem;
+}
+
+/* Botón icono de red social en el Footer */
+.social-icon-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 46px;
+  height: 46px;
+  border-radius: 10px;
+  border: 1.5px solid rgba(255, 255, 255, 0.2);
+  background-color: rgba(255, 255, 255, 0.12);
+  transition: color 0.22s, border-color 0.22s, background-color 0.22s, transform 0.2s;
+}
+.social-icon-btn:hover {
+  transform: scale(1.1);
+}
+
+/* Hover mejorado para links de navegación en footer */
+.footer-nav-link {
+  position: relative;
+  padding: 4px 8px 4px 0;
+  border-radius: 6px;
+  text-decoration: none;
+}
+.footer-nav-link::before {
+  content: "";
+  position: absolute;
+  left: -8px;
+  top: 50%;
+  transform: translateY(-50%) scaleX(0);
+  width: 3px;
+  height: 60%;
+  border-radius: 2px;
+  background-color: var(--color-green);
+  transition: transform 0.2s ease;
+  transform-origin: center;
+}
+.footer-nav-link:hover {
+  color: white;
+  padding-left: 4px;
+}
+.footer-nav-link:hover::before {
+  transform: translateY(-50%) scaleX(1);
+  left: -8px;
+}
+
+/* Glass / blur para nav */
+.nav-glass {
+  background: rgba(3, 105, 161, 0.85);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+}
