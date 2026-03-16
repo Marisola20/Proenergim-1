@@ -49,9 +49,13 @@ function Navbar() {
 
         <Link
           to="/contacto"
-          className="hidden md:inline-flex items-center bg-[#FFC107] hover:bg-[#25D366] text-[#25D366] hover:text-[#FFC107] font-extrabold px-5 py-2.5 rounded-full text-base transition-all duration-300 shadow-md hover:shadow-lg hover:scale-[1.02]"
+          className="hidden md:inline-flex group relative items-center justify-center bg-gradient-to-r from-[#0ea5e1] to-[#1ed760] p-[2px] rounded-full transition-all duration-300 shadow-md hover:shadow-lg hover:scale-[1.02]"
         >
-          Solicitar información
+          <span className="flex items-center justify-center w-full h-full bg-transparent group-hover:bg-white rounded-full px-[18px] py-2 transition-all duration-300 border-none">
+            <span className="text-white group-hover:text-transparent group-hover:bg-clip-text group-hover:bg-gradient-to-r group-hover:from-[#0ea5e1] group-hover:to-[#1ed760] font-extrabold text-base">
+              Solicitar información
+            </span>
+          </span>
         </Link>
 
         <button
@@ -83,9 +87,13 @@ function Navbar() {
               <Link
                 to="/contacto"
                 onClick={() => setOpen(false)}
-                className="inline-flex items-center justify-center bg-[#FFC107] hover:bg-[#25D366] text-[#25D366] hover:text-[#FFC107] font-extrabold px-4 py-2 rounded-full text-base transition-all duration-300"
+                className="inline-flex group relative items-center justify-center bg-gradient-to-r from-[#0ea5e1] to-[#1ed760] p-[2px] rounded-full transition-all duration-300"
               >
-                Solicitar información
+                <span className="flex items-center justify-center w-full h-full bg-transparent group-hover:bg-white rounded-full px-[14px] py-[6px] transition-all duration-300">
+                  <span className="text-white group-hover:text-transparent group-hover:bg-clip-text group-hover:bg-gradient-to-r group-hover:from-[#0ea5e1] group-hover:to-[#1ed760] font-extrabold text-base">
+                    Solicitar información
+                  </span>
+                </span>
               </Link>
             </li>
           </ul>

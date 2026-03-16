@@ -48,7 +48,7 @@ function ProyectosPage() {
               onClick={() => setFiltro(cat)}
               className={`px-5 py-2.5 rounded-full text-sm font-bold transition-all duration-300 ${
                 filtro === cat
-                  ? "bg-[var(--color-primary)] text-white shadow-md"
+                  ? "bg-[var(--color-accent)] text-[#1a1a1a] shadow-md"
                   : "bg-white text-[var(--color-primary-dark)] border border-gray-200 hover:border-[var(--color-primary)] hover:text-[var(--color-primary)]"
               }`}
             >

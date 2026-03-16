@@ -52,10 +52,10 @@ function Clientes() {
           transition={{ duration: 0.5 }}
           className="text-center mb-10"
         >
-          <h2 className="text-3xl font-bold text-[var(--color-primary-dark)]">
+          <h2 className="text-2xl sm:text-3xl font-bold text-[var(--color-primary-dark)]">
             Nuestros clientes
           </h2>
-          <p className="text-[var(--color-text-muted)] mt-2 text-sm">
+          <p className="text-[var(--color-text-muted)] mt-2 text-base">
             Empresas e instituciones que confían en nuestra experiencia
           </p>
         </motion.div>

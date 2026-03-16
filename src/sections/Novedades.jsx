@@ -39,7 +39,7 @@ function Novedades() {
               />
               <button
                 type="submit"
-                className="bg-[var(--color-primary)] hover:bg-[var(--color-primary-dark)] text-white font-bold px-8 py-3.5 rounded-full transition-all duration-300 whitespace-nowrap shadow-sm hover:shadow-md hover:-translate-y-0.5"
+                className="bg-gradient-to-r from-[#0ea5e1] to-[#1ed760] hover:bg-none hover:bg-white border-2 border-transparent hover:border-[#1ed760] hover:border-dashed text-white hover:text-[#1ed760] font-bold px-8 py-[12px] rounded-full transition-all duration-300 whitespace-nowrap shadow-sm hover:shadow-md hover:-translate-y-0.5"
               >
                 Unirme
               </button>

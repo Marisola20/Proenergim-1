@@ -51,10 +51,10 @@ function Proveedores() {
           transition={{ duration: 0.5 }}
           className="mb-10 text-center"
         >
-          <h2 className="text-3xl font-bold text-[var(--color-primary-dark)]">
+          <h2 className="text-2xl sm:text-3xl font-bold text-[var(--color-primary-dark)]">
             Nuestros Proveedores
           </h2>
-          <p className="text-[var(--color-text-muted)] mt-2 max-w-2xl mx-auto">
+          <p className="text-[var(--color-text-muted)] mt-2 text-base max-w-2xl mx-auto">
             Trabajamos con marcas del Top 10 del mundo, en paneles solares, variadores de frecuencia y electrobombas.
           </p>
         </motion.div>
