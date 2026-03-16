@@ -4,6 +4,35 @@ import { MapPin, ArrowRight, User } from "lucide-react"
 import { Link } from "react-router-dom"
 import { proyectos } from "../data/proyectos"
 
+const ProyectosIconPattern = () => (
+  <svg className="absolute inset-0 w-full h-full pointer-events-none opacity-[0.2]" xmlns="http://www.w3.org/2000/svg">
+    <defs>
+      <pattern id="proyectos-pattern" x="0" y="0" width="200" height="100" patternUnits="userSpaceOnUse">
+        {/* Solar Panel / Grid */}
+        <g transform="translate(38, 13) scale(1.2)" stroke="#ffffff" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" fill="none">
+          <rect x="3" y="3" width="18" height="18" rx="2" />
+          <path d="M3 9h18M3 15h18M9 3v18M15 3v18" />
+        </g>
+        {/* Wrench / Settings */}
+        <g transform="translate(138, 13) scale(1.2)" stroke="#ffffff" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" fill="none">
+          <path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z" />
+        </g>
+        {/* Map Pin */}
+        <g transform="translate(88, 63) scale(1.2)" stroke="#ffffff" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" fill="none">
+           <path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 0-16 0Z"/>
+           <circle cx="12" cy="10" r="3"/>
+        </g>
+        {/* Checkmark */}
+        <g transform="translate(188, 63) scale(1.2)" stroke="#ffffff" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" fill="none">
+          <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14" />
+          <polyline points="22 4 12 14.01 9 11.01" />
+        </g>
+      </pattern>
+    </defs>
+    <rect x="0" y="0" width="100%" height="100%" fill="url(#proyectos-pattern)" />
+  </svg>
+)
+
 function ProyectosPage() {
   const [filtro, setFiltro] = useState("Todos")
 
@@ -15,15 +44,16 @@ function ProyectosPage() {
     : proyectos.filter(p => p.categoria === filtro)
 
   return (
-    <div className="pt-24 pb-20 bg-[var(--color-bg-soft)] min-h-screen">
-      <div className="max-w-7xl mx-auto px-6">
-        
-        {/* ENCABEZADO */}
-        <div className="text-center mb-12">
+    <div className="bg-[var(--color-bg-soft)] min-h-screen pb-20">
+      
+      {/* ENCABEZADO */}
+      <div className="relative bg-gradient-to-r from-[#0ea5e1] to-[#1ed760] pt-28 pb-20 px-6 text-center text-white overflow-hidden shadow-inner mb-12">
+        <ProyectosIconPattern />
+        <div className="relative z-10 max-w-2xl mx-auto">
           <motion.h1 
             initial={{ opacity: 0, y: -20 }}
             animate={{ opacity: 1, y: 0 }}
-            className="text-4xl md:text-5xl font-extrabold text-[var(--color-primary-dark)] mb-4"
+            className="text-4xl md:text-5xl font-extrabold text-white drop-shadow-md mb-4"
           >
             Nuestros Proyectos
           </motion.h1>
@@ -31,11 +61,14 @@ function ProyectosPage() {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ delay: 0.2 }}
-            className="text-[var(--color-text-muted)] max-w-2xl mx-auto text-lg"
+            className="text-white/90 drop-shadow-sm font-medium max-w-2xl mx-auto text-lg"
           >
             Explora nuestro portafolio de soluciones implementadas a nivel nacional.
           </motion.p>
         </div>
+      </div>
+
+      <div className="max-w-7xl mx-auto px-6">
 
         {/* FILTROS */}
         <div className="flex flex-wrap justify-center gap-2 md:gap-4 mb-12">

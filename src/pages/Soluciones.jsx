@@ -13,25 +13,64 @@ const faqs = [
   { p: "¿Cuánto dura una instalación?", r: "Varía según el tamaño del proyecto; desde días hasta algunas semanas." },
 ]
 
+const SolucionesIconPattern = () => (
+  <svg className="absolute inset-0 w-full h-full pointer-events-none opacity-[0.2]" xmlns="http://www.w3.org/2000/svg">
+    <defs>
+      <pattern id="soluciones-pattern" x="0" y="0" width="200" height="100" patternUnits="userSpaceOnUse">
+        {/* Sun Icon */}
+        <g transform="translate(38, 13) scale(1.2)" stroke="#ffffff" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" fill="none">
+          <circle cx="12" cy="12" r="4" />
+          <path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41" />
+        </g>
+        {/* Lightning Icon */}
+        <g transform="translate(138, 13) scale(1.2)" stroke="#ffffff" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" fill="none">
+          <path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z" />
+        </g>
+        {/* Leaf Icon (Staggered row) */}
+        <g transform="translate(88, 63) scale(1.2)" stroke="#ffffff" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" fill="none">
+           <path d="M11 20A7 7 0 0 1 9.8 6.1C15.5 5 17 4.48 19 2c1 2 2 4.18 2 8 0 5.5-4.78 10-10 10Z"/>
+           <path d="M2 21c0-3 1.85-5.36 5.08-6C9.5 14.52 12 13 13 12"/>
+        </g>
+        {/* Battery Icon (Staggered row) */}
+        <g transform="translate(188, 63) scale(1.2)" stroke="#ffffff" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" fill="none">
+          <rect x="2" y="7" width="16" height="10" rx="2" ry="2" />
+          <line x1="22" y1="11" x2="22" y2="13" />
+        </g>
+      </pattern>
+    </defs>
+    <rect x="0" y="0" width="100%" height="100%" fill="url(#soluciones-pattern)" />
+  </svg>
+)
+
 function Soluciones() {
   const [faqAbierto, setFaqAbierto] = useState(null)
 
   return (
-    <main className="pt-24 pb-20">
-      <div className="max-w-7xl mx-auto px-6">
-        <motion.section
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5 }}
-          className="text-center mb-16"
-        >
-          <h1 className="text-4xl md:text-5xl font-bold text-[var(--color-primary-dark)] mb-4">
+    <main className="pb-20">
+      {/* ENCABEZADO */}
+      <div className="relative bg-gradient-to-r from-[#0ea5e1] to-[#1ed760] pt-28 pb-20 px-6 text-center text-white overflow-hidden shadow-inner mb-16">
+        <SolucionesIconPattern />
+        <div className="relative z-10 max-w-3xl mx-auto">
+          <motion.h1
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5 }}
+            className="text-4xl md:text-5xl font-bold text-white drop-shadow-md mb-4"
+          >
             Soluciones de energía solar para un futuro sostenible
-          </h1>
-          <p className="text-[var(--color-text-muted)] max-w-2xl mx-auto">
+          </motion.h1>
+          <motion.p
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5, delay: 0.1 }}
+            className="text-white/90 drop-shadow-sm font-medium max-w-2xl mx-auto text-lg"
+          >
             Categorías y beneficios para agricultura, industria y comercio.
-          </p>
-        </motion.section>
+          </motion.p>
+        </div>
+      </div>
+
+      <div className="max-w-7xl mx-auto px-6">
 
         <section className="grid md:grid-cols-2 lg:grid-cols-3 gap-6 mb-20">
           {servicios.map((s, i) => (
