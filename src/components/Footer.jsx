@@ -4,8 +4,8 @@ import { Facebook, Instagram, Linkedin, Youtube, Phone, Mail, MapPin, ChevronDow
 
 /* ── Redes ── */
 const redes = [
-  { label: "Facebook",  icon: Facebook,  href: "https://facebook.com",  color: "#1877F2" },
-  { label: "Instagram", icon: Instagram, href: "https://instagram.com", color: "#E1306C" },
+  { label: "Facebook",  icon: Facebook,  href: "https://www.facebook.com/share/1DdKNkDJVa/",  color: "#1877F2" },
+  { label: "Instagram", icon: Instagram, href: "https://www.instagram.com/proenergim?igsh=OGgzYWV3NzF4OWw2", color: "#E1306C" },
   { label: "TikTok",    icon: null,      href: "https://tiktok.com",    color: "#555555" },
   { label: "YouTube",   icon: Youtube,   href: "https://youtube.com",   color: "#FF0000" },
   { label: "LinkedIn",  icon: Linkedin,  href: "https://linkedin.com",  color: "#0A66C2" },

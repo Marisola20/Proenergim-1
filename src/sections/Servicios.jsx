@@ -4,7 +4,7 @@ import { ChevronLeft, ChevronRight } from "lucide-react"
 import { servicios } from "../data/servicios"
 
 function useIsMobile() {
-  const [isMobile, setIsMobile] = useState(() => window.innerWidth < 768)
+  const [isMobile, setIsMobile] = useState(() => (typeof window !== "undefined" ? window.innerWidth < 768 : false))
   useEffect(() => {
     const handler = () => setIsMobile(window.innerWidth < 768)
     window.addEventListener("resize", handler)
@@ -18,141 +18,159 @@ function Servicios() {
   const VISIBLE = isMobile ? 1 : 3
 
   const [startIndex, setStartIndex] = useState(0)
+  
+  // Guard against empty or missing data
+  if (!servicios || servicios.length === 0) {
+    return null
+  }
+
   const maxStart = Math.max(0, servicios.length - VISIBLE)
   const visibleServicios = servicios.slice(startIndex, startIndex + VISIBLE)
 
-  // Reset index if VISIBLE changes and startIndex is out of range
   useEffect(() => {
-    if (startIndex > Math.max(0, servicios.length - VISIBLE)) {
+    if (startIndex > maxStart) {
       setStartIndex(0)
     }
-  }, [VISIBLE, startIndex])
+  }, [maxStart, startIndex])
 
   const goPrev = () => setStartIndex((i) => Math.max(0, i - 1))
   const goNext = () => setStartIndex((i) => Math.min(maxStart, i + 1))
 
   return (
-    <section id="servicios" className="py-16 sm:py-20 bg-[var(--color-bg-soft)]">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6">
+    <section id="servicios" className="relative py-20 sm:py-28 bg-[var(--color-bg-soft)]/5 border-y border-gray-100/50 overflow-hidden">
+      {/* Decorative Elements */}
+      <div className="absolute top-0 right-0 w-64 h-64 bg-[var(--color-accent)] opacity-[0.02] rounded-full -translate-y-1/2 translate-x-1/2 blur-3xl pointer-events-none" />
+      <div className="absolute bottom-0 left-0 w-80 h-80 bg-[var(--color-primary)] opacity-[0.03] rounded-full translate-y-1/3 -translate-x-1/4 blur-3xl pointer-events-none" />
 
-        {/* Encabezado */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.5 }}
-          className="text-center mb-10 sm:mb-12"
-        >
-          <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold text-[var(--color-primary-dark)] mb-3">
-            ¿Qué ofrecemos?
-          </h2>
-          <p className="text-[var(--color-text-muted)] text-base md:text-lg max-w-2xl mx-auto">
-            Soluciones integrales de energía solar y eficiencia energética para el hogar, la industria y el agro.
-          </p>
-        </motion.div>
-
-        {/* Carrusel */}
-        <div className="relative flex items-center gap-2">
-          <button
-            type="button"
-            onClick={goPrev}
-            disabled={startIndex === 0}
-            aria-label="Anterior"
-            className="shrink-0 z-10 w-10 h-10 rounded-full bg-white border border-[var(--color-primary)]/20 shadow-md flex items-center justify-center text-[var(--color-primary-dark)] hover:bg-[var(--color-accent)] hover:text-white hover:border-transparent disabled:opacity-30 disabled:pointer-events-none transition-all duration-200"
+      <div className="max-w-7xl mx-auto px-6">
+        {/* Header with Gradient */}
+        <div className="text-center mb-16 underline-offset-4">
+          <motion.span
+            initial={{ opacity: 0, y: 10 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            className="inline-block text-[var(--color-primary)] font-black tracking-[0.25em] uppercase text-[10px] sm:text-xs mb-4 py-1.5 px-4 bg-[var(--color-primary)]/5 rounded-full border border-[var(--color-primary)]/10"
           >
-            <ChevronLeft size={22} />
-          </button>
+            Nuestra Especialidad
+          </motion.span>
+          <motion.h2
+            initial={{ opacity: 0, y: 15 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ delay: 0.1 }}
+            className="text-3xl sm:text-4xl md:text-5xl font-black text-[var(--color-primary-dark)] mb-5 tracking-tight"
+          >
+            Soluciones <br className="hidden sm:block" />
+            <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#0ea5e1] to-[#1ed760]">de energía solar</span>
+          </motion.h2>
+          <p className="text-[var(--color-text-muted)] text-base md:text-lg max-w-2xl mx-auto font-medium leading-relaxed">
+            Impulsamos el futuro con tecnología solar eficiente para transformar su hogar, empresa o campo.
+          </p>
+        </div>
 
-          <div className="flex-1 overflow-hidden min-w-0">
+        {/* Carousel */}
+        <div className="relative group/nav">
+          <div className="absolute top-1/2 -translate-y-1/2 -left-4 sm:-left-8 z-20">
+            <button
+              onClick={goPrev}
+              disabled={startIndex === 0}
+              className="w-11 h-11 rounded-full bg-white/90 backdrop-blur shadow-md border border-gray-100 flex items-center justify-center text-[var(--color-primary-dark)] hover:bg-[var(--color-primary)] hover:text-white transition-all disabled:opacity-0"
+              aria-label="Anterior"
+            >
+              <ChevronLeft size={22} />
+            </button>
+          </div>
+
+          <div className="absolute top-1/2 -translate-y-1/2 -right-4 sm:-right-8 z-20">
+            <button
+              onClick={goNext}
+              disabled={startIndex >= maxStart}
+              className="w-11 h-11 rounded-full bg-white/90 backdrop-blur shadow-md border border-gray-100 flex items-center justify-center text-[var(--color-primary-dark)] hover:bg-[var(--color-primary)] hover:text-white transition-all disabled:opacity-0"
+              aria-label="Siguiente"
+            >
+              <ChevronRight size={22} />
+            </button>
+          </div>
+
+          <div className="overflow-hidden">
             <AnimatePresence mode="wait" initial={false}>
               <motion.div
                 key={`${startIndex}-${VISIBLE}`}
-                initial={{ opacity: 0, x: -24 }}
+                initial={{ opacity: 0, x: 20 }}
                 animate={{ opacity: 1, x: 0 }}
-                exit={{ opacity: 0, x: 24 }}
-                transition={{ duration: 0.3 }}
-                className={`grid gap-6 ${isMobile ? "grid-cols-1" : "grid-cols-3"}`}
+                exit={{ opacity: 0, x: -20 }}
+                transition={{ duration: 0.4 }}
+                className={`grid gap-8 ${isMobile ? "grid-cols-1" : "grid-cols-3"}`}
               >
-                {visibleServicios.map((servicio, i) => (
-                  <motion.div
-                    key={servicio.nombre}
-                    initial={{ opacity: 0, y: 20 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ duration: 0.35, delay: i * 0.07 }}
-                    className="group relative rounded-2xl overflow-hidden shadow-md hover:shadow-xl border border-white/60 transition-all duration-300 cursor-pointer h-80"
-                  >
-                    {/* Imagen de fondo */}
-                    <img
-                      src={servicio.imagen}
-                      alt={servicio.nombre}
-                      className="absolute inset-0 w-full h-full object-cover object-center transition-transform duration-500 group-hover:scale-105"
-                    />
+                {visibleServicios.map((servicio) => {
+                  const IconComponent = servicio.icon;
+                  return (
+                    <div
+                      key={servicio.nombre}
+                      className="group relative h-[420px] rounded-[2.5rem] overflow-hidden shadow-lg bg-white border border-gray-100 transition-all duration-500 hover:shadow-2xl"
+                    >
+                      <img
+                        loading="lazy"
+                        src={servicio.imagen}
+                        alt={servicio.nombre}
+                        className="absolute inset-0 w-full h-full object-cover transition-transform duration-1000 group-hover:scale-110"
+                      />
+                      <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent transition-opacity" />
 
-                    {/* Overlay oscuro base */}
-                    <div className="absolute inset-0 bg-gradient-to-t from-black/75 via-black/30 to-black/10" />
-
-                    {/* En móvil: siempre mostrar título + descripción (sin requerir hover) */}
-                    {/* En desktop: estado normal abajo */}
-                    <div className={`absolute bottom-0 left-0 right-0 p-4 flex items-center gap-3 transition-all duration-300 ${isMobile ? "hidden" : "group-hover:opacity-0 group-hover:translate-y-2"}`}>
-                      <div
-                        className="w-10 h-10 rounded-xl flex items-center justify-center shrink-0 border-2 bg-transparent"
-                        style={{ borderColor: servicio.iconBg }}
-                      >
-                        <servicio.icon size={20} style={{ color: servicio.iconBg }} />
-                      </div>
-                      <h3 className="text-white font-bold text-base leading-snug drop-shadow">
-                        {servicio.nombre}
-                      </h3>
-                    </div>
-
-                    {/* Panel con descripción — siempre visible en móvil, hover en desktop */}
-                    <div className={`absolute inset-0 flex flex-col justify-end transition-transform duration-400 ease-in-out ${isMobile ? "translate-y-0" : "translate-y-full group-hover:translate-y-0"}`}>
-                      <div className="bg-[var(--color-primary-dark)]/80 backdrop-blur-sm p-4 sm:p-5 flex flex-col gap-2">
-                        <div className="flex items-center gap-3">
-                          <div
-                            className="w-10 h-10 rounded-xl flex items-center justify-center shrink-0 border-2 bg-transparent"
-                            style={{ borderColor: servicio.iconBg }}
+                      {/* Title Bar (Standard State) */}
+                      <div className="absolute bottom-6 left-6 right-6 z-10 transition-all duration-500 group-hover:opacity-0 group-hover:translate-y-4">
+                        <div className="flex items-center gap-4 bg-white/5 backdrop-blur-sm p-4 rounded-[1.5rem] border border-white/10 shadow-sm">
+                          <div 
+                            className="w-10 h-10 rounded-xl flex items-center justify-center shrink-0 border-2"
+                            style={{ borderColor: servicio.iconBg, backgroundColor: "transparent" }}
                           >
-                            <servicio.icon size={20} style={{ color: servicio.iconBg }} />
+                            {IconComponent && <IconComponent size={20} style={{ color: servicio.iconBg }} />}
                           </div>
-                          <h3 className="text-white font-bold text-sm sm:text-base leading-snug">
+                          <h3 className="text-white font-bold text-base leading-tight tracking-tight shadow-black drop-shadow-lg">
                             {servicio.nombre}
                           </h3>
                         </div>
-                        <p className="text-white/90 text-sm leading-relaxed">
-                          {servicio.descripcion}
-                        </p>
+                      </div>
+
+                      {/* Description Reveal (Hover State) */}
+                      <div className="absolute inset-0 flex flex-col justify-end p-6 translate-y-full group-hover:translate-y-0 transition-transform duration-500 ease-out z-20">
+                         <div className="bg-slate-900/80 backdrop-blur-md p-7 rounded-[2rem] border border-white/10 shadow-2xl">
+                            <div className="flex items-center gap-3 mb-3">
+                               <div 
+                                 className="w-8 h-8 rounded-xl flex items-center justify-center shrink-0 border"
+                                 style={{ borderColor: servicio.iconBg }}
+                               >
+                                  {IconComponent && <IconComponent size={16} style={{ color: servicio.iconBg }} />}
+                               </div>
+                               <h3 className="text-white font-bold text-base">
+                                 {servicio.nombre}
+                               </h3>
+                            </div>
+                            <p className="text-white/80 text-sm leading-relaxed">
+                              {servicio.descripcion}
+                            </p>
+                         </div>
                       </div>
                     </div>
-                  </motion.div>
-                ))}
+                  );
+                })}
               </motion.div>
             </AnimatePresence>
           </div>
-
-          <button
-            type="button"
-            onClick={goNext}
-            disabled={startIndex >= maxStart}
-            aria-label="Siguiente"
-            className="shrink-0 z-10 w-10 h-10 rounded-full bg-white border border-[var(--color-primary)]/20 shadow-md flex items-center justify-center text-[var(--color-primary-dark)] hover:bg-[var(--color-accent)] hover:text-white hover:border-transparent disabled:opacity-30 disabled:pointer-events-none transition-all duration-200"
-          >
-            <ChevronRight size={22} />
-          </button>
         </div>
 
-        {/* Dots */}
-        <div className="flex justify-center gap-2 mt-8">
+        {/* Indicators */}
+        <div className="flex justify-center gap-2.5 mt-14">
           {Array.from({ length: maxStart + 1 }).map((_, i) => (
             <button
               key={i}
               type="button"
               onClick={() => setStartIndex(i)}
-              aria-label={`Ir a slide ${i + 1}`}
-              className={`rounded-full transition-all duration-300 ${i === startIndex
-                  ? "bg-[var(--color-accent)] w-6 h-2.5"
-                  : "bg-[var(--color-primary)]/30 hover:bg-[var(--color-accent)]/50 w-2.5 h-2.5"
+              className={`h-2.5 transition-all duration-500 rounded-full ${i === startIndex
+                  ? "bg-gradient-to-r from-[#0ea5e1] to-[#1ed760] w-12 shadow-sm shadow-green-400/20"
+                  : "bg-gray-200 w-2.5 hover:bg-gray-300"
                 }`}
+              aria-label={`Ir al servicio ${i + 1}`}
             />
           ))}
         </div>

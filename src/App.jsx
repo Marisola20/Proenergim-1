@@ -11,6 +11,7 @@ import TerminosCondiciones from "./pages/TerminosCondiciones"
 import ProyectosPage from "./pages/ProyectosPage"
 import ProyectoDetalle from "./pages/ProyectoDetalle"
 import Novedades from "./sections/Novedades"
+import FloatingWhatsApp from "./components/FloatingWhatsApp"
 
 function ScrollToTop() {
   const { pathname } = useLocation()
@@ -38,6 +39,7 @@ function App() {
         </Routes>
         <Novedades />
         <Footer />
+        <FloatingWhatsApp />
       </div>
     </BrowserRouter>
   )

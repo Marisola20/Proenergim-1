@@ -1,7 +1,7 @@
 import { useState } from "react"
 import { Link } from "react-router-dom"
 import { Menu, X } from "lucide-react"
-import logoMobile from "../assets/logo-movile.webp"
+import logoWeb from "../assets/logo-web.webp"
 
 const links = [
   { label: "Inicio", href: "/" },
@@ -19,7 +19,7 @@ function Navbar() {
       <div className="max-w-7xl mx-auto px-6 py-2.5 flex items-center justify-between">
         <Link to="/" className="flex items-center gap-2">
           <img
-            src={logoMobile}
+            src={logoWeb}
             alt="Proenergim"
             className="h-14 w-auto md:h-[4.5rem] object-contain"
           />

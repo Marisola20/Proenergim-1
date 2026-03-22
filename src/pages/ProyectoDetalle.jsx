@@ -1,10 +1,17 @@
 import { useEffect } from "react"
 import { useParams, Link, useNavigate } from "react-router-dom"
 import { motion } from "framer-motion"
-import { MapPin, User, ArrowLeft, MessageCircle } from "lucide-react"
+import { MapPin, User, ArrowLeft, Calendar, ExternalLink } from "lucide-react"
 import { proyectos } from "../data/proyectos"
 
 const WHATSAPP = "51971812567"
+
+const colorCat = {
+  "Bombeo Solar":        { bg: "#dbeafe", text: "#1d4ed8", dot: "#3b82f6" },
+  "Electrificación Solar": { bg: "#dcfce7", text: "#15803d", dot: "#22c55e" },
+  "Riego Tecnificado":   { bg: "#cffafe", text: "#0e7490", dot: "#06b6d4" },
+  "Industrial":          { bg: "#fef9c3", text: "#854d0e", dot: "#eab308" },
+}
 
 function WhatsappIcon({ size = 18 }) {
   return (
@@ -18,165 +25,147 @@ function ProyectoDetalle() {
   const { id } = useParams()
   const navigate = useNavigate()
 
-  useEffect(() => {
-    window.scrollTo(0, 0)
-  }, [id])
+  useEffect(() => { window.scrollTo(0, 0) }, [id])
 
   const proyecto = proyectos.find((p) => p.id === id)
+  const cat = colorCat[proyecto?.categoria] || { bg: "#f3f4f6", text: "#374151", dot: "#6b7280" }
 
   if (!proyecto) {
     return (
       <div className="pt-32 pb-20 text-center min-h-[60vh] flex flex-col items-center justify-center">
         <h2 className="text-3xl font-bold text-gray-800 mb-4">Proyecto no encontrado</h2>
-        <button 
-          onClick={() => navigate("/proyectos")}
-          className="bg-[var(--color-primary)] text-white px-6 py-2 rounded-full font-semibold hover:bg-[var(--color-primary-dark)] transition-colors"
-        >
+        <button onClick={() => navigate("/proyectos")}
+          className="bg-[var(--color-primary)] text-white px-6 py-2 rounded-full font-semibold hover:bg-[var(--color-primary-dark)] transition-colors">
           Volver a Proyectos
         </button>
       </div>
     )
   }
 
-  // Obtener proyectos similares (misma categoría, excluyendo el actual), máximo 3
-  const similares = proyectos
-    .filter((p) => p.categoria === proyecto.categoria && p.id !== proyecto.id)
-    .slice(0, 3)
+  const similares = proyectos.filter((p) => p.categoria === proyecto.categoria && p.id !== proyecto.id).slice(0, 3)
 
   return (
-    <div className="pt-24 pb-20 bg-white min-h-screen">
+    <div className="pt-24 pb-20 min-h-screen">
       <div className="max-w-7xl mx-auto px-6">
-        
-        {/* BOTON VOLVER */}
-        <button 
-          onClick={() => navigate(-1)}
-          className="flex items-center gap-2 text-gray-500 hover:text-[var(--color-primary)] font-bold text-sm mb-8 transition-colors group"
-        >
-          <ArrowLeft size={18} className="group-hover:-translate-x-1 transition-transform" />
-          Volver
-        </button>
+
+        {/* Breadcrumb / Volver */}
+        <div className="flex items-center gap-2 text-sm text-[var(--color-text-muted)] mb-10">
+          <Link to="/proyectos" className="hover:text-[var(--color-primary)] font-medium transition-colors">Proyectos</Link>
+          <span>/</span>
+          <span className="text-[var(--color-primary-dark)] font-bold truncate max-w-xs">{proyecto.nombre}</span>
+        </div>
 
         {/* DETALLE PRINCIPAL */}
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 mb-20 items-start">
-          
-          {/* INFO COLUMN */}
-          <motion.div 
-            initial={{ opacity: 0, x: -20 }}
-            animate={{ opacity: 1, x: 0 }}
-            className="flex flex-col h-full justify-center"
-          >
-            <div className="mb-6">
-              <span 
-                className="inline-block text-xs font-bold px-4 py-1.5 rounded-full"
-                style={{ backgroundColor: proyecto.color + "15", color: proyecto.color }}
-              >
+
+          {/* INFO */}
+          <motion.div initial={{ opacity: 0, x: -20 }} animate={{ opacity: 1, x: 0 }} className="flex flex-col">
+
+            {/* Badge categoría */}
+            <div className="mb-5">
+              <span className="inline-flex items-center gap-2 text-xs font-black px-4 py-2 rounded-full border"
+                style={{ backgroundColor: cat.bg, color: cat.text, borderColor: cat.dot + "40" }}>
+                <span className="w-2 h-2 rounded-full" style={{ backgroundColor: cat.dot }} />
                 {proyecto.categoria}
               </span>
             </div>
-            
-            <h1 className="text-4xl md:text-5xl font-extrabold text-[var(--color-primary-dark)] leading-tight mb-8">
+
+            <h1 className="text-3xl md:text-4xl lg:text-5xl font-black text-[var(--color-primary-dark)] leading-tight mb-6 tracking-tight">
               {proyecto.nombre}
             </h1>
-            
-            <div className="flex flex-col sm:flex-row flex-wrap gap-6 mb-8 text-gray-600 bg-gray-50 p-6 rounded-2xl border border-gray-100 items-center justify-between">
-              <div className="flex gap-6">
-                <div className="flex items-start gap-3">
-                  <MapPin size={20} className="text-[var(--color-primary)] mt-0.5 shrink-0" />
-                  <div>
-                    <p className="text-xs font-bold uppercase tracking-wider text-gray-400 mb-1">Ubicación</p>
-                    <p className="font-semibold text-gray-800">{proyecto.ubicacion}</p>
-                  </div>
-                </div>
-                <div className="w-px bg-gray-200 hidden sm:block"></div>
-                <div className="flex items-start gap-3">
-                  <User size={20} className="text-[var(--color-primary)] mt-0.5 shrink-0 opacity-80" />
-                  <div>
-                    <p className="text-xs font-bold uppercase tracking-wider text-gray-400 mb-1">Cliente</p>
-                    <p className="font-semibold text-gray-800">{proyecto.cliente}</p>
-                  </div>
+
+            {/* Meta info */}
+            <div className="flex flex-wrap gap-4 mb-8">
+              <div className="flex items-center gap-2.5 bg-white border border-slate-100 rounded-2xl px-4 py-3 shadow-[0_1px_8px_-2px_rgba(0,0,0,0.06)]">
+                <MapPin size={16} className="text-[var(--color-primary)] shrink-0" />
+                <div>
+                  <p className="text-[9px] font-black uppercase tracking-wider text-[var(--color-text-muted)] mb-0.5">Ubicación</p>
+                  <p className="text-sm font-bold text-[var(--color-primary-dark)]">{proyecto.ubicacion}</p>
                 </div>
               </div>
-              
-              {/* Botón principal de WhatsApp unificado en la caja de información */}
-              <a
-                href={`https://wa.me/${WHATSAPP}?text=Hola, estoy interesado en implementar un proyecto similar a: ${proyecto.nombre}`}
-                target="_blank"
-                rel="noreferrer noopener"
-                className="flex items-center gap-3 bg-[#25D366] hover:bg-[#20BE5C] text-white text-base font-bold px-6 py-3.5 rounded-full transition-all duration-300 shadow-md hover:shadow-lg whitespace-nowrap hover:-translate-y-0.5"
-              >
-                <WhatsappIcon size={20} />
-                Quiero un proyecto similar
-              </a>
+              <div className="flex items-center gap-2.5 bg-white border border-slate-100 rounded-2xl px-4 py-3 shadow-[0_1px_8px_-2px_rgba(0,0,0,0.06)]">
+                <User size={16} className="text-[var(--color-primary)] shrink-0 opacity-80" />
+                <div>
+                  <p className="text-[9px] font-black uppercase tracking-wider text-[var(--color-text-muted)] mb-0.5">Cliente</p>
+                  <p className="text-sm font-bold text-[var(--color-primary-dark)]">{proyecto.cliente}</p>
+                </div>
+              </div>
             </div>
 
-            <div className="prose prose-lg text-gray-600 mb-10">
-              <p className="leading-relaxed">
-                {proyecto.descripcion}
-              </p>
-            </div>
+            {/* Descripción */}
+            <p className="text-[var(--color-text-muted)] text-base md:text-lg leading-relaxed mb-8 font-medium">
+              {proyecto.descripcion}
+            </p>
+
+            {/* Botón WhatsApp */}
+            <a
+              href={`https://wa.me/${WHATSAPP}?text=Hola, estoy interesado en un proyecto similar a: ${proyecto.nombre}`}
+              target="_blank"
+              rel="noreferrer noopener"
+              className="inline-flex items-center justify-center gap-3 bg-[#25D366] hover:bg-[#20BE5C] text-white text-base font-black px-8 py-4 rounded-full transition-all duration-300 shadow-lg hover:shadow-xl hover:-translate-y-0.5 self-start"
+            >
+              <WhatsappIcon size={20} />
+              Quiero un proyecto similar
+            </a>
           </motion.div>
 
-          {/* MEDIA COLUMN */}
-          <motion.div 
-            initial={{ opacity: 0, x: 20 }}
-            animate={{ opacity: 1, x: 0 }}
-            transition={{ delay: 0.2 }}
-            className="w-full lg:sticky top-28"
-          >
-            <div className="rounded-3xl overflow-hidden shadow-2xl bg-gray-900 border-4 border-white aspect-[4/3] md:aspect-video lg:aspect-[4/3]">
-              <video 
-                src={proyecto.video} 
-                className="w-full h-full object-cover"
-                autoPlay loop muted playsInline controls
-              />
+          {/* VIDEO */}
+          <motion.div initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: 0.2 }}
+            className="w-full lg:sticky top-28">
+            <div className="rounded-3xl overflow-hidden shadow-[0_20px_60px_-10px_rgba(0,0,0,0.2)] border-2 border-slate-100 aspect-[4/3]"
+              style={{ borderColor: cat.dot + "30" }}>
+              <video src={proyecto.video} className="w-full h-full object-cover" autoPlay loop muted playsInline controls />
             </div>
           </motion.div>
         </div>
 
         {/* PROYECTOS SIMILARES */}
         {similares.length > 0 && (
-          <div className="border-t border-gray-100 pt-16">
-            <h3 className="text-2xl font-bold text-[var(--color-primary-dark)] mb-8">
-              Proyectos Similares
-            </h3>
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
-              {similares.map((sim, i) => (
-                <motion.article
-                  key={sim.id}
-                  initial={{ opacity: 0, y: 20 }}
-                  whileInView={{ opacity: 1, y: 0 }}
-                  viewport={{ once: true }}
-                  transition={{ delay: i * 0.1 }}
-                  className="bg-white rounded-2xl overflow-hidden shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all duration-300 flex flex-col group border border-[var(--color-primary)]"
-                >
-                  <div className="h-40 w-full relative bg-gray-100 overflow-hidden">
-                    <video 
-                      src={sim.video} 
-                      className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
-                      loop muted playsInline 
-                      onMouseEnter={(e) => e.target.play()}
-                      onMouseLeave={(e) => { e.target.pause(); e.target.currentTime = 0; }}
-                    />
-                  </div>
-                  <div className="p-5 flex flex-col flex-grow">
-                    <span 
-                      className="text-[10px] font-black tracking-widest uppercase mb-2"
-                      style={{ color: sim.color }}
-                    >
-                      {sim.categoria}
-                    </span>
-                    <h4 className="text-lg font-bold text-[var(--color-primary-dark)] mb-2 line-clamp-2">
-                      {sim.nombre}
-                    </h4>
-                    <Link
-                      to={`/proyecto/${sim.id}`}
-                      className="mt-auto inline-block text-[var(--color-primary)] font-bold text-sm hover:underline"
-                    >
-                      Leer más &rarr;
-                    </Link>
-                  </div>
-                </motion.article>
-              ))}
+          <div className="border-t border-slate-100 pt-16">
+            <div className="text-center mb-10">
+              <span className="inline-block text-[var(--color-primary)] font-black tracking-[0.25em] uppercase text-[10px] mb-4 py-1.5 px-4 bg-[var(--color-primary)]/5 rounded-full border border-[var(--color-primary)]/10">
+                Más proyectos
+              </span>
+              <h3 className="text-2xl md:text-3xl font-black text-[var(--color-primary-dark)] tracking-tight">
+                Proyectos <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#0ea5e1] to-[#1ed760]">similares</span>
+              </h3>
+            </div>
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+              {similares.map((sim, i) => {
+                const simCat = colorCat[sim.categoria] || { bg: "#f3f4f6", text: "#374151", dot: "#6b7280" }
+                return (
+                  <motion.article
+                    key={sim.id}
+                    initial={{ opacity: 0, y: 20 }}
+                    whileInView={{ opacity: 1, y: 0 }}
+                    viewport={{ once: true }}
+                    transition={{ delay: i * 0.1 }}
+                    className="bg-white rounded-2xl overflow-hidden shadow-[0_2px_16px_-4px_rgba(0,0,0,0.08)] hover:shadow-[0_12px_40px_-8px_rgba(0,0,0,0.14)] hover:-translate-y-1 transition-all duration-300 flex flex-col group border-2"
+                    style={{ borderColor: simCat.dot + "35" }}
+                  >
+                    <div className="h-44 w-full relative bg-slate-100 overflow-hidden">
+                      <video src={sim.video} className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+                        loop muted playsInline onMouseEnter={(e) => e.target.play()} onMouseLeave={(e) => { e.target.pause(); e.target.currentTime = 0 }} />
+                      <div className="absolute inset-0 bg-gradient-to-t from-black/40 to-transparent" />
+                      <span className="absolute top-3 left-3 inline-flex items-center gap-1.5 text-[10px] font-bold px-2.5 py-1 rounded-full backdrop-blur-sm"
+                        style={{ backgroundColor: simCat.bg + "ee", color: simCat.text }}>
+                        <span className="w-1.5 h-1.5 rounded-full" style={{ backgroundColor: simCat.dot }} />
+                        {sim.categoria}
+                      </span>
+                    </div>
+                    <div className="p-5 flex flex-col flex-grow">
+                      <h4 className="text-base font-black text-[var(--color-primary-dark)] mb-2 leading-snug line-clamp-2 group-hover:text-[var(--color-primary)] transition-colors">
+                        {sim.nombre}
+                      </h4>
+                      <p className="text-[var(--color-text-muted)] text-xs leading-relaxed mb-4 line-clamp-2">{sim.descripcion}</p>
+                      <Link to={`/proyecto/${sim.id}`}
+                        className="mt-auto inline-flex items-center gap-1.5 text-[var(--color-primary)] font-black text-xs hover:gap-2.5 transition-all">
+                        Ver proyecto <ExternalLink size={12} />
+                      </Link>
+                    </div>
+                  </motion.article>
+                )
+              })}
             </div>
           </div>
         )}

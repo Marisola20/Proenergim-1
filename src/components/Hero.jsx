@@ -44,12 +44,13 @@ function Hero() {
         playsInline
         className="absolute inset-0 w-full h-full object-cover z-0"
         preload="metadata"
+        style={{ willChange: "transform" }}
       >
         <source src="/videos/presentacion.mp4" type="video/mp4" />
       </video>
 
-      <div className="absolute inset-0 bg-black/40 z-10" />
-      <div className="absolute inset-0 z-10 bg-gradient-to-t from-[var(--color-primary-dark)]/70 via-transparent to-transparent pointer-events-none" aria-hidden />
+      <div className="absolute inset-0 bg-black/20 z-10" />
+      <div className="absolute inset-0 z-10 bg-gradient-to-t from-[var(--color-accent-light)]/50 via-transparent to-transparent pointer-events-none" aria-hidden />
       <div className="absolute inset-0 z-10 bg-gradient-to-b from-black/50 via-transparent to-transparent pointer-events-none" aria-hidden />
 
       <div className="relative z-20 w-full max-w-7xl mx-auto px-4 sm:px-6 flex flex-col items-center justify-center text-center">

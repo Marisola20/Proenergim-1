@@ -7,42 +7,42 @@ const hitos = [
     año: "2008",
     titulo: "Fundación de PROENERGIM",
     descripcion: "Inicio de operaciones en Lima como empresa de ingeniería eléctrica y energías renovables.",
-    imagen: null,
+    imagen: "/images/Trayectoria/prueba1.webp",
     color: "#0ea5e9",
   },
   {
     año: "2010",
     titulo: "Primeros proyectos solares",
     descripcion: "Instalación de los primeros sistemas de bombeo solar para agricultura en La Libertad.",
-    imagen: null,
+    imagen: "/images/Trayectoria/prueba2.webp",
     color: "#f59e0b",
   },
   {
     año: "2014",
     titulo: "Expansión nacional",
     descripcion: "Apertura de unidades operativas en Trujillo y Piura para atender el norte del Perú.",
-    imagen: null,
+    imagen: "/images/Trayectoria/prueba3.webp",
     color: "#10b981",
   },
   {
     año: "2018",
     titulo: "+100 proyectos",
     descripcion: "Superamos los 100 proyectos instalados en todo el Perú, desde Tumbes hasta Madre de Dios.",
-    imagen: null,
+    imagen: "/images/Trayectoria/prueba4.webp",
     color: "#8b5cf6",
   },
   {
     año: "2022",
     titulo: "Sistema solar más grande del Perú",
     descripcion: "Instalación del sistema de riego tecnificado más grande del país con bomba de 150 HP.",
-    imagen: null,
+    imagen: "/images/Trayectoria/prueba5.webp",
     color: "#f97316",
   },
   {
     año: "2025",
     titulo: "+200 proyectos y 4 sedes",
     descripcion: "Consolidados como referentes nacionales con sedes en Lima, Trujillo, Piura y Selva Sur.",
-    imagen: null,
+    imagen: "/images/Trayectoria/prueba6.webp",
     color: "#22c55e",
   },
 ]
@@ -77,7 +77,7 @@ function HitoItem({ hito, index }) {
             className="w-full text-left group"
             aria-expanded={abierto}
           >
-            <div className="flex items-center justify-between gap-3 rounded-2xl px-5 py-4 shadow-sm border border-gray-200 hover:border-gray-300 hover:shadow-md transition-all duration-200 bg-white">
+            <div className="flex items-center justify-between gap-3 rounded-2xl px-5 py-4 shadow-sm border-2 border-[var(--color-primary)]/15 hover:border-[var(--color-primary)]/35 hover:shadow-md transition-all duration-200 bg-white">
               <div className="flex items-center gap-3 min-w-0">
                 <div
                   className="shrink-0 w-10 h-10 rounded-xl flex items-center justify-center"
@@ -112,7 +112,7 @@ function HitoItem({ hito, index }) {
                 transition={{ duration: 0.3, ease: "easeInOut" }}
                 className="overflow-hidden"
               >
-                <div className="mt-2 rounded-2xl border border-gray-200 bg-white shadow-md overflow-hidden">
+                <div className="mt-2 rounded-2xl border-2 border-[var(--color-primary)]/20 bg-white shadow-sm overflow-hidden">
                   <div
                     className="w-full h-36 flex items-center justify-center text-white/70 text-sm font-medium select-none"
                     style={{
@@ -122,7 +122,7 @@ function HitoItem({ hito, index }) {
                     }}
                   >
                     {hito.imagen ? (
-                      <img src={hito.imagen} alt={hito.titulo} className="w-full h-full object-cover" />
+                      <img src={hito.imagen} alt={hito.titulo} loading="lazy" className="w-full h-full object-cover" />
                     ) : (
                       <span className="opacity-80">Aquí se agregarán las imágenes</span>
                     )}
@@ -161,7 +161,7 @@ function HitoItem({ hito, index }) {
             className="w-full text-left group"
             aria-expanded={abierto}
           >
-            <div className="flex items-center justify-between gap-3 rounded-2xl px-4 py-3.5 shadow-sm border border-gray-200 hover:border-gray-300 hover:shadow-md transition-all duration-200 bg-white">
+            <div className="flex items-center justify-between gap-3 rounded-2xl px-4 py-3.5 shadow-sm border-2 border-[var(--color-primary)]/15 hover:border-[var(--color-primary)]/35 hover:shadow-md transition-all duration-200 bg-white">
               <div className="flex items-center gap-3 min-w-0">
                 <div
                   className="shrink-0 w-9 h-9 rounded-xl flex items-center justify-center"
@@ -196,7 +196,7 @@ function HitoItem({ hito, index }) {
                 transition={{ duration: 0.3, ease: "easeInOut" }}
                 className="overflow-hidden"
               >
-                <div className="mt-2 rounded-2xl border border-gray-200 bg-white shadow-md overflow-hidden">
+                <div className="mt-2 rounded-2xl border-2 border-[var(--color-primary)]/20 bg-white shadow-sm overflow-hidden">
                   <div
                     className="w-full h-32 flex items-center justify-center text-white/70 text-sm font-medium select-none"
                     style={{
@@ -206,7 +206,7 @@ function HitoItem({ hito, index }) {
                     }}
                   >
                     {hito.imagen ? (
-                      <img src={hito.imagen} alt={hito.titulo} className="w-full h-full object-cover" />
+                      <img src={hito.imagen} alt={hito.titulo} loading="lazy" className="w-full h-full object-cover" />
                     ) : (
                       <span className="opacity-80">Aquí se agregarán las imágenes</span>
                     )}
@@ -230,20 +230,29 @@ function Trayectoria() {
       <div className="max-w-4xl mx-auto px-4 sm:px-6">
 
         {/* Encabezado */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.5 }}
-          className="text-center mb-12 sm:mb-14"
-        >
-          <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold text-[var(--color-primary-dark)] mb-3">
-            Trayectoria
-          </h2>
-          <p className="text-[var(--color-text-muted)] text-base max-w-xl mx-auto">
-            Más de 15 años creciendo junto a nuestros clientes.
+        <div className="text-center mb-12 sm:mb-14">
+          <motion.span
+            initial={{ opacity: 0, y: 10 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            className="inline-block text-[var(--color-primary)] font-black tracking-[0.25em] uppercase text-[10px] sm:text-xs mb-4 py-1.5 px-4 bg-[var(--color-primary)]/5 rounded-full border border-[var(--color-primary)]/10"
+          >
+            Nuestra Historia
+          </motion.span>
+          <motion.h2
+            initial={{ opacity: 0, y: 15 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ delay: 0.1 }}
+            className="text-3xl sm:text-4xl md:text-5xl font-black text-[var(--color-primary-dark)] mb-5 tracking-tight"
+          >
+            Más de 15 años{" "}<br className="hidden sm:block" />
+            <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#0ea5e1] to-[#1ed760]">creciendo juntos</span>
+          </motion.h2>
+          <p className="text-[var(--color-text-muted)] text-base md:text-lg max-w-2xl mx-auto font-medium leading-relaxed">
+            Hitos que marcan nuestro camino desde Lima hasta convertirse en referentes nacionales de energía solar.
           </p>
-        </motion.div>
+        </div>
 
         {/* Línea de tiempo */}
         <div className="relative">

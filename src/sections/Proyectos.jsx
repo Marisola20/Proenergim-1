@@ -36,24 +36,34 @@ function Proyectos() {
     <section id="proyectos" className="py-16 bg-white">
       <div className="max-w-7xl mx-auto px-6">
         
-        <div className="flex flex-col md:flex-row justify-between items-end mb-12 gap-4">
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.5 }}
-          >
-            <h2 className="text-3xl md:text-4xl font-bold text-[var(--color-primary-dark)]">
-              Proyectos Destacados
-            </h2>
-            <p className="text-[var(--color-text-muted)] mt-2">
-              Descubre cómo transformamos la energía en soluciones reales.
+        <div className="flex flex-col md:flex-row justify-between items-end mb-12 gap-6">
+          <div>
+            <motion.span
+              initial={{ opacity: 0, y: 10 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              className="inline-block text-[var(--color-primary)] font-black tracking-[0.25em] uppercase text-[10px] sm:text-xs mb-4 py-1.5 px-4 bg-[var(--color-primary)]/5 rounded-full border border-[var(--color-primary)]/10"
+            >
+              Casos Reales
+            </motion.span>
+            <motion.h2
+              initial={{ opacity: 0, y: 15 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ delay: 0.1 }}
+              className="text-3xl sm:text-4xl md:text-5xl font-black text-[var(--color-primary-dark)] mb-3 tracking-tight"
+            >
+              Proyectos{" "}
+              <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#0ea5e1] to-[#1ed760]">Destacados</span>
+            </motion.h2>
+            <p className="text-[var(--color-text-muted)] text-base md:text-lg font-medium leading-relaxed">
+              Descubre cómo transformamos la energía en soluciones reales para nuestros clientes.
             </p>
-          </motion.div>
-          
+          </div>
+
           <Link 
             to="/proyectos" 
-            className="text-[var(--color-primary-dark)] hover:text-white border-2 border-[var(--color-primary-dark)] hover:bg-[var(--color-primary-dark)] font-bold text-sm px-5 py-2.5 rounded-full flex items-center gap-2 transition-all"
+            className="shrink-0 text-[var(--color-primary-dark)] hover:text-white border-2 border-[var(--color-primary-dark)] hover:bg-[var(--color-primary-dark)] font-bold text-sm px-5 py-2.5 rounded-full flex items-center gap-2 transition-all"
           >
             Ver todos los proyectos <ArrowRight size={16} />
           </Link>
@@ -63,6 +73,23 @@ function Proyectos() {
         <div 
           className="relative bg-white rounded-3xl overflow-hidden shadow-[0_8px_30px_rgb(0,0,0,0.06)] border border-[var(--color-primary)] min-h-[460px] flex flex-col md:flex-row group transition-colors duration-500"
         >
+          {/* BOTÓN ANTERIOR — lado izquierdo */}
+          <button
+            onClick={prevSlide}
+            className="absolute left-3 top-1/2 -translate-y-1/2 z-30 w-10 h-10 flex items-center justify-center rounded-full bg-black/30 hover:bg-[var(--color-primary)] text-white backdrop-blur-md transition-all duration-300 border border-white/20 shadow-md"
+            aria-label="Proyecto anterior"
+          >
+            <ChevronLeft size={18} />
+          </button>
+
+          {/* BOTÓN SIGUIENTE — lado derecho */}
+          <button
+            onClick={nextSlide}
+            className="absolute right-3 top-1/2 -translate-y-1/2 z-30 w-10 h-10 flex items-center justify-center rounded-full bg-black/30 hover:bg-[var(--color-primary)] text-white backdrop-blur-md transition-all duration-300 border border-white/20 shadow-md"
+            aria-label="Proyecto siguiente"
+          >
+            <ChevronRight size={18} />
+          </button>
           
           {/* LADO IZQUIERDO: Info (aprox 40% ancho) */}
           <div className="w-full md:w-[40%] p-8 md:p-12 flex flex-col justify-center z-10 bg-white relative">
@@ -145,24 +172,6 @@ function Proyectos() {
                 />
               </motion.div>
             </AnimatePresence>
-
-            {/* CONTROLES DEL CARRUSEL (Flotantes) */}
-            <div className="absolute bottom-6 right-6 flex items-center gap-2 z-20">
-              <button 
-                onClick={prevSlide}
-                className="w-10 h-10 flex items-center justify-center rounded-full bg-black/40 hover:bg-[var(--color-primary)] text-white backdrop-blur-md transition-all duration-300 border border-white/20"
-                aria-label="Proyecto anterior"
-              >
-                <ChevronLeft size={18} />
-              </button>
-              <button 
-                onClick={nextSlide}
-                className="w-10 h-10 flex items-center justify-center rounded-full bg-black/40 hover:bg-[var(--color-primary)] text-white backdrop-blur-md transition-all duration-300 border border-white/20"
-                aria-label="Proyecto siguiente"
-              >
-                <ChevronRight size={18} />
-              </button>
-            </div>
           </div>
 
         </div>

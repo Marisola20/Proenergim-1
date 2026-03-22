@@ -4,7 +4,7 @@
   --color-primary: #0ea5e9;
   --color-primary-dark: #0369a1;
   --color-primary-light: #38bdf8;
-  --color-accent: #f59e0b;
+  --color-accent: #f5de0b;
   --color-accent-light: #fcd34d;
   --color-yellow: #FFC107;
   --color-green: #1ed760;
@@ -15,11 +15,12 @@
   --whatsapp: #25d366;
 }
 
-* { scroll-behavior: smooth; }
+html { scroll-behavior: smooth; }
 
 body {
-  background-color: var(--color-bg);
+  background: linear-gradient(rgb(248, 250, 252) 0%, rgb(255, 255, 255) 100%);
   color: var(--color-text);
+  min-height: 100vh;
 }
 
 .footer-section-title {
