@@ -5,7 +5,7 @@ import { Link } from "react-router-dom"
 import { proyectos } from "../data/proyectos"
 import HeroBanner from "../components/HeroBanner"
 
-const WHATSAPP = "51971812567"
+const WHATSAPP = "51936954890"
 
 /* Color por categoría */
 const colorCat = {

@@ -122,7 +122,7 @@ function HitoItem({ hito, index }) {
                     }}
                   >
                     {hito.imagen ? (
-                      <img src={hito.imagen} alt={hito.titulo} loading="lazy" className="w-full h-full object-cover" />
+                      <img src={hito.imagen} alt={hito.titulo} loading="lazy" decoding="async" className="w-full h-full object-cover" />
                     ) : (
                       <span className="opacity-80">Aquí se agregarán las imágenes</span>
                     )}
@@ -206,7 +206,7 @@ function HitoItem({ hito, index }) {
                     }}
                   >
                     {hito.imagen ? (
-                      <img src={hito.imagen} alt={hito.titulo} loading="lazy" className="w-full h-full object-cover" />
+                      <img src={hito.imagen} alt={hito.titulo} loading="lazy" decoding="async" className="w-full h-full object-cover" />
                     ) : (
                       <span className="opacity-80">Aquí se agregarán las imágenes</span>
                     )}
@@ -231,10 +231,10 @@ function Trayectoria() {
 
         {/* Encabezado */}
         <div className="text-center mb-12 sm:mb-14">
-          <motion.span
+            <motion.span
             initial={{ opacity: 0, y: 10 }}
             whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
+            viewport={{ once: true, margin: "-10%" }}
             className="inline-block text-[var(--color-primary)] font-black tracking-[0.25em] uppercase text-[10px] sm:text-xs mb-4 py-1.5 px-4 bg-[var(--color-primary)]/5 rounded-full border border-[var(--color-primary)]/10"
           >
             Nuestra Historia
@@ -242,7 +242,7 @@ function Trayectoria() {
           <motion.h2
             initial={{ opacity: 0, y: 15 }}
             whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
+            viewport={{ once: true, margin: "-10%" }}
             transition={{ delay: 0.1 }}
             className="text-3xl sm:text-4xl md:text-5xl font-black text-[var(--color-primary-dark)] mb-5 tracking-tight"
           >

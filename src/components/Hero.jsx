@@ -2,7 +2,7 @@ import { useEffect, useState } from "react"
 import { motion } from "framer-motion"
 import { MapPin, Briefcase, Award, Package, MessageCircle } from "lucide-react"
 
-const WHATSAPP = "51971812567"
+const WHATSAPP = "51936954890"
 
 function useCountUp(target, duration = 1200) {
   const [value, setValue] = useState(0)
@@ -36,7 +36,7 @@ function Hero() {
   const sedes = useCountUp(4, 1700)
 
   return (
-    <section id="inicio" className="relative min-h-screen flex items-center overflow-hidden pt-24 md:pt-28">
+    <section id="inicio" className="relative min-h-[100dvh] flex items-center overflow-hidden pt-24 md:pt-28">
       <video
         autoPlay
         muted
@@ -44,6 +44,7 @@ function Hero() {
         playsInline
         className="absolute inset-0 w-full h-full object-cover z-0"
         preload="metadata"
+        fetchpriority="high"
         style={{ willChange: "transform" }}
       >
         <source src="/videos/presentacion.mp4" type="video/mp4" />

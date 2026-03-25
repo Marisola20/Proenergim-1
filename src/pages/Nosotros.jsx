@@ -81,7 +81,7 @@ function FlipCard({ v, i }) {
     <motion.div
       initial={{ opacity: 0, y: 24 }}
       whileInView={{ opacity: 1, y: 0 }}
-      viewport={{ once: true }}
+      viewport={{ once: true, margin: "-10%" }}
       transition={{ delay: i * 0.08 }}
       style={{ perspective: "1000px", height: "220px" }}
       onClick={() => setFlipped((f) => !f)}
@@ -219,6 +219,7 @@ function Nosotros() {
                       loading="lazy"
                       src={e.foto}
                       alt={e.nombre}
+                      decoding="async"
                       className="w-full h-full object-cover object-top transition-transform duration-500 group-hover:scale-105"
                     />
                   ) : (
@@ -275,7 +276,7 @@ function Nosotros() {
               Únete al equipo Proenergim. Buscamos personas comprometidas con el impacto ambiental y las energías renovables.
             </p>
             <a
-              href="https://wa.me/51971812567?text=Hola, me gustaría postularme a trabajar con ustedes"
+              href="https://wa.me/51936954890?text=Hola, me gustaría postularme a trabajar con ustedes"
               target="_blank"
               rel="noreferrer"
               className="inline-flex items-center gap-2 font-black px-8 py-4 rounded-full transition-all duration-300 shadow-lg hover:shadow-xl hover:-translate-y-0.5 text-white bg-[#25D366] hover:bg-[#20BE5C]"

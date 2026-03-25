@@ -4,7 +4,7 @@ import { motion } from "framer-motion"
 import { MapPin, User, ArrowLeft, Calendar, ExternalLink } from "lucide-react"
 import { proyectos } from "../data/proyectos"
 
-const WHATSAPP = "51971812567"
+const WHATSAPP = "51936954890"
 
 const colorCat = {
   "Bombeo Solar":        { bg: "#dbeafe", text: "#1d4ed8", dot: "#3b82f6" },

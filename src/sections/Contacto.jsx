@@ -2,7 +2,7 @@ import { useState } from "react"
 import { motion, AnimatePresence } from "framer-motion"
 import { MapPin, Phone, Mail, User, Facebook, Instagram, Linkedin, Twitter, Youtube, Navigation } from "lucide-react"
 
-const WHATSAPP = "51971812567"
+const WHATSAPP = "51936954890"
 const sedes = [
   { nombre: "Zonal Lima", direccion: "Av. Los Chancas N°112, Santa Anita" },
   { nombre: "Zonal La Libertad", direccion: "Mz A3 Lote 18, Urb. Sol de Trujillo" },
@@ -107,7 +107,7 @@ function Contacto({ mostrarBloqueProveedores = false }) {
               <h3 className="font-black text-white text-lg mb-6">Información de contacto</h3>
               <div className="grid grid-cols-2 gap-3 mb-8">
                 <a
-                  href="tel:+51971812567"
+                  href="tel:+51936954890"
                   className="flex items-center gap-3 bg-white/10 hover:bg-white/20 border border-white/10 rounded-2xl px-4 py-4 transition-all duration-300 group"
                 >
                   <div className="w-9 h-9 rounded-xl bg-[var(--color-accent)]/20 flex items-center justify-center shrink-0">
@@ -115,7 +115,7 @@ function Contacto({ mostrarBloqueProveedores = false }) {
                   </div>
                   <div className="min-w-0">
                     <p className="text-white/60 text-[10px] font-bold uppercase tracking-wider mb-0.5">Teléfono</p>
-                    <p className="text-white font-bold text-sm truncate">971 812 567</p>
+                    <p className="text-white font-bold text-sm truncate">936 954 890</p>
                   </div>
                 </a>
                 <a

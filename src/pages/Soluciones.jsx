@@ -4,7 +4,7 @@ import { servicios } from "../data/servicios"
 import { HelpCircle, MessageCircle } from "lucide-react"
 import HeroBanner from "../components/HeroBanner"
 
-const WHATSAPP = "51971812567"
+const WHATSAPP = "51936954890"
 
 const faqs = [
   {
@@ -137,6 +137,7 @@ function Soluciones() {
                 <div className="h-52 w-full overflow-hidden relative">
                   <img
                     loading="lazy"
+                    decoding="async"
                     src={s.imagen}
                     alt={s.nombre}
                     className="absolute inset-0 w-full h-full object-cover object-center transition-transform duration-700 group-hover:scale-110"

@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react"
+import { memo, useState, useEffect } from "react"
 import { motion, AnimatePresence } from "framer-motion"
 import { ChevronLeft, ChevronRight } from "lucide-react"
 import { servicios } from "../data/servicios"
@@ -12,6 +12,61 @@ function useIsMobile() {
   }, [])
   return isMobile
 }
+
+const ServiceCard = memo(({ servicio }) => {
+  const IconComponent = servicio.icon;
+  return (
+    <div
+      className="group relative h-[420px] rounded-[2.5rem] overflow-hidden shadow-lg bg-white border border-gray-100 transition-all duration-500 hover:shadow-2xl"
+    >
+      <img
+        loading="lazy"
+        decoding="async"
+        src={servicio.imagen}
+        alt={servicio.nombre}
+        className="absolute inset-0 w-full h-full object-cover transition-transform duration-1000 group-hover:scale-110"
+      />
+      <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent transition-opacity" />
+
+      {/* Title Bar (Standard State) */}
+      <div className="absolute bottom-6 left-6 right-6 z-10 transition-all duration-500 group-hover:opacity-0 group-hover:translate-y-4">
+        <div className="flex items-center gap-4 bg-white/5 backdrop-blur-sm p-4 rounded-[1.5rem] border border-white/10 shadow-sm">
+          <div 
+            className="w-10 h-10 rounded-xl flex items-center justify-center shrink-0 border-2"
+            style={{ borderColor: servicio.iconBg, backgroundColor: "transparent" }}
+          >
+            {IconComponent && <IconComponent size={20} style={{ color: servicio.iconBg }} />}
+          </div>
+          <h3 className="text-white font-bold text-base leading-tight tracking-tight shadow-black drop-shadow-lg">
+            {servicio.nombre}
+          </h3>
+        </div>
+      </div>
+
+      {/* Description Reveal (Hover State) */}
+      <div className="absolute inset-0 flex flex-col justify-end p-6 translate-y-full group-hover:translate-y-0 transition-transform duration-500 ease-out z-20">
+         <div className="bg-slate-900/80 backdrop-blur-md p-7 rounded-[2rem] border border-white/10 shadow-2xl">
+            <div className="flex items-center gap-3 mb-3">
+               <div 
+                 className="w-8 h-8 rounded-xl flex items-center justify-center shrink-0 border"
+                 style={{ borderColor: servicio.iconBg }}
+               >
+                  {IconComponent && <IconComponent size={16} style={{ color: servicio.iconBg }} />}
+               </div>
+               <h3 className="text-white font-bold text-base">
+                 {servicio.nombre}
+               </h3>
+            </div>
+            <p className="text-white/80 text-sm leading-relaxed">
+              {servicio.descripcion}
+            </p>
+         </div>
+      </div>
+    </div>
+  );
+});
+
+ServiceCard.displayName = "ServiceCard";
 
 function Servicios() {
   const isMobile = useIsMobile()
@@ -48,7 +103,7 @@ function Servicios() {
           <motion.span
             initial={{ opacity: 0, y: 10 }}
             whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
+            viewport={{ once: true, margin: "-10%" }}
             className="inline-block text-[var(--color-primary)] font-black tracking-[0.25em] uppercase text-[10px] sm:text-xs mb-4 py-1.5 px-4 bg-[var(--color-primary)]/5 rounded-full border border-[var(--color-primary)]/10"
           >
             Nuestra Especialidad
@@ -56,7 +111,7 @@ function Servicios() {
           <motion.h2
             initial={{ opacity: 0, y: 15 }}
             whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
+            viewport={{ once: true, margin: "-10%" }}
             transition={{ delay: 0.1 }}
             className="text-3xl sm:text-4xl md:text-5xl font-black text-[var(--color-primary-dark)] mb-5 tracking-tight"
           >
@@ -102,58 +157,9 @@ function Servicios() {
                 transition={{ duration: 0.4 }}
                 className={`grid gap-8 ${isMobile ? "grid-cols-1" : "grid-cols-3"}`}
               >
-                {visibleServicios.map((servicio) => {
-                  const IconComponent = servicio.icon;
-                  return (
-                    <div
-                      key={servicio.nombre}
-                      className="group relative h-[420px] rounded-[2.5rem] overflow-hidden shadow-lg bg-white border border-gray-100 transition-all duration-500 hover:shadow-2xl"
-                    >
-                      <img
-                        loading="lazy"
-                        src={servicio.imagen}
-                        alt={servicio.nombre}
-                        className="absolute inset-0 w-full h-full object-cover transition-transform duration-1000 group-hover:scale-110"
-                      />
-                      <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent transition-opacity" />
-
-                      {/* Title Bar (Standard State) */}
-                      <div className="absolute bottom-6 left-6 right-6 z-10 transition-all duration-500 group-hover:opacity-0 group-hover:translate-y-4">
-                        <div className="flex items-center gap-4 bg-white/5 backdrop-blur-sm p-4 rounded-[1.5rem] border border-white/10 shadow-sm">
-                          <div 
-                            className="w-10 h-10 rounded-xl flex items-center justify-center shrink-0 border-2"
-                            style={{ borderColor: servicio.iconBg, backgroundColor: "transparent" }}
-                          >
-                            {IconComponent && <IconComponent size={20} style={{ color: servicio.iconBg }} />}
-                          </div>
-                          <h3 className="text-white font-bold text-base leading-tight tracking-tight shadow-black drop-shadow-lg">
-                            {servicio.nombre}
-                          </h3>
-                        </div>
-                      </div>
-
-                      {/* Description Reveal (Hover State) */}
-                      <div className="absolute inset-0 flex flex-col justify-end p-6 translate-y-full group-hover:translate-y-0 transition-transform duration-500 ease-out z-20">
-                         <div className="bg-slate-900/80 backdrop-blur-md p-7 rounded-[2rem] border border-white/10 shadow-2xl">
-                            <div className="flex items-center gap-3 mb-3">
-                               <div 
-                                 className="w-8 h-8 rounded-xl flex items-center justify-center shrink-0 border"
-                                 style={{ borderColor: servicio.iconBg }}
-                               >
-                                  {IconComponent && <IconComponent size={16} style={{ color: servicio.iconBg }} />}
-                               </div>
-                               <h3 className="text-white font-bold text-base">
-                                 {servicio.nombre}
-                               </h3>
-                            </div>
-                            <p className="text-white/80 text-sm leading-relaxed">
-                              {servicio.descripcion}
-                            </p>
-                         </div>
-                      </div>
-                    </div>
-                  );
-                })}
+                {visibleServicios.map((servicio) => (
+                  <ServiceCard key={servicio.nombre} servicio={servicio} />
+                ))}
               </motion.div>
             </AnimatePresence>
           </div>

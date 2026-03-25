@@ -3,7 +3,7 @@ import { motion, AnimatePresence } from "framer-motion"
 import { X, Send } from "lucide-react"
 import logoMobile from "../assets/logo-movile.webp"
 
-const WHATSAPP = "51971812567"
+const WHATSAPP = "51936954890"
 
 const ChatPattern = ({ opacity = "opacity-[0.08]" }) => (
   <svg className={`absolute inset-0 w-full h-full pointer-events-none ${opacity}`} xmlns="http://www.w3.org/2000/svg">
@@ -74,7 +74,7 @@ function FloatingWhatsApp() {
                <div className="relative z-10 flex items-center justify-between">
                  <div className="flex items-center gap-3">
                    <div className="w-10 h-10 bg-white rounded-full overflow-hidden flex items-center justify-center p-0.5 shadow-sm">
-                     <img src={logoMobile} alt="Logo" className="w-8 h-auto object-contain" />
+                     <img src={logoMobile} alt="Logo" decoding="async" className="w-8 h-auto object-contain" />
                    </div>
                    <div>
                      <h3 className="font-bold text-sm tracking-tight">Proenergim</h3>

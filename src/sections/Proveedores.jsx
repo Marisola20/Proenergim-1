@@ -1,3 +1,4 @@
+import { memo } from "react"
 import { motion } from "framer-motion"
 
 const proveedores = [
@@ -12,6 +13,31 @@ const proveedores = [
   { nombre: "Trina Solar",        logo: "/images/proveedores/Trinasolar.webp" },
 ]
 
+const ProveedorItem = memo(({ item }) => (
+  <div
+    className="group bg-white rounded-2xl shadow-[0_2px_16px_-4px_rgba(0,0,0,0.08)] border border-slate-100 flex items-center justify-center hover:shadow-[0_8px_30px_-6px_rgba(0,0,0,0.15)] hover:-translate-y-1 transition-all duration-300"
+    style={{ width: "200px", height: "110px", padding: "18px 22px" }}
+  >
+    <img
+      loading="lazy"
+      decoding="async"
+      src={item.logo}
+      alt={`Logo de ${item.nombre}`}
+      style={{
+        width: "100%",
+        height: "64px",
+        objectFit: "contain",
+        filter: "grayscale(20%)",
+        transition: "filter 0.3s",
+      }}
+      onMouseEnter={e => (e.currentTarget.style.filter = "grayscale(0%)")}
+      onMouseLeave={e => (e.currentTarget.style.filter = "grayscale(20%)")}
+    />
+  </div>
+))
+
+ProveedorItem.displayName = "ProveedorItem"
+
 function CarruselFila({ items, velocidad = 30 }) {
   const duplicado = [...items, ...items, ...items]
 
@@ -19,30 +45,12 @@ function CarruselFila({ items, velocidad = 30 }) {
     <div className="overflow-hidden">
       <motion.div
         className="flex gap-5 w-max items-center"
+        style={{ willChange: "transform" }}
         animate={{ x: ["0%", "-33.33%"] }}
         transition={{ duration: velocidad, repeat: Infinity, ease: "linear" }}
       >
         {duplicado.map((item, i) => (
-          <div
-            key={i}
-            className="group bg-white rounded-2xl shadow-[0_2px_16px_-4px_rgba(0,0,0,0.08)] border border-slate-100 flex items-center justify-center hover:shadow-[0_8px_30px_-6px_rgba(0,0,0,0.15)] hover:-translate-y-1 transition-all duration-300"
-            style={{ width: "200px", height: "110px", padding: "18px 22px" }}
-          >
-            <img
-              loading="lazy"
-              src={item.logo}
-              alt={`Logo de ${item.nombre}`}
-              style={{
-                width: "100%",
-                height: "64px",
-                objectFit: "contain",
-                filter: "grayscale(20%)",
-                transition: "filter 0.3s",
-              }}
-              onMouseEnter={e => (e.currentTarget.style.filter = "grayscale(0%)")}
-              onMouseLeave={e => (e.currentTarget.style.filter = "grayscale(20%)")}
-            />
-          </div>
+          <ProveedorItem key={i} item={item} />
         ))}
       </motion.div>
     </div>
@@ -56,14 +64,14 @@ function Proveedores() {
         <motion.div
           initial={{ opacity: 0, y: 24 }}
           whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
+          viewport={{ once: true, margin: "-10%" }}
           transition={{ duration: 0.55 }}
           className="text-center mb-14"
         >
           <motion.span
             initial={{ opacity: 0, y: 10 }}
             whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
+            viewport={{ once: true, margin: "-10%" }}
             className="inline-block text-[var(--color-primary)] font-black tracking-[0.25em] uppercase text-[10px] sm:text-xs mb-4 py-1.5 px-4 bg-[var(--color-primary)]/5 rounded-full border border-[var(--color-primary)]/10"
           >
             Trabajamos con los Mejores
@@ -71,7 +79,7 @@ function Proveedores() {
           <motion.h2
             initial={{ opacity: 0, y: 15 }}
             whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
+            viewport={{ once: true, margin: "-10%" }}
             transition={{ delay: 0.1 }}
             className="text-3xl sm:text-4xl md:text-5xl font-black text-[var(--color-primary-dark)] mb-5 tracking-tight"
           >

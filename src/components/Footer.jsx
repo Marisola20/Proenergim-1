@@ -170,10 +170,10 @@ function Footer() {
             <div>
               <h4 className="footer-section-title">Contacto</h4>
               <div className="flex flex-col gap-2">
-                <a href="tel:+51971812567"
+                <a href="tel:+51936954890"
                    className="flex items-center gap-2 text-sm font-black hover:text-white/70 transition-all">
                   <Phone size={13} className="opacity-60 flex-shrink-0" />
-                  +51 971 812 567
+                  +51 936 954 890
                 </a>
                 <a href="mailto:waguilar@proenergim.com"
                    className="flex items-center gap-2 text-xs font-semibold hover:text-white/70 transition-all text-white/80">
