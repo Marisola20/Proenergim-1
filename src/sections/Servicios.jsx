@@ -1,4 +1,4 @@
-import { memo, useState, useEffect } from "react"
+import { memo, useState, useEffect, useCallback } from "react"
 import { motion, AnimatePresence } from "framer-motion"
 import { ChevronLeft, ChevronRight } from "lucide-react"
 import { servicios } from "../data/servicios"
@@ -88,8 +88,8 @@ function Servicios() {
     }
   }, [maxStart, startIndex])
 
-  const goPrev = () => setStartIndex((i) => Math.max(0, i - 1))
-  const goNext = () => setStartIndex((i) => Math.min(maxStart, i + 1))
+  const goPrev = useCallback(() => setStartIndex((i) => Math.max(0, i - 1)), [])
+  const goNext = useCallback(() => setStartIndex((i) => Math.min(maxStart, i + 1)), [maxStart])
 
   return (
     <section id="servicios" className="relative py-20 sm:py-28 bg-[var(--color-bg-soft)]/5 border-y border-gray-100/50 overflow-hidden">
@@ -101,9 +101,9 @@ function Servicios() {
         {/* Header with Gradient */}
         <div className="text-center mb-16 underline-offset-4">
           <motion.span
-            initial={{ opacity: 0, y: 10 }}
+            initial={{ opacity: 0, y: 15 }}
             whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true, margin: "-10%" }}
+            viewport={{ once: true, margin: "-10% 0px" }}
             className="inline-block text-[var(--color-primary)] font-black tracking-[0.25em] uppercase text-[10px] sm:text-xs mb-4 py-1.5 px-4 bg-[var(--color-primary)]/5 rounded-full border border-[var(--color-primary)]/10"
           >
             Nuestra Especialidad
@@ -111,7 +111,7 @@ function Servicios() {
           <motion.h2
             initial={{ opacity: 0, y: 15 }}
             whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true, margin: "-10%" }}
+            viewport={{ once: true, margin: "-10% 0px" }}
             transition={{ delay: 0.1 }}
             className="text-3xl sm:text-4xl md:text-5xl font-black text-[var(--color-primary-dark)] mb-5 tracking-tight"
           >

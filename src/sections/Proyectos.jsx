@@ -1,8 +1,9 @@
-import { useState, useEffect, useRef, memo } from "react"
+import { useState, useEffect, useRef, memo, useCallback, useMemo } from "react"
 import { motion, AnimatePresence } from "framer-motion"
-import { MapPin, ArrowRight, ChevronLeft, ChevronRight, User } from "lucide-react"
+import { MapPin, ArrowRight, User, ChevronLeft, ChevronRight } from "lucide-react"
 import { Link } from "react-router-dom"
-import { proyectos } from "../data/proyectos"
+import { proyectos, REGION_COORDS } from "../data/proyectos"
+import PeruMap from "../components/PeruMap"
 
 const WHATSAPP = "51936954890"
 
@@ -18,12 +19,26 @@ const ProjectVideo = memo(({ src, active, inView }) => {
   const videoRef = useRef(null)
 
   useEffect(() => {
+    const handleVisibilityChange = () => {
+      if (document.hidden) {
+        videoRef.current?.pause()
+      } else if (active && inView) {
+        videoRef.current?.play().catch(() => {})
+      }
+    }
+
+    document.addEventListener("visibilitychange", handleVisibilityChange)
+
     if (videoRef.current) {
-      if (active && inView) {
+      if (active && inView && !document.hidden) {
         videoRef.current.play().catch(() => {})
       } else {
         videoRef.current.pause()
       }
+    }
+
+    return () => {
+      document.removeEventListener("visibilitychange", handleVisibilityChange)
     }
   }, [active, inView])
 
@@ -35,60 +50,135 @@ const ProjectVideo = memo(({ src, active, inView }) => {
       muted
       playsInline
       preload="metadata"
-      className={`absolute inset-0 w-full h-full object-cover transition-opacity duration-700 ${active ? "opacity-100 z-10" : "opacity-0 z-0"}`}
+      className={`absolute inset-0 w-full h-full object-cover transition-opacity duration-700 ${active ? "opacity-100 z-10" : "opacity-0 z-0 pointer-events-none"}`}
+      style={{ visibility: active ? "visible" : "hidden" }}
     />
   )
 })
 
 ProjectVideo.displayName = "ProjectVideo"
 
-const ProjectInfo = memo(({ p }) => {
+const ProjectInfo = memo(({ p, isInView, onPrev, onNext, hasMultiple }) => {
   return (
-    <div className="flex flex-col h-full justify-center">
-      <div className="mb-4">
-        <span 
-          className="inline-block text-xs font-bold px-3 py-1 rounded-full"
-          style={{ backgroundColor: p.color + "15", color: p.color }}
-        >
-          {p.categoria}
-        </span>
-      </div>
+    <div className="flex flex-col lg:flex-row gap-10 items-stretch bg-white rounded-[2.5rem] p-6 md:p-12 border border-[var(--color-primary)]/5 shadow-[0_25px_60px_-15px_rgba(0,0,0,0.06)] relative overflow-hidden group">
+      {/* Decorative background element */}
+      <div className="absolute top-0 right-0 w-40 h-40 bg-gradient-to-br from-[var(--color-primary)]/10 to-transparent rounded-bl-full -mr-12 -mt-12 transition-transform group-hover:scale-110 duration-1000" />
       
-      <h3 className="text-2xl md:text-3xl font-extrabold text-[var(--color-primary-dark)] leading-tight mb-4">
-        {p.nombre}
-      </h3>
-      
-      <p className="text-gray-500 text-sm md:text-base mb-6 line-clamp-3 md:line-clamp-4">
-        {p.descripcion}
-      </p>
-      
-      <div className="flex flex-col gap-3 mb-8">
-        <div className="flex items-center gap-2 text-[var(--color-text-muted)] text-sm font-medium">
-          <MapPin size={16} className="text-[var(--color-primary)]" />
-          <span>{p.ubicacion}</span>
-        </div>
-        <div className="flex items-center gap-2 text-[var(--color-text-muted)] text-sm font-medium">
-          <User size={16} className="text-[var(--color-primary)] opacity-70" />
-          <span>Cliente: {p.cliente}</span>
-        </div>
+      {/* Multimedia side */}
+      <div className="w-full lg:w-[48%] aspect-video rounded-[1.8rem] overflow-hidden shadow-2xl bg-gray-900 border border-white/40 relative group-hover:shadow-[var(--color-primary)]/20 transition-all duration-700">
+        <ProjectVideo src={p.video} active={true} inView={isInView} />
+        <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent pointer-events-none" />
+        
+        {/* Navigation Arrows Overlay */}
+        {hasMultiple && (
+          <div className="absolute inset-x-4 top-1/2 -translate-y-1/2 flex justify-between items-center z-20 pointer-events-none">
+            <button 
+              onClick={(e) => { e.preventDefault(); onPrev(); }}
+              className="w-10 h-10 rounded-full bg-white/10 backdrop-blur-md border border-white/20 flex items-center justify-center text-white hover:bg-[var(--color-primary)] hover:border-transparent transition-all pointer-events-auto active:scale-90"
+            >
+              <ChevronLeft size={24} />
+            </button>
+            <button 
+              onClick={(e) => { e.preventDefault(); onNext(); }}
+              className="w-10 h-10 rounded-full bg-white/10 backdrop-blur-md border border-white/20 flex items-center justify-center text-white hover:bg-[var(--color-primary)] hover:border-transparent transition-all pointer-events-auto active:scale-90"
+            >
+              <ChevronRight size={24} />
+            </button>
+          </div>
+        )}
       </div>
 
-      <div className="flex flex-wrap gap-3 mt-auto">
-        <Link
-          to={`/proyecto/${p.id}`}
-          className="flex items-center gap-2 bg-transparent text-[var(--color-primary-dark)] hover:bg-[var(--color-primary-dark)] hover:text-white border-2 border-[var(--color-primary-dark)]/20 hover:border-[var(--color-primary-dark)] text-sm font-bold px-5 py-2.5 rounded-full transition-all duration-300"
-        >
-          Ver info <ArrowRight size={16} />
-        </Link>
-        <a
-          href={`https://wa.me/${WHATSAPP}?text=Hola, me interesa saber más sobre el proyecto: ${p.nombre}`}
-          target="_blank"
-          rel="noreferrer noopener"
-          className="flex items-center gap-2 bg-transparent text-[#25D366] hover:bg-[#25D366] hover:text-white border-2 border-[#25D366]/30 hover:border-[#25D366] text-sm font-bold px-5 py-2.5 rounded-full transition-all duration-300"
-        >
-          <WhatsappIcon size={16} />
-          WhatsApp
-        </a>
+      {/* Info side */}
+      <div className="w-full lg:w-[52%] flex flex-col items-start text-left">
+        <div className="flex items-center gap-3 mb-4 w-full">
+          <span 
+            className="text-[10px] font-black uppercase tracking-widest px-3 py-1 rounded-full border"
+            style={{ 
+              backgroundColor: p.color + "10", 
+              color: p.color, 
+              borderColor: p.color + "30" 
+            }}
+          >
+            {p.categoria}
+          </span>
+          <div className="h-px flex-1 bg-gradient-to-r from-gray-100 to-transparent" />
+        </div>
+        
+        <h3 className="text-2xl md:text-3xl font-black text-[var(--color-primary-dark)] leading-tight mb-3">
+          {p.nombre}
+        </h3>
+        
+        <p className="text-gray-500 text-sm md:text-base mb-6 leading-relaxed font-medium">
+          {p.descripcion}
+        </p>
+        
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-8 w-full">
+          <div className="flex items-center gap-3 p-3 rounded-xl bg-slate-50 border border-slate-100 transition-colors hover:bg-white hover:border-[var(--color-primary)]/20 shadow-sm">
+            <div className="w-8 h-8 rounded-full bg-[var(--color-primary)]/10 flex items-center justify-center">
+              <MapPin size={16} className="text-[var(--color-primary)]" />
+            </div>
+            <div>
+              <span className="block text-[10px] text-gray-400 font-bold uppercase tracking-tighter">Ubicación</span>
+              <span className="text-sm font-bold text-[var(--color-primary-dark)]">{p.ubicacion}</span>
+            </div>
+          </div>
+          <div className="flex items-center gap-3 p-3 rounded-xl bg-slate-50 border border-slate-100 transition-colors hover:bg-white hover:border-[var(--color-primary)]/20 shadow-sm">
+            <div className="w-8 h-8 rounded-full bg-[var(--color-primary)]/10 flex items-center justify-center">
+              <User size={16} className="text-[var(--color-primary)]" />
+            </div>
+            <div>
+              <span className="block text-[10px] text-gray-400 font-bold uppercase tracking-tighter">Cliente</span>
+              <span className="text-sm font-bold text-[var(--color-primary-dark)]">{p.cliente}</span>
+            </div>
+          </div>
+        </div>
+
+        {/* Galería de Imágenes */}
+        {p.images && p.images.length > 0 && (
+          <div className="w-full mb-8">
+            <div className="flex items-center gap-3 mb-3">
+              <h4 className="text-[10px] font-black uppercase tracking-widest text-gray-400">Galería</h4>
+              <div className="h-px flex-1 bg-gray-100" />
+            </div>
+            <div className="flex gap-3 overflow-x-auto pb-3 scrollbar-custom">
+              {p.images.map((img, i) => (
+                <div 
+                  key={i} 
+                  className="shrink-0 w-28 h-20 rounded-xl overflow-hidden border-2 border-transparent hover:border-[var(--color-primary)]/50 transition-all cursor-pointer group/img shadow-md hover:shadow-lg"
+                >
+                  <img 
+                    src={img} 
+                    alt={`${p.nombre} gallery ${i}`} 
+                    className="w-full h-full object-cover group-hover/img:scale-110 transition-transform duration-700" 
+                    loading="lazy"
+                  />
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
+
+        <div className="flex flex-wrap gap-4 mt-auto">
+          <Link
+            to={`/proyecto/${p.id}`}
+            className="shrink-0 text-[var(--color-primary-dark)] hover:text-white border-2 border-[var(--color-primary-dark)] hover:bg-[var(--color-primary-dark)] font-bold text-sm px-6 py-2.5 rounded-full flex items-center gap-2 transition-all shadow-sm"
+          >
+            Ver info
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-arrow-right" aria-hidden="true">
+              <path d="M5 12h14"></path>
+              <path d="m12 5 7 7-7 7"></path>
+            </svg>
+          </Link>
+          <a
+            href={`https://wa.me/${WHATSAPP}?text=Hola, me interesa saber más sobre el proyecto: ${p.nombre}`}
+            target="_blank"
+            rel="noreferrer noopener"
+            className="shrink-0 text-[#25D366] hover:text-white border-2 border-[#25D366]/30 hover:bg-[#25D366] font-bold text-sm px-6 py-2.5 rounded-full flex items-center gap-2 transition-all shadow-sm"
+          >
+            WhatsApp
+            <WhatsappIcon size={16} />
+          </a>
+        </div>
       </div>
     </div>
   )
@@ -97,18 +187,51 @@ const ProjectInfo = memo(({ p }) => {
 ProjectInfo.displayName = "ProjectInfo"
 
 function Proyectos() {
-  const [currentIndex, setCurrentIndex] = useState(0)
+  const [activeRegionIdx, setActiveRegionIdx] = useState(0)
+  const [activeProjectIdx, setActiveProjectIdx] = useState(0)
+  const [isAutoPlaying, setIsAutoPlaying] = useState(true)
   const [isInView, setIsInView] = useState(false)
   const sectionRef = useRef(null)
-  
-  const destacados = proyectos.slice(0, 6)
+
+  // Agrupar proyectos por región
+  const { groupedProjects, visibleProjects } = useMemo(() => {
+    // Solo regiones que tengan proyectos y no estén ocultas
+    const regionsWithProjects = [...new Set(proyectos.map(p => p.region))]
+    const grouped = regionsWithProjects
+      .filter(regionName => REGION_COORDS[regionName] && !REGION_COORDS[regionName].hidden)
+      .map(regionName => ({
+        region: regionName,
+        items: proyectos.filter(p => p.region === regionName)
+      }))
+
+    // Lista plana de proyectos en regiones visibles para el mapa y navegación global
+    const visible = grouped.flatMap(g => g.items)
+
+    return { groupedProjects: grouped, visibleProjects: visible }
+  }, [])
+
+  // Índice global para el mapa (compatibilidad con PeruMap)
+  const globalIndex = useMemo(() => {
+    let count = 0
+    for (let i = 0; i < activeRegionIdx; i++) {
+      count += groupedProjects[i].items.length
+    }
+    return count + activeProjectIdx
+  }, [activeRegionIdx, activeProjectIdx, groupedProjects])
 
   useEffect(() => {
+    if (!isAutoPlaying || !isInView) return
     const timer = setInterval(() => {
-      setCurrentIndex((prev) => (prev + 1) % destacados.length)
-    }, 6000)
+      const currentRegion = groupedProjects[activeRegionIdx]
+      if (activeProjectIdx < currentRegion.items.length - 1) {
+        setActiveProjectIdx(prev => prev + 1)
+      } else {
+        setActiveRegionIdx(prev => (prev + 1) % groupedProjects.length)
+        setActiveProjectIdx(0)
+      }
+    }, 5000)
     return () => clearInterval(timer)
-  }, [destacados.length])
+  }, [isAutoPlaying, isInView, activeRegionIdx, activeProjectIdx, groupedProjects])
 
   useEffect(() => {
     const observer = new IntersectionObserver(
@@ -119,111 +242,150 @@ function Proyectos() {
     return () => observer.disconnect()
   }, [])
 
-  const nextSlide = () => setCurrentIndex((prev) => (prev + 1) % destacados.length)
-  const prevSlide = () => setCurrentIndex((prev) => (prev - 1 + destacados.length) % destacados.length)
+  const handleManualRegionSelect = useCallback((idx) => {
+    setIsAutoPlaying(false)
+    setActiveRegionIdx(idx)
+    setActiveProjectIdx(0)
+  }, [])
+
+  const handleNextProject = useCallback(() => {
+    setIsAutoPlaying(false)
+    const currentRegion = groupedProjects[activeRegionIdx]
+    if (activeProjectIdx < currentRegion.items.length - 1) {
+      setActiveProjectIdx(prev => prev + 1)
+    } else {
+      setActiveRegionIdx(prev => (prev + 1) % groupedProjects.length)
+      setActiveProjectIdx(0)
+    }
+  }, [activeRegionIdx, activeProjectIdx, groupedProjects])
+
+  const handlePrevProject = useCallback(() => {
+    setIsAutoPlaying(false)
+    if (activeProjectIdx > 0) {
+      setActiveProjectIdx(prev => prev - 1)
+    } else {
+      const prevRegionIdx = (activeRegionIdx - 1 + groupedProjects.length) % groupedProjects.length
+      setActiveRegionIdx(prevRegionIdx)
+      setActiveProjectIdx(groupedProjects[prevRegionIdx].items.length - 1)
+    }
+  }, [activeRegionIdx, activeProjectIdx, groupedProjects])
+
+  const handleMapSelect = useCallback((globalIdx) => {
+    setIsAutoPlaying(false)
+    // Encontrar región y sub-índice basado en globalIdx
+    let count = 0
+    for (let i = 0; i < groupedProjects.length; i++) {
+      if (globalIdx < count + groupedProjects[i].items.length) {
+        setActiveRegionIdx(i)
+        setActiveProjectIdx(globalIdx - count)
+        break
+      }
+      count += groupedProjects[i].items.length
+    }
+  }, [groupedProjects])
+
+  const currentProject = groupedProjects[activeRegionIdx].items[activeProjectIdx]
 
   return (
-    <section id="proyectos" ref={sectionRef} className="py-16 bg-white overflow-hidden">
+    <section id="proyectos" ref={sectionRef} className="py-24 bg-white overflow-hidden">
       <div className="max-w-7xl mx-auto px-6">
         
-        <div className="flex flex-col md:flex-row justify-between items-end mb-12 gap-6">
-          <div>
+        {/* BLOQUE SUPERIOR: CONTENIDO + MAPA */}
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center mb-16 px-2">
+          <div className="text-left order-2 lg:order-1">
             <motion.span
-              initial={{ opacity: 0, y: 10 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true, margin: "-10%" }}
-              className="inline-block text-[var(--color-primary)] font-black tracking-[0.25em] uppercase text-[10px] sm:text-xs mb-4 py-1.5 px-4 bg-[var(--color-primary)]/5 rounded-full border border-[var(--color-primary)]/10"
+              initial={{ opacity: 0, x: -15 }}
+              whileInView={{ opacity: 1, x: 0 }}
+              viewport={{ once: true }}
+              className="inline-block text-[var(--color-primary)] font-black tracking-[0.25em] uppercase text-[10px] mb-6 py-1.5 px-4 bg-[var(--color-primary)]/5 rounded-full border border-[var(--color-primary)]/10"
             >
-              Casos Reales
+              Nuestra Huella
             </motion.span>
             <motion.h2
               initial={{ opacity: 0, y: 15 }}
               whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true, margin: "-10%" }}
+              viewport={{ once: true }}
               transition={{ delay: 0.1 }}
-              className="text-3xl sm:text-4xl md:text-5xl font-black text-[var(--color-primary-dark)] mb-3 tracking-tight"
+              className="text-4xl md:text-6xl font-black text-[var(--color-primary-dark)] tracking-tighter mb-6 leading-[0.9]"
             >
-              Proyectos{" "}
-              <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#0ea5e1] to-[#1ed760]">Destacados</span>
+              Proyectos <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#0ea5e1] to-[#1ed760]">Destacados</span>
             </motion.h2>
-            <p className="text-[var(--color-text-muted)] text-base md:text-lg font-medium leading-relaxed">
-              Descubre cómo transformamos la energía en soluciones reales para nuestros clientes.
+            <p className="text-[var(--color-text-muted)] text-base md:text-xl font-medium leading-relaxed mb-8 max-w-xl">
+              Descubre cómo transformamos la energía en soluciones reales para nuestros clientes en todo el Perú.
             </p>
+            <Link 
+              to="/proyectos" 
+              className="shrink-0 text-[var(--color-primary-dark)] hover:text-white border-2 border-[var(--color-primary-dark)] hover:bg-[var(--color-primary-dark)] font-bold text-sm px-7 py-3 rounded-full flex items-center gap-2 transition-all w-fit shadow-lg shadow-black/5"
+            >
+              Ver todos los proyectos
+              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-arrow-right" aria-hidden="true">
+                <path d="M5 12h14"></path>
+                <path d="m12 5 7 7-7 7"></path>
+              </svg>
+            </Link>
           </div>
 
-          <Link 
-            to="/proyectos" 
-            className="shrink-0 text-[var(--color-primary-dark)] hover:text-white border-2 border-[var(--color-primary-dark)] hover:bg-[var(--color-primary-dark)] font-bold text-sm px-5 py-2.5 rounded-full flex items-center gap-2 transition-all"
-          >
-            Ver todos los proyectos <ArrowRight size={16} />
-          </Link>
-        </div>
-
-        {/* CONTENEDOR DEL CARRUSEL */}
-        <div 
-          className="relative bg-white rounded-3xl overflow-hidden shadow-[0_8px_30px_rgb(0,0,0,0.06)] border border-[var(--color-primary)] min-h-[460px] flex flex-col md:flex-row group transition-colors duration-500"
-        >
-          {/* BOTONES DE NAVEGACIÓN */}
-          <button
-            onClick={prevSlide}
-            className="absolute left-3 top-1/2 -translate-y-1/2 z-30 w-10 h-10 flex items-center justify-center rounded-full bg-black/30 hover:bg-[var(--color-primary)] text-white backdrop-blur-md transition-all duration-300 border border-white/20 shadow-md"
-            aria-label="Proyecto anterior"
-          >
-            <ChevronLeft size={18} />
-          </button>
-
-          <button
-            onClick={nextSlide}
-            className="absolute right-3 top-1/2 -translate-y-1/2 z-30 w-10 h-10 flex items-center justify-center rounded-full bg-black/30 hover:bg-[var(--color-primary)] text-white backdrop-blur-md transition-all duration-300 border border-white/20 shadow-md"
-            aria-label="Proyecto siguiente"
-          >
-            <ChevronRight size={18} />
-          </button>
-          
-          {/* LADO IZQUIERDO: Info */}
-          <div className="w-full md:w-[40%] p-8 md:p-12 flex flex-col justify-center z-10 bg-white relative min-h-[400px]">
-            <AnimatePresence mode="wait">
-              <motion.div
-                key={destacados[currentIndex].id}
-                initial={{ opacity: 0, x: -20 }}
-                animate={{ opacity: 1, x: 0 }}
-                exit={{ opacity: 0, x: 20 }}
-                transition={{ duration: 0.4 }}
-              >
-                <ProjectInfo p={destacados[currentIndex]} />
-              </motion.div>
-            </AnimatePresence>
-          </div>
-
-          {/* LADO DERECHO: MULTIMEDIA (Estable) */}
-          <div className="w-full md:w-[60%] h-[350px] md:h-auto relative bg-gray-900 overflow-hidden">
-            {destacados.map((p, index) => (
-              <ProjectVideo 
-                key={p.id} 
-                src={p.video} 
-                active={index === currentIndex} 
-                inView={isInView}
-              />
-            ))}
-            {/* Overlay Gradient for integration */}
-            <div className="absolute inset-0 z-20 pointer-events-none bg-gradient-to-r from-white/10 to-transparent md:from-white/20" />
-          </div>
-        </div>
-
-        {/* INDICADORES */}
-        <div className="flex justify-center items-center gap-2 mt-8">
-          {destacados.map((_, i) => (
-            <button
-              key={i}
-              onClick={() => setCurrentIndex(i)}
-              className={`h-2 rounded-full transition-all duration-300 ${
-                i === currentIndex 
-                  ? "w-8 bg-[var(--color-primary)]" 
-                  : "w-2 bg-gray-300 hover:bg-gray-400"
-              }`}
-              aria-label={`Ir al slide ${i + 1}`}
+          <div className="flex justify-center order-1 lg:order-2">
+            <PeruMap 
+              projects={visibleProjects} 
+              currentIndex={globalIndex} 
+              onSelectProject={handleMapSelect} 
             />
-          ))}
+          </div>
+        </div>
+
+        {/* BLOQUE MEDIO: TAGS DE DEPARTAMENTOS */}
+        <div className="mb-12">
+          <div className="flex items-center gap-6 mb-6">
+            <h4 className="shrink-0 text-[10px] font-black uppercase tracking-[0.2em] text-gray-400">Departamentos:</h4>
+            <div className="flex gap-2 overflow-x-auto pb-4 scrollbar-custom flex-1 items-center">
+              {groupedProjects.map((group, idx) => {
+                const isActive = idx === activeRegionIdx
+                return (
+                  <button
+                    key={group.region}
+                    onClick={() => handleManualRegionSelect(idx)}
+                    className={`shrink-0 px-6 py-2.5 rounded-full text-xs font-bold transition-all duration-500 border relative ${
+                      isActive 
+                        ? "bg-[var(--color-primary-dark)] text-white border-[var(--color-primary-dark)] shadow-xl shadow-black/10 scale-105" 
+                        : "bg-white text-gray-400 border-gray-100 hover:border-[var(--color-primary)]/30 hover:bg-slate-50 hover:text-gray-600"
+                    }`}
+                  >
+                    {isActive && (
+                      <motion.span 
+                        layoutId="active-region-pulse"
+                        className="absolute inset-0 rounded-full bg-[var(--color-primary)]/20"
+                        animate={{ scale: [1, 1.2, 1], opacity: [0.5, 0, 0.5] }}
+                        transition={{ repeat: Infinity, duration: 2 }}
+                      />
+                    )}
+                    <span className="relative z-10">{group.region}</span>
+                  </button>
+                )
+              })}
+            </div>
+          </div>
+        </div>
+
+        {/* DETALLE DEL PROYECTO */}
+        <div className="relative">
+          <AnimatePresence mode="wait">
+            <motion.div
+              key={currentProject.id}
+              initial={{ opacity: 0, x: 20 }}
+              animate={{ opacity: 1, x: 0 }}
+              exit={{ opacity: 0, x: -20 }}
+              transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
+            >
+              <ProjectInfo 
+                p={currentProject} 
+                isInView={isInView} 
+                onPrev={handlePrevProject}
+                onNext={handleNextProject}
+                hasMultiple={groupedProjects[activeRegionIdx].items.length > 1}
+              />
+            </motion.div>
+          </AnimatePresence>
         </div>
 
       </div>

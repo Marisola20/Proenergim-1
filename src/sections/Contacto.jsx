@@ -27,9 +27,9 @@ function Contacto({ mostrarBloqueProveedores = false }) {
         {!mostrarBloqueProveedores && (
           <div className="text-center mb-12">
             <motion.span
-              initial={{ opacity: 0, y: 10 }}
+              initial={{ opacity: 0, y: 15 }}
               whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
+              viewport={{ once: true, margin: "-10% 0px" }}
               className="inline-block text-[var(--color-primary)] font-black tracking-[0.25em] uppercase text-[10px] sm:text-xs mb-4 py-1.5 px-4 bg-[var(--color-primary)]/5 rounded-full border border-[var(--color-primary)]/10"
             >
               Contáctanos
@@ -37,7 +37,7 @@ function Contacto({ mostrarBloqueProveedores = false }) {
             <motion.h2
               initial={{ opacity: 0, y: 15 }}
               whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
+              viewport={{ once: true, margin: "-10% 0px" }}
               transition={{ delay: 0.1 }}
               className="text-3xl sm:text-4xl md:text-5xl font-black text-[var(--color-primary-dark)] mb-5 tracking-tight"
             >
@@ -56,9 +56,10 @@ function Contacto({ mostrarBloqueProveedores = false }) {
           <motion.div
             initial={{ opacity: 0, x: -20 }}
             whileInView={{ opacity: 1, x: 0 }}
-            viewport={{ once: true }}
+            viewport={{ once: true, margin: "-10% 0px" }}
             transition={{ duration: 0.5 }}
             className="flex flex-col"
+            style={{ willChange: "transform, opacity" }}
           >
             <div className="bg-white rounded-[2rem] p-8 shadow-sm border border-[var(--color-primary)]/40">
               <h3 className="font-black text-[var(--color-primary-dark)] text-lg mb-6">Solicitar información</h3>
@@ -98,9 +99,10 @@ function Contacto({ mostrarBloqueProveedores = false }) {
           <motion.div
             initial={{ opacity: 0, x: 20 }}
             whileInView={{ opacity: 1, x: 0 }}
-            viewport={{ once: true }}
+            viewport={{ once: true, margin: "-10% 0px" }}
             transition={{ duration: 0.5 }}
             className="flex flex-col gap-6"
+            style={{ willChange: "transform, opacity" }}
           >
             {/* Datos de contacto y Redes */}
             <div className="rounded-[2rem] p-8 text-white shadow-sm flex flex-col h-full" style={{ backgroundColor: "var(--color-primary-dark)" }}>
@@ -231,8 +233,9 @@ function Contacto({ mostrarBloqueProveedores = false }) {
                   </button>
                 </div>
               ) : (
-                <AnimatePresence>
+                <AnimatePresence initial={false}>
                   <motion.div
+                    key="form-proveedor"
                     initial={{ opacity: 0, height: 0 }}
                     animate={{ opacity: 1, height: "auto" }}
                     exit={{ opacity: 0, height: 0 }}

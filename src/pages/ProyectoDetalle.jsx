@@ -1,6 +1,6 @@
-import { useEffect } from "react"
+import { useState, useEffect } from "react"
 import { useParams, Link, useNavigate } from "react-router-dom"
-import { motion } from "framer-motion"
+import { motion, AnimatePresence } from "framer-motion"
 import { MapPin, User, ArrowLeft, Calendar, ExternalLink } from "lucide-react"
 import { proyectos } from "../data/proyectos"
 
@@ -24,6 +24,7 @@ function WhatsappIcon({ size = 18 }) {
 function ProyectoDetalle() {
   const { id } = useParams()
   const navigate = useNavigate()
+  const [selectedImg, setSelectedImg] = useState(null)
 
   useEffect(() => { window.scrollTo(0, 0) }, [id])
 
@@ -96,6 +97,60 @@ function ProyectoDetalle() {
             <p className="text-[var(--color-text-muted)] text-base md:text-lg leading-relaxed mb-8 font-medium">
               {proyecto.descripcion}
             </p>
+
+            {/* Galería de Imágenes */}
+            {proyecto.images && proyecto.images.length > 0 && (
+              <div className="mb-10">
+                <div className="flex items-center gap-3 mb-4">
+                  <h3 className="text-[11px] font-black uppercase tracking-[0.2em] text-gray-400">Galería del Proyecto</h3>
+                  <div className="h-px flex-1 bg-slate-100" />
+                </div>
+                <div className="grid grid-cols-3 sm:grid-cols-4 gap-3">
+                  {proyecto.images.map((img, i) => (
+                    <motion.div
+                      key={i}
+                      whileHover={{ scale: 1.05 }}
+                      whileTap={{ scale: 0.95 }}
+                      className="aspect-square rounded-2xl overflow-hidden cursor-pointer border-2 border-transparent hover:border-[var(--color-primary)] shadow-sm transition-all"
+                      onClick={() => setSelectedImg(img)}
+                    >
+                      <img src={img} alt={`${proyecto.nombre} ${i}`} className="w-full h-full object-cover" loading="lazy" />
+                    </motion.div>
+                  ))}
+                </div>
+              </div>
+            )}
+
+            {/* Lightbox Modal */}
+            <AnimatePresence>
+              {selectedImg && (
+                <motion.div
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  exit={{ opacity: 0 }}
+                  onClick={() => setSelectedImg(null)}
+                  className="fixed inset-0 z-[100] bg-black/90 backdrop-blur-sm flex items-center justify-center p-4 cursor-zoom-out"
+                >
+                  <motion.div
+                    initial={{ scale: 0.9, opacity: 0 }}
+                    animate={{ scale: 1, opacity: 1 }}
+                    exit={{ scale: 0.9, opacity: 0 }}
+                    className="max-w-5xl w-full max-h-[85vh] rounded-3xl overflow-hidden shadow-2xl relative cursor-default"
+                    onClick={(e) => e.stopPropagation()}
+                  >
+                    <img src={selectedImg} alt="Lightbox" className="w-full h-full object-contain bg-black/20" />
+                    <button 
+                      onClick={() => setSelectedImg(null)}
+                      className="absolute top-4 right-4 w-10 h-10 rounded-full bg-black/50 text-white flex items-center justify-center hover:bg-black/70 transition-colors"
+                    >
+                      <ArrowLeft size={20} className="rotate-90 md:rotate-0" /> {/* Close icon substitute or just use X */}
+                      <span className="sr-only">Cerrar</span>
+                      <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-x"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg>
+                    </button>
+                  </motion.div>
+                </motion.div>
+              )}
+            </AnimatePresence>
 
             {/* Botón WhatsApp */}
             <a

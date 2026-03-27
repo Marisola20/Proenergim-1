@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react"
+import { useEffect, useState, useRef } from "react"
 import { motion } from "framer-motion"
 import { MapPin, Briefcase, Award, Package, MessageCircle } from "lucide-react"
 
@@ -34,25 +34,55 @@ function Hero() {
   const proyectos = useCountUp(200, 1300)
   const anos = useCountUp(15, 1500)
   const sedes = useCountUp(4, 1700)
+  const videoRef = useRef(null)
+
+  useEffect(() => {
+    const handleVisibilityChange = () => {
+      if (document.hidden) {
+        videoRef.current?.pause()
+      } else {
+        // Only play if in viewport (this logic is handled by the observer below)
+      }
+    }
+
+    document.addEventListener("visibilitychange", handleVisibilityChange)
+
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (videoRef.current) {
+          if (entry.isIntersecting && !document.hidden) {
+            videoRef.current.play().catch(() => {})
+          } else {
+            videoRef.current.pause()
+          }
+        }
+      },
+      { threshold: 0.1 }
+    )
+
+    if (videoRef.current) observer.observe(videoRef.current)
+
+    return () => {
+      document.removeEventListener("visibilitychange", handleVisibilityChange)
+      observer.disconnect()
+    }
+  }, [])
 
   return (
     <section id="inicio" className="relative min-h-[100dvh] flex items-center overflow-hidden pt-24 md:pt-28">
       <video
+        ref={videoRef}
         autoPlay
         muted
         loop
         playsInline
         className="absolute inset-0 w-full h-full object-cover z-0"
         preload="metadata"
-        fetchpriority="high"
-        style={{ willChange: "transform" }}
+        fetchPriority="high"
+        style={{ opacity: 0.95 }}
       >
-        <source src="/videos/presentacion.mp4" type="video/mp4" />
+        <source src="/videos/video-hero.mp4" type="video/mp4" />
       </video>
-
-      <div className="absolute inset-0 bg-black/20 z-10" />
-      <div className="absolute inset-0 z-10 bg-gradient-to-t from-[var(--color-accent-light)]/50 via-transparent to-transparent pointer-events-none" aria-hidden />
-      <div className="absolute inset-0 z-10 bg-gradient-to-b from-black/50 via-transparent to-transparent pointer-events-none" aria-hidden />
 
       <div className="relative z-20 w-full max-w-7xl mx-auto px-4 sm:px-6 flex flex-col items-center justify-center text-center">
         <div className="max-w-4xl">
@@ -62,14 +92,14 @@ function Hero() {
             transition={{ duration: 0.7 }}
             className="flex flex-col items-center"
           >
-            <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold text-white leading-tight mb-4">
+            <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold text-white text-stroke leading-tight mb-4">
               Soluciones de{" "}
               <span className="text-[var(--color-green)]">energía solar</span>
               <br />
               que transforman la comunidad y sus hogares
             </h1>
 
-            <p className="text-white/95 text-base sm:text-lg md:text-xl mb-6 max-w-xl mx-auto">
+            <p className="text-white/95 font-bold text-base sm:text-lg md:text-xl text-stroke-2 mb-6 mx-auto text-center">
               Más de 15 años desarrollando proyectos de energía renovable en todo el Perú.
             </p>
 

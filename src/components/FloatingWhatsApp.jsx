@@ -61,7 +61,7 @@ function FloatingWhatsApp() {
 
   return (
     <div className="fixed bottom-6 right-6 z-50 flex flex-col items-end">
-      <AnimatePresence>
+      <AnimatePresence initial={false}>
         {isOpen && (
           <motion.div
             initial={{ opacity: 0, y: 20, scale: 0.95, transformOrigin: "bottom right" }}
@@ -74,7 +74,13 @@ function FloatingWhatsApp() {
                <div className="relative z-10 flex items-center justify-between">
                  <div className="flex items-center gap-3">
                    <div className="w-10 h-10 bg-white rounded-full overflow-hidden flex items-center justify-center p-0.5 shadow-sm">
-                     <img src={logoMobile} alt="Logo" decoding="async" className="w-8 h-auto object-contain" />
+                     <img
+                       src={logoMobile}
+                       alt="Logo"
+                       loading="eager"
+                       decoding="async"
+                       className="w-8 h-auto object-contain"
+                     />
                    </div>
                    <div>
                      <h3 className="font-bold text-sm tracking-tight">Proenergim</h3>

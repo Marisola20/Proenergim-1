@@ -21,6 +21,7 @@ function Navbar() {
           <img
             src={logoWeb}
             alt="Proenergim"
+            loading="eager"
             decoding="async"
             className="h-14 w-auto md:h-[4.5rem] object-contain"
           />

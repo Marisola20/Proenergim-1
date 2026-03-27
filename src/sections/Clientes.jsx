@@ -18,22 +18,19 @@ const clientes = [
 
 const ClienteItem = memo(({ cliente }) => (
   <div
-    className="group bg-white rounded-2xl shadow-[0_2px_16px_-4px_rgba(0,0,0,0.08)] border border-slate-100 flex items-center justify-center hover:shadow-[0_8px_30px_-6px_rgba(0,0,0,0.15)] hover:-translate-y-1 transition-all duration-300"
-    style={{ width: "200px", height: "110px", padding: "18px 22px" }}
+    className="group bg-white rounded-2xl shadow-[0_2px_16px_-4px_rgba(0,0,0,0.08)] border border-slate-100 flex items-center justify-center hover:shadow-[0_8px_30px_-6px_rgba(0,0,0,0.15)] hover:-translate-y-1 transition-all duration-300 px-8"
+    style={{ height: "110px" }}
   >
     <img
-      loading="lazy"
-      decoding="async"
       src={cliente.logo}
       alt={cliente.nombre}
+      loading="lazy"
+      decoding="async"
+      className="h-20 w-auto object-contain group-hover:grayscale-0 grayscale-[20%] transition-all duration-300"
       style={{
-        width: "100%",
-        height: "64px",
-        objectFit: "contain",
         filter: "grayscale(20%)",
-        transition: "filter 0.3s",
+        transform: cliente.nombre === "Don Limones" ? "scale(1.2)" : "scale(1)"
       }}
-      className="group-hover:filter-none"
       onMouseEnter={e => (e.currentTarget.style.filter = "grayscale(0%)")}
       onMouseLeave={e => (e.currentTarget.style.filter = "grayscale(20%)")}
     />
@@ -49,8 +46,9 @@ function CarruselFila({ items, velocidad = 30 }) {
       <motion.div
         className="flex gap-5 w-max items-center"
         style={{ willChange: "transform" }}
-        animate={{ x: ["0%", "-50%"] }}
+        whileInView={{ x: ["0%", "-50%"] }}
         transition={{ duration: velocidad, repeat: Infinity, ease: "linear" }}
+        viewport={{ once: false }}
       >
         {duplicado.map((cliente, i) => (
           <ClienteItem key={i} cliente={cliente} />

@@ -1,4 +1,4 @@
-import { useState } from "react"
+import { useState, memo } from "react"
 import { motion, AnimatePresence } from "framer-motion"
 import { Calendar, ChevronDown } from "lucide-react"
 
@@ -47,8 +47,7 @@ const hitos = [
   },
 ]
 
-function HitoItem({ hito, index }) {
-  const [abierto, setAbierto] = useState(false)
+const HitoItem = memo(({ hito, index, isOpen, onToggle }) => {
   const esIzquierda = index % 2 === 0
 
   return (
@@ -67,15 +66,16 @@ function HitoItem({ hito, index }) {
         <motion.div
           initial={{ opacity: 0, x: esIzquierda ? -32 : 32 }}
           whileInView={{ opacity: 1, x: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.45, delay: index * 0.07 }}
+          viewport={{ once: true, margin: "-10% 0px" }}
+          transition={{ duration: 0.45, delay: index * 0.05 }}
           className={`w-[calc(50%-28px)] ${esIzquierda ? "mr-auto pr-4" : "ml-auto pl-4"}`}
+          style={{ willChange: "transform, opacity" }}
         >
           <button
             type="button"
-            onClick={() => setAbierto((v) => !v)}
+            onClick={onToggle}
             className="w-full text-left group"
-            aria-expanded={abierto}
+            aria-expanded={isOpen}
           >
             <div className="flex items-center justify-between gap-3 rounded-2xl px-5 py-4 shadow-sm border-2 border-[var(--color-primary)]/15 hover:border-[var(--color-primary)]/35 hover:shadow-md transition-all duration-200 bg-white">
               <div className="flex items-center gap-3 min-w-0">
@@ -97,13 +97,13 @@ function HitoItem({ hito, index }) {
               <ChevronDown
                 size={18}
                 className="shrink-0 text-gray-400 transition-transform duration-300"
-                style={{ transform: abierto ? "rotate(180deg)" : "rotate(0deg)" }}
+                style={{ transform: isOpen ? "rotate(180deg)" : "rotate(0deg)" }}
               />
             </div>
           </button>
 
           <AnimatePresence initial={false}>
-            {abierto && (
+            {isOpen && (
               <motion.div
                 key="panel"
                 initial={{ opacity: 0, height: 0 }}
@@ -114,17 +114,23 @@ function HitoItem({ hito, index }) {
               >
                 <div className="mt-2 rounded-2xl border-2 border-[var(--color-primary)]/20 bg-white shadow-sm overflow-hidden">
                   <div
-                    className="w-full h-36 flex items-center justify-center text-white/70 text-sm font-medium select-none"
+                    className="w-full h-full flex items-center justify-center text-white/70 text-sm font-medium select-none bg-slate-50"
                     style={{
                       background: hito.imagen
                         ? undefined
-                        : `linear-gradient(135deg, ${hito.color}cc, ${hito.color}66)`,
+                        : `linear-gradient(135deg, ${hito.color}cc, ${hito.color}11)`,
                     }}
                   >
                     {hito.imagen ? (
-                      <img src={hito.imagen} alt={hito.titulo} loading="lazy" decoding="async" className="w-full h-full object-cover" />
+                      <img
+                        src={hito.imagen}
+                        alt={hito.titulo}
+                        loading="lazy"
+                        decoding="async"
+                        className="w-full h-full object-contain"
+                      />
                     ) : (
-                      <span className="opacity-80">Aquí se agregarán las imágenes</span>
+                      <span className="opacity-80 font-medium">Próximamente</span>
                     )}
                   </div>
                   <div className="px-4 py-3">
@@ -151,15 +157,16 @@ function HitoItem({ hito, index }) {
         <motion.div
           initial={{ opacity: 0, x: -20 }}
           whileInView={{ opacity: 1, x: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.4, delay: index * 0.06 }}
+          viewport={{ once: true, margin: "-10% 0px" }}
+          transition={{ duration: 0.4, delay: index * 0.05 }}
           className="flex-1 min-w-0 pb-2"
+          style={{ willChange: "transform, opacity" }}
         >
           <button
             type="button"
-            onClick={() => setAbierto((v) => !v)}
+            onClick={onToggle}
             className="w-full text-left group"
-            aria-expanded={abierto}
+            aria-expanded={isOpen}
           >
             <div className="flex items-center justify-between gap-3 rounded-2xl px-4 py-3.5 shadow-sm border-2 border-[var(--color-primary)]/15 hover:border-[var(--color-primary)]/35 hover:shadow-md transition-all duration-200 bg-white">
               <div className="flex items-center gap-3 min-w-0">
@@ -181,13 +188,13 @@ function HitoItem({ hito, index }) {
               <ChevronDown
                 size={18}
                 className="shrink-0 text-gray-400 transition-transform duration-300"
-                style={{ transform: abierto ? "rotate(180deg)" : "rotate(0deg)" }}
+                style={{ transform: isOpen ? "rotate(180deg)" : "rotate(0deg)" }}
               />
             </div>
           </button>
 
           <AnimatePresence initial={false}>
-            {abierto && (
+            {isOpen && (
               <motion.div
                 key="panel-mobile"
                 initial={{ opacity: 0, height: 0 }}
@@ -198,17 +205,23 @@ function HitoItem({ hito, index }) {
               >
                 <div className="mt-2 rounded-2xl border-2 border-[var(--color-primary)]/20 bg-white shadow-sm overflow-hidden">
                   <div
-                    className="w-full h-32 flex items-center justify-center text-white/70 text-sm font-medium select-none"
+                    className="w-full h-48 flex items-center justify-center text-white/70 text-sm font-medium select-none bg-slate-50"
                     style={{
                       background: hito.imagen
                         ? undefined
-                        : `linear-gradient(135deg, ${hito.color}cc, ${hito.color}66)`,
+                        : `linear-gradient(135deg, ${hito.color}cc, ${hito.color}11)`,
                     }}
                   >
                     {hito.imagen ? (
-                      <img src={hito.imagen} alt={hito.titulo} loading="lazy" decoding="async" className="w-full h-full object-cover" />
+                      <img
+                        src={hito.imagen}
+                        alt={hito.titulo}
+                        loading="lazy"
+                        decoding="async"
+                        className="w-full h-full object-contain"
+                      />
                     ) : (
-                      <span className="opacity-80">Aquí se agregarán las imágenes</span>
+                      <span className="opacity-80 font-medium">Próximamente</span>
                     )}
                   </div>
                   <div className="px-4 py-3">
@@ -222,9 +235,17 @@ function HitoItem({ hito, index }) {
       </div>
     </>
   )
-}
+})
+
+HitoItem.displayName = "HitoItem"
 
 function Trayectoria() {
+  const [abiertoId, setAbiertoId] = useState(null)
+
+  const toggleItem = (id) => {
+    setAbiertoId((prev) => (prev === id ? null : id))
+  }
+
   return (
     <section id="trayectoria" className="py-16 sm:py-20 bg-white">
       <div className="max-w-4xl mx-auto px-4 sm:px-6">
@@ -264,7 +285,13 @@ function Trayectoria() {
 
           <div className="flex flex-col gap-6">
             {hitos.map((hito, i) => (
-              <HitoItem key={hito.año} hito={hito} index={i} />
+              <HitoItem
+                key={hito.año}
+                hito={hito}
+                index={i}
+                isOpen={abiertoId === hito.año}
+                onToggle={() => toggleItem(hito.año)}
+              />
             ))}
           </div>
         </div>
