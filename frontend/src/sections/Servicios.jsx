@@ -92,7 +92,7 @@ function Servicios() {
   const goNext = useCallback(() => setStartIndex((i) => Math.min(maxStart, i + 1)), [maxStart])
 
   return (
-    <section id="servicios" className="relative py-20 sm:py-28 bg-[var(--color-bg-soft)]/5 border-y border-gray-100/50 overflow-hidden">
+    <section id="servicios" className="relative section-py bg-[var(--color-bg-soft)]/5 border-y border-gray-100/50 overflow-hidden">
       {/* Decorative Elements */}
       <div className="absolute top-0 right-0 w-64 h-64 bg-[var(--color-accent)] opacity-[0.02] rounded-full -translate-y-1/2 translate-x-1/2 blur-3xl pointer-events-none" />
       <div className="absolute bottom-0 left-0 w-80 h-80 bg-[var(--color-primary)] opacity-[0.03] rounded-full translate-y-1/3 -translate-x-1/4 blur-3xl pointer-events-none" />

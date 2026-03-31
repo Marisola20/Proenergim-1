@@ -7,6 +7,7 @@ const links = [
   { label: "Inicio", href: "/" },
   { label: "Nosotros", href: "/nosotros" },
   { label: "Soluciones", href: "/soluciones" },
+  { label: "Productos", href: "/productos" },
   { label: "Proyectos", href: "/proyectos" },
   { label: "Contacto", href: "/contacto" },
 ]
@@ -16,18 +17,18 @@ function Navbar() {
 
   return (
     <nav className="fixed top-0 w-full z-50 bg-white border-b border-[var(--color-primary)] shadow-sm">
-      <div className="max-w-7xl mx-auto px-6 py-2.5 flex items-center justify-between">
+      <div className="max-w-7xl mx-auto px-6 py-3 flex items-center justify-between">
         <Link to="/" className="flex items-center gap-2">
           <img
             src={logoWeb}
             alt="Proenergim"
             loading="eager"
             decoding="async"
-            className="h-14 w-auto md:h-[4.5rem] object-contain"
+            className="h-16 w-auto md:h-[3.8rem] object-contain"
           />
         </Link>
 
-        <ul className="hidden md:flex gap-6">
+        <ul className="hidden md:flex gap-7">
           {links.map((link) => (
             <li key={link.label}>
               {link.href.startsWith("/#") ? (
@@ -40,7 +41,7 @@ function Navbar() {
               ) : (
                 <Link
                   to={link.href}
-                  className="text-[var(--color-primary-dark)]/90 hover:text-[var(--color-primary-dark)] text-base font-medium transition-all duration-200 relative after:absolute after:left-0 after:bottom-[-2px] after:h-0.5 after:w-0 after:bg-[var(--color-accent)] after:transition-all hover:after:w-full"
+                  className="text-[var(--color-primary-dark)]/90 hover:text-[var(--color-primary-dark)] text-base font-semibold transition-all duration-200 relative after:absolute after:left-0 after:bottom-[-2px] after:h-0.5 after:w-0 after:bg-[var(--color-accent)] after:transition-all hover:after:w-full"
                 >
                   {link.label}
                 </Link>
@@ -53,7 +54,7 @@ function Navbar() {
           to="/contacto"
           className="hidden md:inline-flex group relative items-center justify-center bg-gradient-to-r from-[#0ea5e1] to-[#1ed760] p-[2px] rounded-full transition-all duration-300 shadow-md hover:shadow-lg hover:scale-[1.02]"
         >
-          <span className="flex items-center justify-center w-full h-full bg-transparent group-hover:bg-white rounded-full px-[18px] py-2 transition-all duration-300 border-none">
+          <span className="flex items-center justify-center w-full h-full bg-transparent group-hover:bg-white rounded-full px-4 py-1.5 transition-all duration-300 border-none">
             <span className="text-white group-hover:text-transparent group-hover:bg-clip-text group-hover:bg-gradient-to-r group-hover:from-[#0ea5e1] group-hover:to-[#1ed760] font-extrabold text-base">
               Solicitar información
             </span>

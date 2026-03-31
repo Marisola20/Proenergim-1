@@ -1,13 +1,13 @@
 import { useState } from "react"
 import { motion, AnimatePresence } from "framer-motion"
-import { MapPin, Phone, Mail, User, Facebook, Instagram, Linkedin, Twitter, Youtube, Navigation } from "lucide-react"
+import { Phone, Mail, User, Facebook, Instagram, Linkedin, Twitter, Youtube } from "lucide-react"
 
 const WHATSAPP = "51936954890"
 const sedes = [
-  { nombre: "Zonal Lima", direccion: "Av. Los Chancas N°112, Santa Anita" },
-  { nombre: "Zonal La Libertad", direccion: "Mz A3 Lote 18, Urb. Sol de Trujillo" },
-  { nombre: "Zonal Piura - Tumbes", direccion: 'Mz "H" Lote "19", Prolongación Cuzco, Seis de Setiembre' },
-  { nombre: "Zonal Selva Sur", direccion: "Av. Jaime Troncoso con Jr. Marco Ruiz, a 1 cdra de SENATI" },
+  { nombre: "Lima", ciudad: "Lima", imagen: "/images/sedes/Lima.webp" },
+  { nombre: "La Libertad", ciudad: "Trujillo", imagen: "/images/sedes/Trujillo.webp" },
+  { nombre: "Piura", ciudad: "Tumbes ", imagen: "/images/sedes/Tumbes.webp" },
+  { nombre: "Selva Sur", ciudad: "Madre de Dios", imagen: "/images/sedes/Madre-de-Dios.webp" },
 ]
 
 const redes = [
@@ -18,11 +18,57 @@ const redes = [
   { icon: Linkedin, href: "https://linkedin.com", label: "LinkedIn" },
 ]
 
+function FlipSede({ sede }) {
+  const [flipped, setFlipped] = useState(false)
+  return (
+    <div
+      className="[perspective:1000px] h-44 cursor-pointer rounded-2xl"
+      onMouseEnter={() => setFlipped(true)}
+      onMouseLeave={() => setFlipped(false)}
+      onClick={() => setFlipped((f) => !f)}
+    >
+      <div
+        className={`relative w-full h-full [transform-style:preserve-3d] transition-transform duration-[600ms] ease-[cubic-bezier(0.4,0,0.2,1)] rounded-2xl ${
+          flipped ? "[transform:rotateY(180deg)]" : ""
+        }`}
+      >
+        {/* FRENTE */}
+        <div className="absolute inset-0 rounded-2xl [backface-visibility:hidden] overflow-hidden flex flex-col items-center justify-center gap-2 p-5 bg-[var(--color-primary-dark)] border border-[#0ea5e9]/30 shadow-[0_4px_20px_-4px_rgba(3,105,161,0.3)]">
+          <div className="absolute -top-8 -right-8 w-24 h-24 bg-green-500/30 rounded-full pointer-events-none" />
+          <div className="w-11 h-11 rounded-xl bg-green-500/15 border border-white/20 flex items-center justify-center text-white">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="w-6 h-6">
+              <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7z"/>
+              <circle cx="12" cy="9" r="2.5"/>
+            </svg>
+          </div>
+          <p className="text-white font-black text-sm text-center leading-tight tracking-tight">{sede.nombre}</p>
+          <span className="text-white/60 text-[10px] font-bold uppercase tracking-[0.1em]">Ver ciudad →</span>
+        </div>
+
+        {/* REVERSO */}
+        <div className="absolute inset-0 rounded-2xl [backface-visibility:hidden] overflow-hidden [transform:rotateY(180deg)]">
+          <img
+            src={sede.imagen}
+            alt={sede.ciudad}
+            className="absolute inset-0 w-full h-full object-cover"
+            loading="lazy"
+            decoding="async"
+          />
+          <div className="absolute inset-0 bg-gradient-to-t from-[#031e32]/85 via-[#031e32]/20 to-transparent flex flex-col justify-end p-4">
+            <p className="text-white font-black text-lg leading-tight tracking-tight">{sede.ciudad}</p>
+            <p className="text-white/60 text-[10px] font-bold uppercase tracking-[0.1em] mt-0.5">{sede.nombre}</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  )
+}
+
 function Contacto({ mostrarBloqueProveedores = false }) {
   const [mostrarProveedor, setMostrarProveedor] = useState(false)
 
   return (
-    <section id="contacto" className="py-16 bg-[var(--color-bg-soft)]">
+    <section id="contacto" className="section-py bg-[var(--color-bg-soft)]">
       <div className="max-w-7xl mx-auto px-6">
         {!mostrarBloqueProveedores && (
           <div className="text-center mb-12">
@@ -167,25 +213,13 @@ function Contacto({ mostrarBloqueProveedores = false }) {
               Dónde estamos
             </span>
             <h3 className="text-[var(--color-primary-dark)] font-black text-2xl tracking-tight">Nuestras sedes</h3>
+            <p className="text-[var(--color-text-muted)] text-base md:text-lg max-w-2xl mx-auto font-medium leading-relaxed">
+              Contamos con sedes estratégicamente ubicadas para atenderte mejor.
+            </p>
           </div>
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+          <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
             {sedes.map((sede, i) => (
-              <a
-                key={i}
-                href={`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(sede.direccion + ', Perú')}`}
-                target="_blank"
-                rel="noreferrer noopener"
-                className="flex flex-col items-center text-center gap-2 p-5 border border-slate-200 rounded-2xl bg-white hover:border-[#10b981]/40 hover:shadow-[0_4px_16px_-4px_rgba(16,185,129,0.15)] transition-all duration-300 group cursor-pointer"
-              >
-                <div className="w-10 h-10 rounded-xl bg-[#10b981]/10 group-hover:bg-[#10b981]/20 flex items-center justify-center mb-1 transition-colors">
-                  <Navigation size={18} className="text-[#10b981]" />
-                </div>
-                <p className="text-[var(--color-primary-dark)] font-black text-sm leading-tight">{sede.nombre}</p>
-                <p className="text-[var(--color-text-muted)] text-xs leading-relaxed">{sede.direccion}</p>
-                <span className="text-[#10b981] text-[10px] font-bold uppercase tracking-wider opacity-0 group-hover:opacity-100 transition-opacity mt-1">
-                  Cómo llegar
-                </span>
-              </a>
+              <FlipSede key={i} sede={sede} />
             ))}
           </div>
         </motion.div>

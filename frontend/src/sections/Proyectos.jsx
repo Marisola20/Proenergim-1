@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef, memo, useCallback, useMemo } from "react"
 import { motion, AnimatePresence } from "framer-motion"
-import { MapPin, ArrowRight, User, ChevronLeft, ChevronRight } from "lucide-react"
+import { MapPin, ArrowRight, ChevronLeft, ChevronRight } from "lucide-react"
 import { Link } from "react-router-dom"
 import { proyectos, REGION_COORDS } from "../data/proyectos"
 import PeruMap from "../components/PeruMap"
@@ -60,7 +60,7 @@ ProjectVideo.displayName = "ProjectVideo"
 
 const ProjectInfo = memo(({ p, isInView, onPrev, onNext, hasMultiple }) => {
   return (
-    <div className="flex flex-col lg:flex-row gap-10 items-stretch bg-white rounded-[2.5rem] p-6 md:p-12 border border-[var(--color-primary)]/5 shadow-[0_25px_60px_-15px_rgba(0,0,0,0.06)] relative overflow-hidden group">
+    <div className="flex flex-col lg:flex-row gap-6 items-stretch bg-white rounded-[2rem] p-5 md:p-8 border-2 border-[var(--color-primary)]/40 shadow-[0_20px_50px_-12px_rgba(0,0,0,0.05)] relative overflow-hidden group">
       {/* Decorative background element */}
       <div className="absolute top-0 right-0 w-40 h-40 bg-gradient-to-br from-[var(--color-primary)]/10 to-transparent rounded-bl-full -mr-12 -mt-12 transition-transform group-hover:scale-110 duration-1000" />
       
@@ -104,31 +104,22 @@ const ProjectInfo = memo(({ p, isInView, onPrev, onNext, hasMultiple }) => {
           <div className="h-px flex-1 bg-gradient-to-r from-gray-100 to-transparent" />
         </div>
         
-        <h3 className="text-2xl md:text-3xl font-black text-[var(--color-primary-dark)] leading-tight mb-3">
+        <h3 className="text-lg md:text-xl font-black text-[var(--color-primary-dark)] leading-tight mb-2">
           {p.nombre}
         </h3>
         
-        <p className="text-gray-500 text-sm md:text-base mb-6 leading-relaxed font-medium">
+        <p className="text-gray-500 text-xs md:text-sm mb-5 leading-relaxed font-medium">
           {p.descripcion}
         </p>
         
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-8 w-full">
-          <div className="flex items-center gap-3 p-3 rounded-xl bg-slate-50 border border-slate-100 transition-colors hover:bg-white hover:border-[var(--color-primary)]/20 shadow-sm">
-            <div className="w-8 h-8 rounded-full bg-[var(--color-primary)]/10 flex items-center justify-center">
-              <MapPin size={16} className="text-[var(--color-primary)]" />
+        <div className="grid grid-cols-1 gap-3 mb-6 w-full">
+          <div className="flex items-center gap-2.5 p-2.5 rounded-xl bg-slate-50 border border-slate-100 transition-colors hover:bg-white hover:border-[var(--color-primary)]/20 shadow-sm">
+            <div className="w-7 h-7 rounded-full bg-[var(--color-primary)]/10 flex items-center justify-center">
+              <MapPin size={14} className="text-[var(--color-primary)]" />
             </div>
             <div>
-              <span className="block text-[10px] text-gray-400 font-bold uppercase tracking-tighter">Ubicación</span>
-              <span className="text-sm font-bold text-[var(--color-primary-dark)]">{p.ubicacion}</span>
-            </div>
-          </div>
-          <div className="flex items-center gap-3 p-3 rounded-xl bg-slate-50 border border-slate-100 transition-colors hover:bg-white hover:border-[var(--color-primary)]/20 shadow-sm">
-            <div className="w-8 h-8 rounded-full bg-[var(--color-primary)]/10 flex items-center justify-center">
-              <User size={16} className="text-[var(--color-primary)]" />
-            </div>
-            <div>
-              <span className="block text-[10px] text-gray-400 font-bold uppercase tracking-tighter">Cliente</span>
-              <span className="text-sm font-bold text-[var(--color-primary-dark)]">{p.cliente}</span>
+              <span className="block text-[9px] text-gray-400 font-bold uppercase tracking-tighter">Ubicación</span>
+              <span className="text-xs font-bold text-[var(--color-primary-dark)]">{p.ubicacion}</span>
             </div>
           </div>
         </div>
@@ -158,7 +149,7 @@ const ProjectInfo = memo(({ p, isInView, onPrev, onNext, hasMultiple }) => {
           </div>
         )}
 
-        <div className="flex flex-wrap gap-4 mt-auto">
+        <div className="flex flex-wrap gap-3 mt-auto">
           <Link
             to={`/proyecto/${p.id}`}
             className="shrink-0 text-[var(--color-primary-dark)] hover:text-white border-2 border-[var(--color-primary-dark)] hover:bg-[var(--color-primary-dark)] font-bold text-sm px-6 py-2.5 rounded-full flex items-center gap-2 transition-all shadow-sm"
@@ -287,12 +278,12 @@ function Proyectos() {
   const currentProject = groupedProjects[activeRegionIdx].items[activeProjectIdx]
 
   return (
-    <section id="proyectos" ref={sectionRef} className="py-24 bg-white overflow-hidden">
+    <section id="proyectos" ref={sectionRef} className="section-py bg-white overflow-hidden">
       <div className="max-w-7xl mx-auto px-6">
         
         {/* BLOQUE SUPERIOR: CONTENIDO + MAPA */}
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center mb-16 px-2">
-          <div className="text-left order-2 lg:order-1">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 items-center mb-10 px-6 lg:px-12">
+          <div className="text-left order-1 lg:order-1">
             <motion.span
               initial={{ opacity: 0, x: -15 }}
               whileInView={{ opacity: 1, x: 0 }}
@@ -306,7 +297,7 @@ function Proyectos() {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ delay: 0.1 }}
-              className="text-4xl md:text-6xl font-black text-[var(--color-primary-dark)] tracking-tighter mb-6 leading-[0.9]"
+              className="text-2xl md:text-4xl font-black text-[var(--color-primary-dark)] tracking-tighter mb-4 leading-[0.9]"
             >
               Proyectos <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#0ea5e1] to-[#1ed760]">Destacados</span>
             </motion.h2>
@@ -325,7 +316,7 @@ function Proyectos() {
             </Link>
           </div>
 
-          <div className="flex justify-center order-1 lg:order-2">
+          <div className="flex justify-center order-2 lg:order-2">
             <PeruMap 
               projects={visibleProjects} 
               currentIndex={globalIndex} 
@@ -335,31 +326,24 @@ function Proyectos() {
         </div>
 
         {/* BLOQUE MEDIO: TAGS DE DEPARTAMENTOS */}
-        <div className="mb-12">
+        <div className="mb-8">
           <div className="flex items-center gap-6 mb-6">
-            <h4 className="shrink-0 text-[10px] font-black uppercase tracking-[0.2em] text-gray-400">Departamentos:</h4>
-            <div className="flex gap-2 overflow-x-auto pb-4 scrollbar-custom flex-1 items-center">
+            <h4 className="shrink-0 text-sm font-black tracking-[0.2em] text-gray-400">Departamentos:</h4>
+            <div className="flex gap-2 overflow-x-auto p-4 scrollbar-custom flex-1 items-center">
               {groupedProjects.map((group, idx) => {
                 const isActive = idx === activeRegionIdx
                 return (
                   <button
                     key={group.region}
                     onClick={() => handleManualRegionSelect(idx)}
-                    className={`shrink-0 px-6 py-2.5 rounded-full text-xs font-bold transition-all duration-500 border relative ${
+                    className={`shrink-0 flex items-center gap-1.5 px-5 py-2.5 rounded-full text-xs font-bold transition-all duration-300 border ${
                       isActive 
-                        ? "bg-[var(--color-primary-dark)] text-white border-[var(--color-primary-dark)] shadow-xl shadow-black/10 scale-105" 
-                        : "bg-white text-gray-400 border-gray-100 hover:border-[var(--color-primary)]/30 hover:bg-slate-50 hover:text-gray-600"
+                        ? "bg-gradient-to-r from-[var(--color-primary-dark)] to-[var(--color-primary)] text-white border-[var(--color-primary)] shadow-lg shadow-[var(--color-primary)]/25 scale-105" 
+                        : "bg-white text-gray-500 border-gray-200 hover:border-[var(--color-primary)]/40 hover:bg-[var(--color-primary)]/5 hover:text-[var(--color-primary-dark)]"
                     }`}
                   >
-                    {isActive && (
-                      <motion.span 
-                        layoutId="active-region-pulse"
-                        className="absolute inset-0 rounded-full bg-[var(--color-primary)]/20"
-                        animate={{ scale: [1, 1.2, 1], opacity: [0.5, 0, 0.5] }}
-                        transition={{ repeat: Infinity, duration: 2 }}
-                      />
-                    )}
-                    <span className="relative z-10">{group.region}</span>
+                    <MapPin size={11} className={isActive ? "text-white/80" : "text-[var(--color-primary)]/50"} />
+                    <span>{group.region}</span>
                   </button>
                 )
               })}
@@ -372,10 +356,10 @@ function Proyectos() {
           <AnimatePresence mode="wait">
             <motion.div
               key={currentProject.id}
-              initial={{ opacity: 0, x: 20 }}
-              animate={{ opacity: 1, x: 0 }}
-              exit={{ opacity: 0, x: -20 }}
-              transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              transition={{ duration: 0.4, ease: "easeInOut" }}
             >
               <ProjectInfo 
                 p={currentProject} 

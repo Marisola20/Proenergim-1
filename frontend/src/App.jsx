@@ -11,6 +11,7 @@ import PoliticaPrivacidad from "./pages/PoliticaPrivacidad"
 import TerminosCondiciones from "./pages/TerminosCondiciones"
 import ProyectosPage from "./pages/ProyectosPage"
 import ProyectoDetalle from "./pages/ProyectoDetalle"
+import Productos from "./pages/Productos"
 import Novedades from "./sections/Novedades"
 import Loading from "./components/Loading"
 import FloatingWhatsApp from "./components/FloatingWhatsApp"
@@ -61,6 +62,7 @@ function AppContent() {
           <Route path="/politica-privacidad" element={<PoliticaPrivacidad />} />
           <Route path="/terminos-condiciones" element={<TerminosCondiciones />} />
           <Route path="/proyectos" element={<ProyectosPage />} />
+          <Route path="/productos" element={<Productos />} />
           <Route path="/proyecto/:id" element={<ProyectoDetalle />} />
         </Routes>
         <Novedades />

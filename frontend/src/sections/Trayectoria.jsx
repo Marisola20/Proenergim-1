@@ -1,6 +1,22 @@
-import { useState, memo } from "react"
+import { useState, useEffect, memo } from "react"
 import { motion, AnimatePresence } from "framer-motion"
-import { Calendar, ChevronDown } from "lucide-react"
+import { Calendar, ChevronDown, Briefcase, Award, MapPin } from "lucide-react"
+
+function useCountUp(target, duration = 1200) {
+  const [value, setValue] = useState(0)
+  useEffect(() => {
+    let raf
+    const start = performance.now()
+    const tick = (now) => {
+      const p = Math.min((now - start) / duration, 1)
+      setValue(Math.round(p * target))
+      if (p < 1) raf = requestAnimationFrame(tick)
+    }
+    raf = requestAnimationFrame(tick)
+    return () => raf && cancelAnimationFrame(raf)
+  }, [target, duration])
+  return value
+}
 
 const hitos = [
   {
@@ -241,14 +257,19 @@ HitoItem.displayName = "HitoItem"
 
 function Trayectoria() {
   const [abiertoId, setAbiertoId] = useState(null)
+  const proyectos = useCountUp(200, 1300)
+  const anos = useCountUp(15, 1500)
+  const sedes = useCountUp(4, 1700)
 
   const toggleItem = (id) => {
     setAbiertoId((prev) => (prev === id ? null : id))
   }
 
   return (
-    <section id="trayectoria" className="py-16 sm:py-20 bg-white">
+    <section id="trayectoria" className="section-py bg-white">
       <div className="max-w-4xl mx-auto px-4 sm:px-6">
+
+
 
         {/* Encabezado */}
         <div className="text-center mb-12 sm:mb-14">
@@ -274,6 +295,35 @@ function Trayectoria() {
             Hitos que marcan nuestro camino desde Lima hasta convertirse en referentes nacionales de energía solar.
           </p>
         </div>
+
+        {/* Estadísticas — debajo del título */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true, margin: "-10%" }}
+          transition={{ duration: 0.5 }}
+          className="flex flex-row justify-center gap-4 sm:gap-6 mb-12 sm:mb-14"
+        >
+          {[
+            { icon: Briefcase, label: "Proyectos", value: proyectos },
+            { icon: Award, label: "Años exp.", value: anos },
+            { icon: MapPin, label: "Sedes", value: sedes },
+          ].map(({ icon: Icon, label, value }) => (
+            <div
+              key={label}
+              className="w-42 h-20 flex flex-row items-center justify-center gap-6 bg-white rounded-xl shadow-sm border border-[var(--color-primary)]/15"
+            >
+              
+              <div className="w-10 h-10 rounded-lg bg-[var(--color-green)] flex items-center justify-center shadow-md">
+                <Icon size={20} className="text-white" />
+              </div>
+              <div className="flex flex-col items-start justify-start">
+                <div className="text-[var(--color-primary-dark)] font-bold text-xl leading-none">+{value}</div>
+                <div className="text-[var(--color-text-muted)] text-[10px] font-medium tracking-wider">{label}</div>
+              </div>
+            </div>
+          ))}
+        </motion.div>
 
         {/* Línea de tiempo */}
         <div className="relative">

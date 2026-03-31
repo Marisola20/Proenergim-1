@@ -111,7 +111,7 @@ const PeruMap = ({ projects, currentIndex, onSelectProject }) => {
         initial={{ opacity: 0, x: 20 }}
         whileInView={{ opacity: 1, x: 0 }}
         transition={{ delay: 0.3 }}
-        className="absolute top-[30%] -right-[12%] z-20 pointer-events-none"
+        className="absolute top-[30%] -right-[8%] z-20 pointer-events-none"
       >
         <div className="bg-white/80 backdrop-blur-md border-1 border-blue-600 p-3 rounded-2xl flex items-center gap-2.5">
           <div className="w-8 h-8 rounded-lg bg-blue-500/10 flex items-center justify-center">
@@ -129,7 +129,7 @@ const PeruMap = ({ projects, currentIndex, onSelectProject }) => {
         initial={{ opacity: 0, y: 20 }}
         whileInView={{ opacity: 1, y: 0 }}
         transition={{ delay: 0.35 }}
-        className="absolute bottom-[20%] -left-[10%] z-20 pointer-events-none"
+        className="absolute bottom-[20%] -left-[5%] z-20 pointer-events-none"
       >
         <div className="bg-white/80 backdrop-blur-md border-1 border-green-600 p-3 rounded-2xl flex items-center gap-2.5">
           <div className="w-8 h-8 rounded-lg bg-green-500/10 flex items-center justify-center">
@@ -147,7 +147,7 @@ const PeruMap = ({ projects, currentIndex, onSelectProject }) => {
         initial={{ opacity: 0, scale: 0.8 }}
         whileInView={{ opacity: 1, scale: 1 }}
         transition={{ delay: 0.4 }}
-        className="absolute bottom-[5%] -right-[28%] z-20 pointer-events-none"
+        className="absolute bottom-[5%] -right-[15%] z-20 pointer-events-none"
       >
         <div className="bg-white/90 border-1 border-orange-600 backdrop-blur-md p-3.5 rounded-2xl flex items-center gap-3">
           <div className="w-10 h-10 rounded-full bg-orange-500/10 flex items-center justify-center">
