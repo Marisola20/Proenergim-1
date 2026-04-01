@@ -150,8 +150,10 @@ function Nosotros() {
   return (
     <main className="pb-24 bg-white">
       <HeroBanner
-        title="Conoce a PROENERGIM"
-        description="Empresa peruana especializada en energía solar. Equipo, valores y sedes en todo el Perú."
+        subtitle="Cultura empresarial"
+        title="Sobre"
+        highlight="nosotros"
+        description="Conoce el enfoque que guía cada proyecto."
         patternId="nosotros"
       />
 

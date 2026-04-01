@@ -84,7 +84,7 @@ const Patterns = {
 const IconPattern = ({ patternId }) => {
   const PatternContent = Patterns[patternId] || Patterns.contacto
   return (
-    <svg className="absolute inset-0 w-full h-full pointer-events-none opacity-[0.25]" xmlns="http://www.w3.org/2000/svg">
+    <svg className="absolute inset-0 w-full h-full pointer-events-none opacity-[0.75]" xmlns="http://www.w3.org/2000/svg">
       <defs>
         <linearGradient id="banner-gradient" x1="0%" y1="0%" x2="100%" y2="0%">
           <stop offset="0%" stopColor="#0ea5e1" />
@@ -97,24 +97,52 @@ const IconPattern = ({ patternId }) => {
   )
 }
 
-function HeroBanner({ title, description, patternId }) {
+function HeroBanner({ subtitle, title, highlight, description, patternId }) {
   return (
-    <div className="relative bg-[var(--color-bg-soft)] pt-24 pb-14 px-6 text-center overflow-hidden shadow-inner mb-12">
+    <div className="relative bg-white pt-40 pb-20 px-6 text-center overflow-hidden border-b border-[var(--color-primary-light)] mb-16">
       <IconPattern patternId={patternId} />
+      
+      {/* Halo de legibilidad: El fondo que resalta las letras y atenúa los iconos solo al centro */}
+      <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,white_40%,transparent_90%)] pointer-events-none opacity-[0.98]" />
+
       <div className="relative z-10 max-w-4xl mx-auto">
+        {subtitle && (
+          <motion.span
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5 }}
+            className="inline-block text-[var(--color-primary)] font-black tracking-[0.25em] uppercase text-[10px] sm:text-xs mb-5 py-1.5 px-4 bg-[var(--color-primary)]/5 rounded-full border border-[var(--color-primary)]/10"
+          >
+            {subtitle}
+          </motion.span>
+        )}
+
         <motion.h1
-          initial={{ opacity: 0, y: 15 }}
+          initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5 }}
-          className="text-3xl md:text-5xl font-bold text-[var(--color-primary-dark)] mb-4"
+          transition={{ duration: 0.6, delay: 0.1 }}
+          className="text-4xl md:text-6xl font-black text-[var(--color-primary-dark)] mb-6 tracking-tight leading-tight"
         >
-          {title}
+          {title}{" "}
+          {highlight && (
+            <span
+              style={{
+                background: "linear-gradient(90deg, #0ea5e1, #1ed760)",
+                WebkitBackgroundClip: "text",
+                WebkitTextFillColor: "transparent",
+                backgroundClip: "text",
+              }}
+            >
+              {highlight}
+            </span>
+          )}
         </motion.h1>
+
         <motion.p
-          initial={{ opacity: 0, y: 15 }}
+          initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5, delay: 0.1 }}
-          className="text-[var(--color-text-muted)] font-medium max-w-2xl mx-auto text-base md:text-lg"
+          transition={{ duration: 0.6, delay: 0.2 }}
+          className="text-[var(--color-text-muted)] font-medium max-w-3xl mx-auto text-base md:text-lg leading-relaxed"
         >
           {description}
         </motion.p>

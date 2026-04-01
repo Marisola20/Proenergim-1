@@ -1,7 +1,7 @@
 import { useState } from "react"
 import { motion, AnimatePresence } from "framer-motion"
 import { servicios } from "../data/servicios"
-import { HelpCircle, MessageCircle } from "lucide-react"
+import { HelpCircle, MessageCircle, ShieldCheck, Zap, HeartHandshake, TrendingDown } from "lucide-react"
 import HeroBanner from "../components/HeroBanner"
 
 const WHATSAPP = "51936954890"
@@ -31,6 +31,33 @@ const faqs = [
     p: "¿Cuánto dura una instalación?",
     r: "Varía según el tamaño del proyecto; desde pocos días para instalaciones pequeñas hasta algunas semanas para grandes sistemas.",
   },
+]
+
+const beneficios = [
+  {
+    icon: TrendingDown,
+    titulo: "Ahorro Inmediato",
+    desc: "Reduce hasta el 90% de tu factura eléctrica.",
+    color: "#22c55e"
+  },
+  {
+    icon: ShieldCheck,
+    titulo: "Garantía Real",
+    desc: "Equipos con certificación internacional.",
+    color: "#0ea5e1"
+  },
+  {
+    icon: HeartHandshake,
+    titulo: "Soporte 24/7",
+    desc: "Asistencia técnica personalizada siempre.",
+    color: "#f59e0b"
+  },
+  {
+    icon: Zap,
+    titulo: "Autonomía Total",
+    desc: "Energía ininterrumpida para tu hogar.",
+    color: "#8b5cf6"
+  }
 ]
 
 function FAQItem({ faq, i, abierto, setAbierto }) {
@@ -89,13 +116,40 @@ function Soluciones() {
   return (
     <main className="pb-24 bg-white">
       <HeroBanner
-        title="Soluciones de energía solar"
-        description="Tecnología solar eficiente para agricultura, industria, comercio y hogares en todo el Perú."
+        subtitle="Lo que ofrecemos"
+        title="Servicios"
+        highlight="especializados"
+        description="Implementación de sistemas solares confiables."
         patternId="soluciones"
       />
+      {/* ── STRIP DE BENEFICIOS ── */}
+      <section className="relative -mt-20 mb-28 z-20 px-6">
+        <div className="max-w-7xl mx-auto grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
+          {beneficios.map((b, i) => (
+            <motion.div
+              key={i}
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ delay: i * 0.1 }}
+              className="bg-white rounded-3xl p-6 shadow-[0_20px_50px_-20px_rgba(0,0,0,0.1)] border border-slate-100 flex items-center gap-5 group hover:border-[var(--color-primary)]/30 transition-all hover:-translate-y-1"
+            >
+              <div 
+                className="w-14 h-14 rounded-2xl flex items-center justify-center shrink-0 shadow-sm group-hover:scale-110 transition-transform duration-300" 
+                style={{ backgroundColor: `${b.color}15` }}
+              >
+                <b.icon size={26} style={{ color: b.color }} strokeWidth={2.2} />
+              </div>
+              <div className="flex flex-col gap-1">
+                <h3 className="font-black text-[var(--color-primary-dark)] text-sm tracking-tight">{b.titulo}</h3>
+                <p className="text-[var(--color-text-muted)] text-[12px] font-medium leading-normal">{b.desc}</p>
+              </div>
+            </motion.div>
+          ))}
+        </div>
+      </section>
 
       <div className="max-w-7xl mx-auto px-6">
-
         {/* ── SERVICIOS ── */}
         <section className="mb-28">
           <div className="text-center mb-14">
@@ -105,7 +159,7 @@ function Soluciones() {
               viewport={{ once: true }}
               className="inline-block text-[var(--color-primary)] font-black tracking-[0.25em] uppercase text-[10px] sm:text-xs mb-4 py-1.5 px-4 bg-[var(--color-primary)]/5 rounded-full border border-[var(--color-primary)]/10"
             >
-              Nuestra Especialidad
+            Enfoque técnico
             </motion.span>
             <motion.h2
               initial={{ opacity: 0, y: 15 }}
@@ -114,11 +168,11 @@ function Soluciones() {
               transition={{ delay: 0.1 }}
               className="text-3xl sm:text-4xl md:text-5xl font-black text-[var(--color-primary-dark)] mb-5 tracking-tight"
             >
-              Lo que{" "}
-              <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#0ea5e1] to-[#1ed760]">ofrecemos</span>
+              Nuestra{" "}
+              <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#0ea5e1] to-[#1ed760]">Especialidad</span>
             </motion.h2>
             <p className="text-[var(--color-text-muted)] text-base md:text-lg max-w-2xl mx-auto font-medium leading-relaxed">
-              Cada servicio está diseñado para maximizar tu eficiencia energética y reducir costos a largo plazo.
+              Soluciones que optimizan el rendimiento y reducen costos operativos. 
             </p>
           </div>
 

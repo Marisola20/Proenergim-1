@@ -1,5 +1,6 @@
 import { motion } from "framer-motion"
 import { Zap, Sun, Droplets, Battery, Wind, Settings } from "lucide-react"
+import HeroBanner from "../components/HeroBanner"
 
 const productos = [
   {
@@ -42,46 +43,14 @@ const productos = [
 
 function Productos() {
   return (
-    <main className="min-h-screen pt-24">
-      {/* Hero de página */}
-      <section className="bg-gradient-to-br from-[#0369a1] to-[#0c85b5] py-20 px-4">
-        <div className="max-w-4xl mx-auto text-center">
-          <motion.span
-            initial={{ opacity: 0, y: 10 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.5 }}
-            className="inline-block text-[#1ed760] font-black tracking-[0.25em] uppercase text-xs mb-4 py-1.5 px-4 bg-white/10 rounded-full border border-white/20"
-          >
-            Catálogo
-          </motion.span>
-          <motion.h1
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6, delay: 0.1 }}
-            className="text-4xl sm:text-5xl md:text-6xl font-black text-white mb-5 leading-tight"
-          >
-            Nuestros{" "}
-            <span
-              style={{
-                background: "linear-gradient(90deg, #0ea5e1, #1ed760)",
-                WebkitBackgroundClip: "text",
-                WebkitTextFillColor: "transparent",
-                backgroundClip: "text",
-              }}
-            >
-              Productos
-            </span>
-          </motion.h1>
-          <motion.p
-            initial={{ opacity: 0, y: 15 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6, delay: 0.2 }}
-            className="text-white/80 text-lg sm:text-xl max-w-2xl mx-auto"
-          >
-            Soluciones completas en energía renovable para hogares, empresas y comunidades rurales en todo el Perú.
-          </motion.p>
-        </div>
-      </section>
+    <main className="min-h-screen pb-24">
+      <HeroBanner
+        subtitle="Tecnología solar"
+        title="Nuestros"
+        highlight="productos"
+        description="Calidad y eficiencia en cada producto."
+        patternId="soluciones"
+      />
 
       {/* Grid de productos */}
       <section className="py-16 px-4 bg-white">

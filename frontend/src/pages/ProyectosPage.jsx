@@ -109,8 +109,10 @@ function ProyectosPage() {
   return (
     <div className="bg-white min-h-screen pb-24">
       <HeroBanner
-        title="Nuestros Proyectos"
-        description="Explora nuestro portafolio de soluciones implementadas a nivel nacional."
+        subtitle="Experiencia y ejecución"
+        title="Proyectos"
+        highlight="desarrollados"
+        description="Resultados que reflejan experiencia en cada instalación."
         patternId="proyectos"
       />
 
