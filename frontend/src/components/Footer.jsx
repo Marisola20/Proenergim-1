@@ -65,10 +65,10 @@ const sitemap = [
 ]
 
 const sedes = [
-  { nombre: "Zonal Lima",           direccion: "Av. Los Chancas N°112, Santa Anita" },
-  { nombre: "Zonal La Libertad",    direccion: "Mz A3 Lote 18, Urb. Sol de Trujillo" },
-  { nombre: "Zonal Piura – Tumbes", direccion: 'Mz "H" Lote "19", Prol. Cuzco, Seis de Setiembre' },
-  { nombre: "Zonal Selva Sur",      direccion: "Av. Jaime Troncoso con Jr. Marco Ruiz, a 1 cdra de SENATI" },
+  { nombre: "Zonal Lima"},
+  { nombre: "Zonal La Libertad"},
+  { nombre: "Zonal Piura – Tumbes"},
+  { nombre: "Zonal Selva Sur"},
 ]
 
 function TikTokIcon({ size = 18 }) {
@@ -191,7 +191,6 @@ function Footer() {
                     <MapPin size={12} className="opacity-45 flex-shrink-0 mt-0.5" />
                     <div>
                       <p className="text-xs font-bold text-white/85 leading-tight">{sede.nombre}</p>
-                      <p className="text-xs text-white/40 leading-snug">{sede.direccion}</p>
                     </div>
                   </div>
                 ))}

@@ -14,47 +14,70 @@ import ProyectoDetalle from "./pages/ProyectoDetalle"
 import Productos from "./pages/Productos"
 import Novedades from "./sections/Novedades"
 import Loading from "./components/Loading"
+import Welcome from "./components/Welcome"
 import FloatingWhatsApp from "./components/FloatingWhatsApp"
 
-function ScrollToTop() {
-  const { pathname } = useLocation()
+function ScrollToTop({ location }) {
   useEffect(() => {
     window.scrollTo({ top: 0, behavior: "instant" })
-  }, [pathname])
+  }, [location?.pathname])
   return null
 }
 
 function AppContent() {
   const location = useLocation()
-  const [isLoading, setIsLoading] = useState(true)
-  const [prevPath, setPrevPath] = useState(location.pathname)
+  
+  // Lógica para diferenciar entre Bienvenida Inicial y Carga de Rutas
+  const [isFirstLoad, setIsFirstLoad] = useState(() => {
+    // Solo mostrar Bienvenida una vez por sesión del navegador
+    return !sessionStorage.getItem("proenergim-welcomed")
+  })
+  
+  const [displayLocation, setDisplayLocation] = useState(location)
+  const [isLoading, setIsLoading] = useState(false)
 
-  // Trigger loading immediately when the path changes, before the next render commit
-  if (location.pathname !== prevPath) {
-    setPrevPath(location.pathname)
-    setIsLoading(true)
-  }
-
+  // Manejo de Carga entre Rutas posteriores a la Bienvenida
   useEffect(() => {
-    // This effect runs after the render where isLoading was set to true
-    if (isLoading) {
-      const timer = setTimeout(() => {
-        setIsLoading(false)
-      }, 1000) // 1000ms for a more premium, slower feel
-      return () => clearTimeout(timer)
+    if (!isFirstLoad && location.pathname !== displayLocation.pathname) {
+      setIsLoading(true)
+      
+      // Delay para cambiar el contenido real de la ruta (esperar a que el loader se vea)
+      const transitionTimer = setTimeout(() => {
+        setDisplayLocation(location)
+        
+        // Mantener el loading un poco más para cubrir el renderizado inicial de la nueva página
+        const revealTimer = setTimeout(() => {
+          setIsLoading(false)
+        }, 500)
+        
+        return () => clearTimeout(revealTimer)
+      }, 350) // Tiempo para que el Loader entre y cubra la pantalla
+      
+      return () => clearTimeout(transitionTimer)
     }
-  }, [isLoading])
+  }, [location, displayLocation, isFirstLoad])
+
+  const handleWelcomeComplete = () => {
+    sessionStorage.setItem("proenergim-welcomed", "true")
+    setIsFirstLoad(false)
+  }
 
   return (
     <>
       <AnimatePresence mode="wait">
-        {isLoading && <Loading key="loader" />}
+        {isFirstLoad ? (
+          <Welcome key="welcome" onComplete={handleWelcomeComplete} />
+        ) : (
+          isLoading && <Loading key="loader" />
+        )}
       </AnimatePresence>
       
-      <ScrollToTop />
-      <div className={isLoading ? "opacity-0 invisible h-screen overflow-hidden" : "opacity-100 visible transition-opacity duration-500"}>
+      <ScrollToTop location={displayLocation} />
+      
+      {/* Contenido principal: Solo ocultar si es la Bienvenida Inicial */}
+      <div className={isFirstLoad ? "opacity-0 invisible h-screen overflow-hidden" : "opacity-100 visible transition-opacity duration-700"}>
         <Navbar />
-        <Routes location={location} key={location.pathname}>
+        <Routes location={displayLocation} key={displayLocation.pathname}>
           <Route path="/" element={<Home />} />
           <Route path="/nosotros" element={<Nosotros />} />
           <Route path="/soluciones" element={<Soluciones />} />

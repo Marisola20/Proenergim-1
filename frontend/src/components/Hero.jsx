@@ -1,47 +1,48 @@
 import { useEffect, useState, useRef } from "react"
 import { motion } from "framer-motion"
-import { MapPin, Briefcase, Award, Package, MessageCircle } from "lucide-react"
+import { Folder, MessageCircle, ChevronRight } from "lucide-react"
 
 const WHATSAPP = "51936954890"
 
-function useCountUp(target, duration = 1200) {
-  const [value, setValue] = useState(0)
+// --- VARIANTES PARA EL BOTÓN DE CONTACTO (Animación Hover) ---
+const contactButtonVariants = {
+  initial: { 
+    backgroundColor: "rgba(255, 255, 255, 0)", 
+    borderColor: "#ffffff",
+    backdropFilter: "blur(12px)"
+  },
+  hover: { 
+    backgroundColor: "rgba(255, 255, 255, 1)", 
+    borderColor: "rgba(255, 255, 255, 0)",
+    backdropFilter: "blur(0px)"
+  }
+}
 
-  useEffect(() => {
-    let animationFrame
-    const startTime = performance.now()
+const contactIconVariants = {
+  initial: { color: "#ffffff" },
+  hover: { color: "#0ea5e1" }
+}
 
-    const tick = (now) => {
-      const progress = Math.min((now - startTime) / duration, 1)
-      const current = Math.round(progress * target)
-      setValue(current)
-      if (progress < 1) {
-        animationFrame = requestAnimationFrame(tick)
-      }
-    }
+const contactTextVariants = {
+  initial: { color: "#ffffff" },
+  hover: { color: "transparent" }
+}
 
-    animationFrame = requestAnimationFrame(tick)
+// --- VARIANTES PARA EL BOTÓN DE PROYECTOS (Ícono Vivo) ---
+const iconMoveVariants = {
+  initial: { x: 0, rotate: 0 },
+  hover: { x: 5, rotate: 5, transition: { type: "spring", stiffness: 300 } }
+}
 
-    return () => {
-      if (animationFrame) cancelAnimationFrame(animationFrame)
-    }
-  }, [target, duration])
-
-  return value
+const chevronVariants = {
+  initial: { opacity: 0, x: -10 },
+  hover: { opacity: 1, x: 0, transition: { duration: 0.3 } }
 }
 
 function Hero() {
   const videoRef = useRef(null)
 
   useEffect(() => {
-    const handleVisibilityChange = () => {
-      if (document.hidden) {
-        videoRef.current?.pause()
-      }
-    }
-
-    document.addEventListener("visibilitychange", handleVisibilityChange)
-
     const observer = new IntersectionObserver(
       ([entry]) => {
         if (videoRef.current) {
@@ -54,17 +55,13 @@ function Hero() {
       },
       { threshold: 0.1 }
     )
-
     if (videoRef.current) observer.observe(videoRef.current)
-
-    return () => {
-      document.removeEventListener("visibilitychange", handleVisibilityChange)
-      observer.disconnect()
-    }
+    return () => observer.disconnect()
   }, [])
 
   return (
-    <section id="inicio" className="relative min-h-[100dvh] flex items-center overflow-hidden pt-24 md:pt-28">
+    <section id="inicio" className="relative min-h-[100dvh] flex items-center overflow-hidden pt-24">
+      {/* Video de fondo */}
       <video
         ref={videoRef}
         autoPlay
@@ -73,39 +70,40 @@ function Hero() {
         playsInline
         className="absolute inset-0 w-full h-full object-cover z-0"
         preload="metadata"
-        fetchPriority="high"
-        style={{ opacity: 0.95 }}
+        style={{ opacity: 0.9 }}
       >
         <source src="/videos/video-hero.mp4" type="video/mp4" />
       </video>
 
-      <div className="relative z-20 w-full max-w-8xl mx-6 md:mx-10 lg:mx-20 px-4 sm:px-6 flex flex-col items-start justify-center">
-        <div className="max-w-4xl w-full">
+      {/* Overlay transparente para eventos */}
+      <div className="absolute inset-0 z-10 pointer-events-none" />
+
+      <div className="relative z-20 w-full max-w-7xl mx-auto pt-20 px-6 sm:px-20 md:px-16 lg:px-4 flex flex-col items-start justify-center gap-10">
+        
+        <div className="max-w-6xl w-full text-left">
           <motion.div
             initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8, ease: "easeOut" }}
-            className="flex flex-col items-start text-left"
+            transition={{ duration: 0.8 }}
           >
-            <h1 className="font-extrabold leading-[1.1] mb-8 text-left tracking-tight">
-              <span className="block text-4xl sm:text-6xl md:text-7xl lg:text-8xl text-[#ffee0c] drop-shadow-xl mb-2">
-                Soluciones
+            {/* Título: Dos líneas en amarillo brillante */}
+            <h1 className="font-extrabold leading-[1.3] mb-8 tracking-tight text-[#ffee0c] drop-shadow-[4px_4px_14px_rgba(0,0,0,0.5)]">
+              <span className="block text-2xl sm:text-4xl md:text-5xl lg:text-[80px]">
+                Soluciones de energía solar
               </span>
-              <span className="block text-4xl sm:text-6xl md:text-7xl lg:text-8xl text-transparent bg-clip-text bg-gradient-to-r from-[#ffee0c] to-[#f5de0b] drop-shadow-2xl mb-4">
-                de energía solar
-              </span>
-              <span className="block text-3xl sm:text-5xl md:text-6xl lg:text-7xl text-white/95 font-bold leading-tight">
+              <span className="block text-2xl sm:text-4xl md:text-5xl lg:text-[80px]">
                 que transforman tu hogar
               </span>
             </h1>
 
+            {/* Subtítulo: Blanco con barra lateral amarilla */}
             <motion.p
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               transition={{ duration: 0.8, delay: 0.3 }}
-              className="text-white/90 text-lg sm:text-xl md:text-2xl mb-12 max-w-2xl font-semibold leading-relaxed border-l-4 border-[#ffee0c] pl-6"
+              className="text-white text-lg sm:text-xl md:text-xl lg:text-2xl mb-12 max-w-5xl font-bold leading-relaxed border-l-4 border-[#ffee0c] pl-6 drop-shadow-[4px_4px_14px_rgba(0,0,0,0.5)]"
             >
-              Más de 15 años liderando proyectos de energía renovable con tecnología de vanguardia en todo el Perú.
+              Más de 15 años desarrollando proyectos de energía renovable en todo el Perú.
             </motion.p>
 
             <motion.div
@@ -114,35 +112,50 @@ function Hero() {
               transition={{ duration: 0.5, delay: 0.5 }}
               className="flex flex-wrap justify-start gap-4 sm:gap-6"
             >
-              {/* Botón primario — gradiente */}
-              <a
+              {/* Botón 1: Ver proyectos (Efecto Ícono Vivo) */}
+              <motion.a
                 href="#proyectos"
-                className="inline-flex items-center gap-3 font-black px-10 py-5 rounded-2xl transition-all duration-300 hover:scale-[1.05] hover:rotate-1 text-lg text-white shadow-[0_10px_20px_-5px_rgba(30,215,96,0.3)] hover:shadow-[0_20px_40px_-5px_rgba(30,215,96,0.4)]"
-                style={{
-                  background: "linear-gradient(135deg, #0ea5e1, #1ed760)",
-                }}
+                whileHover="hover"
+                className="group inline-flex items-center gap-3 font-bold px-10 py-4 rounded-2xl transition-all duration-300 hover:scale-105 text-lg text-white shadow-xl hover:brightness-110"
+                style={{ background: "linear-gradient(90deg, #00acc1, #2ecc71)" }}
               >
-                <Package size={24} strokeWidth={2.5}/>
-                Ver proyectos
-              </a>
+                <motion.div variants={iconMoveVariants}>
+                  <Folder size={24} fill="white" fillOpacity={0.2}/>
+                </motion.div>
+                <span>Ver proyectos</span>
+              </motion.a>
 
-              {/* Botón secundario — Glassmorphism */}
-              <a
-                href={`https://wa.me/${WHATSAPP}?text=Hola, me gustaría contactarlos para conocer más sobre sus servicios de energía solar`}
+              {/* Botón 2: Contáctanos (Animado en Hover) */}
+              <motion.a
+                href={`https://wa.me/${WHATSAPP}?text=Hola, me gustaría contactarlos para conocer más sobre sus servicios de energía solar.`}
                 target="_blank"
                 rel="noreferrer noopener"
-                className="group inline-flex items-center gap-3 bg-white/10 backdrop-blur-md border-2 border-white/20 font-black px-10 py-5 rounded-2xl transition-all duration-300 hover:bg-white hover:border-white text-lg text-white hover:text-[#0ea5e1] shadow-xl hover:scale-[1.05] hover:-rotate-1"
+                initial="initial"
+                whileHover="hover"
+                variants={contactButtonVariants}
+                transition={{ duration: 0.3 }}
+                className="inline-flex items-center gap-3 font-bold px-10 py-4 rounded-2xl border-2 transition-transform duration-300 hover:scale-105 text-lg shadow-xl overflow-hidden"
               >
-                <MessageCircle size={24} strokeWidth={2.5} className="group-hover:scale-110 transition-transform"/>
-                Contáctanos
-              </a>
+                <motion.div
+                  variants={contactIconVariants}
+                  transition={{ duration: 0.3 }}
+                  className="flex items-center"
+                >
+                  <MessageCircle size={24} />
+                </motion.div>
+                
+                <motion.span 
+                  variants={contactTextVariants}
+                  transition={{ duration: 0.3 }}
+                  className="bg-clip-text bg-gradient-to-r from-[#0ea5e1] to-[#1ed760]"
+                >
+                  Contactanos
+                </motion.span>
+              </motion.a>             
             </motion.div>
           </motion.div>
         </div>
       </div>
-      
-      {/* Overlay sutil para mejorar legibilidad */}
-      <div className="absolute inset-0 bg-gradient-to-r from-black/60 via-black/30 to-transparent z-10 pointer-events-none" />
     </section>
   )
 }
