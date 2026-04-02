@@ -1,5 +1,5 @@
-import { useState } from "react"
-import { motion, AnimatePresence } from "framer-motion"
+import { useState, useEffect, useRef } from "react"
+import { motion, AnimatePresence, useInView, animate } from "framer-motion"
 import { MapPin, ArrowRight, User, FolderOpen, Award } from "lucide-react"
 import { Link } from "react-router-dom"
 import { proyectos } from "../data/proyectos"
@@ -20,6 +20,49 @@ const estadisticas = [
   { valor: "4",    label: "Sedes en el Perú",    Icon: MapPin },
   { valor: "15+",  label: "Años de experiencia",  Icon: Award },
 ]
+
+function StatCard({ s, i }) {
+  const ref = useRef(null)
+  const [displayValue, setDisplayValue] = useState(0)
+  const isInView = useInView(ref, { once: true, margin: "-50px" })
+
+  useEffect(() => {
+    if (isInView) {
+      const numericValue = parseInt(s.valor.replace("+", ""))
+      const controls = animate(0, numericValue, {
+        duration: 2,
+        ease: "easeOut",
+        onUpdate: (val) => setDisplayValue(Math.round(val)),
+      })
+      return () => controls.stop()
+    }
+  }, [isInView, s.valor])
+
+  return (
+    <motion.div
+      ref={ref}
+      initial={{ opacity: 0, y: 30 }}
+      animate={isInView ? { opacity: 1, y: 0, transition: { duration: 0.6, delay: i * 0.1 } } : {}}
+      className="bg-white rounded-3xl p-10 flex items-center gap-7 border border-[var(--color-primary-light)] hover:border-[var(--color-primary)] hover:translate-y-2 transition-all duration-400 relative overflow-hidden flex-1 min-w-[280px]"
+    >
+      {/* Fondo sutil acentuado */}
+      <div className="absolute top-0 right-0 w-24 h-24 bg-gradient-to-br from-[#0ea5e1]/5 to-[#1ed760]/5 rounded-full -translate-y-2/2 translate-x-1/2 pointer-events-none" />
+
+      <div className="w-16 h-16 rounded-2xl bg-[var(--color-primary)]/10 flex items-center justify-center shrink-0 border border-white">
+        <s.Icon size={32} className="text-[var(--color-primary)]" />
+      </div>
+
+      <div className="flex flex-col text-left">
+        <span className="text-5xl sm:text-6xl font-black text-transparent bg-clip-text bg-gradient-to-r from-[#0ea5e1] to-[#1ed760] tracking-tighter leading-none mb-1 font-sans">
+          {displayValue}{s.valor.includes("+") ? "+" : ""}
+        </span>
+        <span className="pt-[10px] text-slate-500 text-[11px] sm:text-[13px] font-semibold tracking-[0.2em] leading-tight">
+          {s.label}
+        </span>
+      </div>
+    </motion.div>
+  )
+}
 
 function ProyectoCard({ proyecto }) {
   const cat = colorCat[proyecto.categoria] || { bg: "#f3f4f6", text: "#374151", dot: "#6b7280" }
@@ -106,7 +149,7 @@ function ProyectosPage() {
   const proyectosFiltrados = filtro === "Todos" ? proyectos : proyectos.filter((p) => p.categoria === filtro)
 
   return (
-    <div className="bg-white min-h-screen pb-24">
+    <div className="bg-slate-50/40 min-h-screen pb-24">
       <HeroBanner
         subtitle="Experiencia y ejecución"
         title="Proyectos"
@@ -116,35 +159,19 @@ function ProyectosPage() {
       />
 
       <div className="max-w-7xl mx-auto px-6">
+        {/* ── IMPACT DASHBOARD (STATS ANIMADOS) ── */}
+        <div className="relative z-30 -mt-20 sm:-mt-24 mb-10 max-w-5xl mx-auto grid grid-cols-1 sm:grid-cols-3 gap-6 lg:gap-8">
+          {estadisticas.map((s, i) => (
+            <StatCard key={i} s={s} i={i} />
+          ))}
+        </div>
 
-        {/* ── IMPACT DASHBOARD (STATS) ── */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          className="relative z-20 -mt-10 sm:-mt-14 mb-16"
-        >
-          <div className="bg-white/80 backdrop-blur-xl border border-white/60 shadow-[0_8px_32px_-8px_rgba(0,0,0,0.1)] rounded-3xl sm:rounded-full px-6 py-5 flex items-center justify-between mx-auto flex-wrap sm:flex-nowrap gap-4 sm:gap-0 divide-y sm:divide-y-0 sm:divide-x divide-slate-200/60 max-w-4xl">
-            {estadisticas.map((s, i) => (
-              <div
-                key={i}
-                className="flex-1 flex items-center justify-center gap-4 py-3 sm:py-0 w-full"
-              >
-                <div className="w-12 h-12 rounded-full bg-gradient-to-br from-[#0ea5e1]/10 to-[#1ed760]/10 flex shrink-0 items-center justify-center border border-white shadow-sm">
-                  <s.Icon size={22} className="text-[var(--color-primary)] opacity-80" />
-                </div>
-                <div className="flex flex-col text-left">
-                  <p className="text-2xl sm:text-3xl font-black text-transparent bg-clip-text bg-gradient-to-r from-[#0ea5e1] to-[#1ed760] leading-none mb-1">
-                    {s.valor}
-                  </p>
-                  <p className="text-slate-500 text-[10px] sm:text-[11px] font-bold uppercase tracking-widest">
-                    {s.label}
-                  </p>
-                </div>
-              </div>
-            ))}
-          </div>
-        </motion.div>
+        {/* Texto de separación sutil */}
+        <div className="text-center mb-20 opacity-60">
+           <p className="text-slate-400 text-[13px] font-medium tracking-widest uppercase">
+             Impulsando la soberanía energética en cada rincón del Perú
+           </p>
+        </div>
 
         {/* ── ENCABEZADO + FILTROS ── */}
         <div className="text-center mb-10">

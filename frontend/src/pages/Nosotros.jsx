@@ -164,7 +164,7 @@ function Nosotros() {
            whileInView={{ opacity: 1, y: 0 }}
            viewport={{ once: true }}
            transition={{ duration: 0.6 }}
-           className="max-w-8xl mx-auto bg-white/80 backdrop-blur-xl rounded-4xl shadow-[0_20px_50px_-12px_rgba(0,0,0,0.12)] border-1 border-[var(--color-primary-light)] overflow-hidden flex flex-col lg:flex-row"
+           className="max-w-6xl mx-auto bg-white/80 backdrop-blur-xl rounded-4xl shadow-[0_20px_50px_-12px_rgba(0,0,0,0.12)] border-1 border-[var(--color-primary-light)] overflow-hidden flex flex-col lg:flex-row"
         >
           {/* Lado Izquierdo: El Gancho Visual/Texto */}
           <div className="lg:w-2/5 p-10 md:p-14 flex flex-col justify-center bg-gradient-to-br from-white/40 to-transparent">
@@ -176,9 +176,15 @@ function Nosotros() {
           </div>
 
           {/* Lado Derecho: Misión y Visión */}
-          <div className="lg:w-3/5 p-10 md:p-14 bg-[var(--color-primary-dark)] text-white flex flex-col justify-center gap-8">
+          <div className="lg:w-3/5 p-10 md:p-14 bg-[var(--color-primary-dark)] text-white flex flex-col justify-center gap-8 relative overflow-hidden">
+            {/* Círculos decorativos (Pequeños y sutiles) */}
+            <div className="absolute top-[-20px] right-[10%] w-24 h-24 bg-white/[0.03] rounded-full pointer-events-none" />
+            <div className="absolute bottom-[-10px] left-[15%] w-20 h-20 bg-white/[0.04] rounded-full pointer-events-none" />
+            <div className="absolute top-[40%] right-[5%] w-16 h-16 bg-white/[0.02] rounded-full blur-md pointer-events-none" />
+            <div className="absolute bottom-[20%] left-[5%] w-12 h-12 bg-white/[0.05] rounded-full pointer-events-none" />
+            
             {/* Misión */}
-            <div className="flex gap-5">
+            <div className="flex gap-5 relative z-10">
               <div className="w-11 h-11 rounded-2xl bg-white/10 flex items-center justify-center shrink-0 border border-white/20">
                 <Target size={22} className="text-[#7ad7ff]" />
               </div>
@@ -191,7 +197,7 @@ function Nosotros() {
             </div>
 
             {/* Visión */}
-            <div className="flex gap-5">
+            <div className="flex gap-5 relative z-10">
               <div className="w-11 h-11 rounded-2xl bg-white/10 flex items-center justify-center shrink-0 border border-white/20">
                 <Zap size={22} className="text-[#3cf57c]" />
               </div>
