@@ -1,6 +1,6 @@
 import { useState } from "react"
 import { motion } from "framer-motion"
-import { Heart, Award, Target, Users, Zap, TreePine, Briefcase, MapPin } from "lucide-react"
+import { Target, Heart, BadgeCheck, ClipboardCheck, HandshakeIcon, Lightbulb, TreePine, Briefcase, MapPin, Zap } from "lucide-react"
 import HeroBanner from "../components/HeroBanner"
 import Trayectoria from "../sections/Trayectoria"
 
@@ -13,14 +13,14 @@ const valores = [
     bg: "#fef2f2",
   },
   {
-    icon: Award,
+    icon: BadgeCheck,
     titulo: "Calidad",
     texto: "Soluciones técnicas de alto nivel con materiales y marcas líderes del mercado.",
     color: "#eab308",
     bg: "#fefce8",
   },
   {
-    icon: Target,
+    icon: ClipboardCheck,
     titulo: "Responsabilidad",
     texto: "Cumplimos plazos, presupuestos y estándares de seguridad en cada instalación.",
     color: "#8b5cf6",
@@ -34,14 +34,14 @@ const valores = [
     bg: "#ecfdf5",
   },
   {
-    icon: Zap,
+    icon: Lightbulb,
     titulo: "Innovación",
     texto: "Adoptamos tecnología de vanguardia en cada solución eléctrica y solar.",
     color: "#0ea5e9",
     bg: "#f0f9ff",
   },
   {
-    icon: Users,
+    icon: HandshakeIcon,
     titulo: "Equipo",
     texto: "Un equipo multidisciplinario comprometido con el éxito de cada cliente.",
     color: "#f97316",
@@ -164,7 +164,7 @@ function Nosotros() {
            whileInView={{ opacity: 1, y: 0 }}
            viewport={{ once: true }}
            transition={{ duration: 0.6 }}
-           className="max-w-7xl mx-auto bg-white/80 backdrop-blur-xl rounded-4xl shadow-[0_20px_50px_-12px_rgba(0,0,0,0.12)] border-1 border-[var(--color-primary-light)] overflow-hidden flex flex-col lg:flex-row"
+           className="max-w-8xl mx-auto bg-white/80 backdrop-blur-xl rounded-4xl shadow-[0_20px_50px_-12px_rgba(0,0,0,0.12)] border-1 border-[var(--color-primary-light)] overflow-hidden flex flex-col lg:flex-row"
         >
           {/* Lado Izquierdo: El Gancho Visual/Texto */}
           <div className="lg:w-2/5 p-10 md:p-14 flex flex-col justify-center bg-gradient-to-br from-white/40 to-transparent">
@@ -180,11 +180,11 @@ function Nosotros() {
             {/* Misión */}
             <div className="flex gap-5">
               <div className="w-11 h-11 rounded-2xl bg-white/10 flex items-center justify-center shrink-0 border border-white/20">
-                <Target size={22} className="text-[#0ea5e1]" />
+                <Target size={22} className="text-[#7ad7ff]" />
               </div>
               <div className="flex flex-col">
-                <h3 className="font-black uppercase text-[10px] tracking-[0.2em] text-[#0ea5e1] mb-1">Misión</h3>
-                <p className="text-white text-[13.5px] leading-relaxed font-semibold">
+                <h3 className="font-black uppercase text-[10px] tracking-[0.2em] text-[#7ad7ff] mb-1">Misión</h3>
+                <p className="text-white text-[14px] leading-relaxed font-medium">
                   Ser una empresa peruana que diseña, construye y mantiene sistemas solares que transforman vidas y sectores productivos en todo el Perú.
                 </p>
               </div>
@@ -193,11 +193,11 @@ function Nosotros() {
             {/* Visión */}
             <div className="flex gap-5">
               <div className="w-11 h-11 rounded-2xl bg-white/10 flex items-center justify-center shrink-0 border border-white/20">
-                <Zap size={22} className="text-[#1ed760]" />
+                <Zap size={22} className="text-[#3cf57c]" />
               </div>
               <div className="flex flex-col">
-                <h3 className="font-black uppercase text-[10px] tracking-[0.2em] text-[#1ed760] mb-1">Visión</h3>
-                <p className="text-white text-[13.5px] leading-relaxed font-semibold">
+                <h3 className="font-black uppercase text-[10px] tracking-[0.2em] text-[#3cf57c] mb-1">Visión</h3>
+                <p className="text-white text-[14px] leading-relaxed font-medium">
                   Ser al 2028 el referente nacional en energía fotovoltaica, reconocidos por calidad y garantía en todos los sectores productivos del Perú.
                 </p>
               </div>
@@ -210,14 +210,32 @@ function Nosotros() {
         
         {/* Título de la sección de valores para separar contenido */}
         <div className="text-center mb-12">
+          <motion.span
+              initial={{ opacity: 0, y: 10 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              className="inline-block text-[var(--color-primary)] font-black tracking-[0.25em] text-[10px] sm:text-xs mb-4 py-1.5 px-4 bg-[var(--color-primary)]/5 rounded-full border border-[var(--color-primary)]/10"
+            >
+              Lo que nos mueve
+            </motion.span>
             <motion.h2
               initial={{ opacity: 0, y: 15 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               className="text-2xl sm:text-3xl font-black text-[var(--color-primary-dark)] tracking-tight opacity-50"
             >
-              Nuestra Cultura Core
+              Nuestro 
+              <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#0ea5e1] to-[#1ed760]"> ADN</span>
             </motion.h2>
+            <motion.p
+              initial={{ opacity: 0, y: 15 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ delay: 0.1 }}
+              className="text-lg mt-4 text-gray-600 max-w-3xl mx-auto"
+            >
+              Cada proyecto lleva nuestra firma — y nuestra firma tiene estos principios.
+            </motion.p>
         </div>
         <section className="mb-24">
           <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">

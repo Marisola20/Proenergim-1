@@ -31,8 +31,7 @@ function ProyectoCard({ proyecto }) {
       animate={{ opacity: 1, scale: 1 }}
       exit={{ opacity: 0, scale: 0.95 }}
       transition={{ duration: 0.3 }}
-      className="group bg-white rounded-3xl overflow-hidden shadow-[0_2px_16px_-4px_rgba(0,0,0,0.08)] border-2 hover:shadow-[0_16px_48px_-8px_rgba(0,0,0,0.15)] hover:-translate-y-1.5 transition-all duration-400 flex flex-col"
-      style={{ borderColor: cat.dot + "40" }}
+      className="group bg-white rounded-3xl overflow-hidden shadow-[0_2px_16px_-4px_rgba(0,0,0,0.08)] border border-slate-200 hover:border-slate-300 hover:shadow-[0_16px_48px_-8px_rgba(0,0,0,0.15)] hover:-translate-y-1.5 transition-all duration-400 flex flex-col"
     >
       {/* Video miniatura */}
       <div className="h-52 w-full relative bg-slate-100 overflow-hidden">
@@ -118,31 +117,33 @@ function ProyectosPage() {
 
       <div className="max-w-7xl mx-auto px-6">
 
-        {/* ── STATS STRIP ── */}
+        {/* ── IMPACT DASHBOARD (STATS) ── */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
-          className="grid grid-cols-3 gap-4 mb-16"
+          className="relative z-20 -mt-10 sm:-mt-14 mb-16"
         >
-          {estadisticas.map((s, i) => (
-            <div
-              key={i}
-              className="bg-white border border-slate-100 rounded-2xl px-6 py-5 shadow-[0_2px_12px_-4px_rgba(0,0,0,0.07)] flex items-center justify-between gap-4"
-            >
-              <div className="flex flex-col text-left">
-                <p className="text-2xl sm:text-3xl font-black text-transparent bg-clip-text bg-gradient-to-r from-[#0ea5e1] to-[#1ed760]">
-                  {s.valor}
-                </p>
-                <p className="text-[var(--color-text-muted)] text-xs font-semibold uppercase tracking-wider">
-                  {s.label}
-                </p>
+          <div className="bg-white/80 backdrop-blur-xl border border-white/60 shadow-[0_8px_32px_-8px_rgba(0,0,0,0.1)] rounded-3xl sm:rounded-full px-6 py-5 flex items-center justify-between mx-auto flex-wrap sm:flex-nowrap gap-4 sm:gap-0 divide-y sm:divide-y-0 sm:divide-x divide-slate-200/60 max-w-4xl">
+            {estadisticas.map((s, i) => (
+              <div
+                key={i}
+                className="flex-1 flex items-center justify-center gap-4 py-3 sm:py-0 w-full"
+              >
+                <div className="w-12 h-12 rounded-full bg-gradient-to-br from-[#0ea5e1]/10 to-[#1ed760]/10 flex shrink-0 items-center justify-center border border-white shadow-sm">
+                  <s.Icon size={22} className="text-[var(--color-primary)] opacity-80" />
+                </div>
+                <div className="flex flex-col text-left">
+                  <p className="text-2xl sm:text-3xl font-black text-transparent bg-clip-text bg-gradient-to-r from-[#0ea5e1] to-[#1ed760] leading-none mb-1">
+                    {s.valor}
+                  </p>
+                  <p className="text-slate-500 text-[10px] sm:text-[11px] font-bold uppercase tracking-widest">
+                    {s.label}
+                  </p>
+                </div>
               </div>
-              <div className="w-12 h-12 rounded-2xl bg-[var(--color-primary)]/10 flex shrink-0 items-center justify-center">
-                <s.Icon size={24} className="text-[var(--color-primary)]" />
-              </div>
-            </div>
-          ))}
+            ))}
+          </div>
         </motion.div>
 
         {/* ── ENCABEZADO + FILTROS ── */}
@@ -168,10 +169,12 @@ function ProyectosPage() {
         </div>
 
         {/* Filtros */}
-        <div className="flex flex-wrap justify-center gap-2 mb-12">
+        <div className="flex flex-wrap justify-center gap-3 mb-14">
           {categorias.map((cat, i) => {
             const c = colorCat[cat]
             const activo = filtro === cat
+            const count = cat === "Todos" ? proyectos.length : proyectos.filter(p => p.categoria === cat).length
+            
             return (
               <motion.button
                 key={cat}
@@ -179,26 +182,42 @@ function ProyectosPage() {
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: i * 0.05 }}
                 onClick={() => setFiltro(cat)}
-                className={`px-5 py-2.5 rounded-full text-sm font-bold transition-all duration-300 ${
+                className={`relative group px-5 py-2.5 rounded-full text-sm font-bold transition-all duration-300 flex items-center gap-2 overflow-hidden ${
                   activo
-                    ? "text-white shadow-md"
-                    : "bg-white text-[var(--color-primary-dark)] border border-slate-200 hover:border-[var(--color-primary)]/40"
+                    ? "text-white shadow-[0_8px_16px_-4px_rgba(0,0,0,0.15)] scale-105"
+                    : "bg-white text-[var(--color-primary-dark)] border border-slate-200 hover:border-slate-300 hover:bg-slate-50"
                 }`}
                 style={
                   activo
-                    ? { background: cat === "Todos"
-                        ? "#FFC107"
-                        : c?.dot, borderColor: "transparent" }
+                    ? { background: cat === "Todos" ? "#1e293b" : c?.dot, borderColor: "transparent" }
                     : {}
                 }
               >
-                {cat !== "Todos" && c && (
-                  <span
-                    className="inline-block w-2 h-2 rounded-full mr-1.5 -translate-y-[1px] align-middle"
-                    style={{ backgroundColor: activo ? "rgba(255,255,255,0.7)" : c.dot }}
+                {/* Indicador de color para inactivos */}
+                {!activo && cat !== "Todos" && c && (
+                  <span className="w-2 h-2 rounded-full shadow-sm" style={{ backgroundColor: c.dot }} />
+                )}
+                
+                <span className="relative z-10">{cat}</span>
+                
+                {/* Contador */}
+                <span 
+                  className={`relative z-10 text-[11px] px-2 py-[1px] rounded-full font-black transition-colors ${
+                    activo 
+                      ? "bg-white/20 text-white" 
+                      : "bg-slate-100 text-slate-500 group-hover:bg-slate-200"
+                  }`}
+                >
+                  {count}
+                </span>
+
+                {/* Fondo hover sutil si no está activo */}
+                {!activo && cat !== "Todos" && c && (
+                  <div 
+                    className="absolute inset-0 opacity-0 group-hover:opacity-10 transition-opacity duration-300 pointer-events-none" 
+                    style={{ backgroundColor: c.dot }}
                   />
                 )}
-                {cat}
               </motion.button>
             )
           })}
