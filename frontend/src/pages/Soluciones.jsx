@@ -68,27 +68,33 @@ function FAQItem({ faq, i, abierto, setAbierto }) {
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true }}
       transition={{ delay: i * 0.06 }}
-      className={`rounded-2xl border overflow-hidden transition-all duration-300 ${
+      className={`group rounded-2xl border transition-all duration-500 overflow-hidden ${
         isOpen
-          ? "border-[var(--color-primary)]/40 shadow-[0_4px_24px_-4px_rgba(14,165,233,0.15)]"
-          : "border-slate-100 bg-white"
+          ? "border-[var(--color-primary)] bg-[var(--color-primary)]/5 shadow-xl"
+          : "border-slate-100 bg-white hover:border-slate-300"
       }`}
     >
       <button
         type="button"
         onClick={() => setAbierto(isOpen ? null : i)}
-        className="w-full flex items-center justify-between px-6 py-5 text-left gap-4"
+        className="w-full relative flex items-center justify-between px-8 py-6 text-left gap-5 outline-none"
       >
-        <span className={`flex items-center gap-2 font-semibold text-sm sm:text-base leading-snug ${isOpen ? "text-[var(--color-primary-dark)]" : "text-[var(--color-primary-dark)]"}`}>
-          <HelpCircle size={16} className={`shrink-0 transition-colors duration-300 ${isOpen ? "text-[var(--color-primary)]" : "text-slate-400"}`} />
+        {/* Acento lateral */}
+        <div className={`absolute left-0 top-1/2 -translate-y-1/2 w-1.5 h-8 rounded-r-full transition-all duration-300 ${isOpen ? "bg-[var(--color-primary)]" : "bg-slate-200 group-hover:bg-slate-300"}`} />
+        
+        <span className={`flex items-center gap-4 font-bold transition-colors duration-300 text-sm sm:text-base md:text-lg tracking-tight ${isOpen ? "text-[var(--color-primary-dark)]" : "text-slate-700"}`}>
+          <div className={`p-2 rounded-xl transition-all border ${isOpen ? "bg-[var(--color-primary)] text-white border-[var(--color-primary)] shadow-lg shadow-[var(--color-primary)]/20" : "bg-slate-50 text-slate-400 border-slate-100"}`}>
+            <HelpCircle size={18} strokeWidth={2.5} />
+          </div>
           {faq.p}
         </span>
-        <div
-          className={`shrink-0 w-8 h-8 rounded-full flex items-center justify-center transition-all duration-300 font-black text-lg leading-none select-none ${
-            isOpen ? "bg-[var(--color-primary)] text-white" : "bg-slate-100 text-slate-500"
-          }`}
-        >
-          {isOpen ? "−" : "+"}
+        
+        <div className={`shrink-0 w-10 h-10 rounded-2xl flex items-center justify-center transition-all duration-500 ${
+          isOpen ? "bg-[var(--color-primary)] text-white rotate-180" : "bg-slate-50 text-slate-400 group-hover:bg-slate-100"
+        }`}>
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round">
+            <path d="m6 9 6 6 6-6"/>
+          </svg>
         </div>
       </button>
       <AnimatePresence>
@@ -97,12 +103,14 @@ function FAQItem({ faq, i, abierto, setAbierto }) {
             initial={{ height: 0, opacity: 0 }}
             animate={{ height: "auto", opacity: 1 }}
             exit={{ height: 0, opacity: 0 }}
-            transition={{ duration: 0.28 }}
-            className="overflow-hidden"
+            transition={{ duration: 0.4, ease: "circOut" }}
           >
-            <p className="px-6 pb-5 text-[var(--color-text-muted)] text-sm leading-relaxed border-t border-slate-100 pt-4">
-              {faq.r}
-            </p>
+            <div className="px-8 pb-8 pl-[4.5rem]">
+               <div className="h-px w-full bg-[var(--color-primary)]/10 mb-6" />
+               <p className="text-[var(--color-text-muted)] text-sm md:text-base leading-relaxed font-medium">
+                {faq.r}
+              </p>
+            </div>
           </motion.div>
         )}
       </AnimatePresence>
@@ -122,28 +130,62 @@ function Soluciones() {
         description="Implementación de sistemas solares confiables."
         patternId="soluciones"
       />
-      {/* ── STRIP DE BENEFICIOS ── */}
-      <section className="relative -mt-20 mb-28 z-20 px-6">
-        <div className="max-w-7xl mx-auto grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
+      {/* ── SECCIÓN DE BENEFICIOS PREMIUM ── */}
+      <section className="relative z-30 -mt-24 px-6 mb-24">
+        <div className="max-w-7xl mx-auto grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
           {beneficios.map((b, i) => (
             <motion.div
               key={i}
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
+              initial={{ opacity: 0, y: 30 }}
+              whileInView={{ 
+                opacity: 1, 
+                y: 0,
+                transition: { duration: 0.5, delay: i * 0.1 } // Entrada con delay solo aquí
+              }}
+              whileHover={{ 
+                borderColor: `${b.color}00`, 
+                y: -10,
+                transition: { duration: 0.1 } // Subida rápida
+              }}
               viewport={{ once: true }}
-              transition={{ delay: i * 0.1 }}
-              className="bg-white rounded-3xl p-6 shadow-[0_20px_50px_-20px_rgba(0,0,0,0.1)] border border-slate-100 flex items-center gap-5 group hover:border-[var(--color-primary)]/30 transition-all hover:-translate-y-1"
+              transition={{ 
+                duration: 0.2, // Bajada rápida (por defecto)
+                type: "spring", 
+                damping: 25 
+              }}
+              className="group relative bg-white/70 backdrop-blur-xl rounded-[2.5rem] p-8 shadow-[0_8px_40px_-12px_rgba(0,0,0,0.08)] border-2 flex flex-col items-center text-center gap-5 transition-all duration-500 hover:shadow-[0_20px_50px_-12px_rgba(0,0,0,0.12)] overflow-hidden"
+              style={{ borderColor: `${b.color}60` }} // Borde de color inicial bien visible
             >
+              {/* Brillo de fondo al hover */}
               <div 
-                className="w-14 h-14 rounded-2xl flex items-center justify-center shrink-0 shadow-sm group-hover:scale-110 transition-transform duration-300" 
-                style={{ backgroundColor: `${b.color}15` }}
+                className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none"
+                style={{ background: `radial-gradient(circle at 50% 0%, ${b.color}10, transparent 70%)` }}
+              />
+
+              <div
+                className="w-16 h-16 rounded-[1.5rem] flex items-center justify-center shrink-0 shadow-inner group-hover:scale-110 group-hover:rotate-6 transition-all duration-500 relative z-10"
+                style={{ 
+                  backgroundColor: `${b.color}15`,
+                  boxShadow: `inset 0 0 20px ${b.color}10`
+                }}
               >
-                <b.icon size={26} style={{ color: b.color }} strokeWidth={2.2} />
+                <b.icon size={28} style={{ color: b.color }} strokeWidth={2.2} />
               </div>
-              <div className="flex flex-col gap-1">
-                <h3 className="font-black text-[var(--color-primary-dark)] text-sm tracking-tight">{b.titulo}</h3>
-                <p className="text-[var(--color-text-muted)] text-[12px] font-medium leading-normal">{b.desc}</p>
+
+              <div className="flex flex-col gap-2 relative z-10">
+                <h3 className="font-black text-[var(--color-primary-dark)] text-base tracking-tight leading-none">
+                  {b.titulo}
+                </h3>
+                <p className="text-[var(--color-text-muted)] text-[13px] font-semibold leading-relaxed px-2">
+                  {b.desc}
+                </p>
               </div>
+
+              {/* Indicador de acento inferior */}
+              <div 
+                className="absolute bottom-0 left-1/2 -translate-x-1/2 w-0 h-1 rounded-full transition-all duration-200 group-hover:w-24"
+                style={{ backgroundColor: b.color }}
+              />
             </motion.div>
           ))}
         </div>
@@ -235,32 +277,31 @@ function Soluciones() {
 
         {/* ── FAQ ── */}
         <section className="mb-28">
-          <div className="text-center mb-14">
-            <motion.span
-              initial={{ opacity: 0, y: 10 }}
-              whileInView={{ opacity: 1, y: 0 }}
+          <div className="text-center mb-16">
+            <motion.div
+              initial={{ opacity: 0, scale: 0.9 }}
+              whileInView={{ opacity: 1, scale: 1 }}
               viewport={{ once: true }}
-              className="inline-block text-[var(--color-primary)] font-black tracking-[0.25em] uppercase text-[10px] sm:text-xs mb-4 py-1.5 px-4 bg-[var(--color-primary)]/5 rounded-full border border-[var(--color-primary)]/10 flex items-center gap-2 mx-auto"
+              className="inline-flex items-center gap-2 text-[var(--color-primary)] font-black tracking-[0.3em] text-[10px] sm:text-xs mb-6 py-2 px-6 bg-[var(--color-primary)]/5 rounded-full border border-[var(--color-primary)]/10 mx-auto group hover:bg-[var(--color-primary)]/10 transition-colors cursor-default"
             >
-              <HelpCircle size={14} />
-              Resolvemos tus dudas
-            </motion.span>
+              FAQ
+            </motion.div>
             <motion.h2
-              initial={{ opacity: 0, y: 15 }}
+              initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
-              transition={{ delay: 0.1 }}
-              className="text-3xl sm:text-4xl md:text-5xl font-black text-[var(--color-primary-dark)] mb-5 tracking-tight"
+              transition={{ delay: 0.1, duration: 0.6 }}
+              className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-black text-[var(--color-primary-dark)] mb-6 tracking-tight leading-[1.1]"
             >
               Preguntas{" "}
-              <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#0ea5e1] to-[#1ed760]">frecuentes</span>
+              <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#0ea5e1] to-[#1ed760] px-2">Frecuentes</span>
             </motion.h2>
-            <p className="text-[var(--color-text-muted)] text-base md:text-lg max-w-xl mx-auto font-medium leading-relaxed">
+            <p className="text-[var(--color-text-muted)] text-base md:text-lg lg:text-xl max-w-3xl mx-auto font-medium leading-relaxed opacity-80">
               Todo lo que necesitas saber antes de dar el primer paso hacia la energía solar.
             </p>
           </div>
 
-          <div className="max-w-3xl mx-auto space-y-3">
+          <div className="max-w-4xl mx-auto space-y-4">
             {faqs.map((faq, i) => (
               <FAQItem
                 key={i}
