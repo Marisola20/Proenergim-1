@@ -1,6 +1,6 @@
 import { useState } from "react"
 import { motion } from "framer-motion"
-import { Heart, Award, Target, Users, Zap, TreePine, Briefcase } from "lucide-react"
+import { Heart, Award, Target, Users, Zap, TreePine, Briefcase, MapPin } from "lucide-react"
 import HeroBanner from "../components/HeroBanner"
 import Trayectoria from "../sections/Trayectoria"
 
@@ -157,9 +157,68 @@ function Nosotros() {
         patternId="nosotros"
       />
 
-      <div className="max-w-7xl mx-auto px-6">
+      {/* ── SECCIÓN DE PROPÓSITO ÚNICO (LA GRAN PROMESA) ── */}
+      <section className="relative z-30 -mt-24 px-6 mb-24">
+        <motion.div
+           initial={{ opacity: 0, y: 30 }}
+           whileInView={{ opacity: 1, y: 0 }}
+           viewport={{ once: true }}
+           transition={{ duration: 0.6 }}
+           className="max-w-7xl mx-auto bg-white/80 backdrop-blur-xl rounded-4xl shadow-[0_20px_50px_-12px_rgba(0,0,0,0.12)] border-1 border-[var(--color-primary-light)] overflow-hidden flex flex-col lg:flex-row"
+        >
+          {/* Lado Izquierdo: El Gancho Visual/Texto */}
+          <div className="lg:w-2/5 p-10 md:p-14 flex flex-col justify-center bg-gradient-to-br from-white/40 to-transparent">
+            <h2 className="text-4xl sm:text-5xl md:text-6xl font-black tracking-tight leading-none text-[var(--color-primary-dark)]">
+              Más luz.<br />
+              Menos costo.<br />
+              <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#0ea5e1] to-[#1ed760]">Mejor futuro.</span>
+            </h2>
+          </div>
 
-        {/* ── VALORES ── */}
+          {/* Lado Derecho: Misión y Visión */}
+          <div className="lg:w-3/5 p-10 md:p-14 bg-[var(--color-primary-dark)] text-white flex flex-col justify-center gap-8">
+            {/* Misión */}
+            <div className="flex gap-5">
+              <div className="w-11 h-11 rounded-2xl bg-white/10 flex items-center justify-center shrink-0 border border-white/20">
+                <Target size={22} className="text-[#0ea5e1]" />
+              </div>
+              <div className="flex flex-col">
+                <h3 className="font-black uppercase text-[10px] tracking-[0.2em] text-[#0ea5e1] mb-1">Misión</h3>
+                <p className="text-white text-[13.5px] leading-relaxed font-semibold">
+                  Ser una empresa peruana que diseña, construye y mantiene sistemas solares que transforman vidas y sectores productivos en todo el Perú.
+                </p>
+              </div>
+            </div>
+
+            {/* Visión */}
+            <div className="flex gap-5">
+              <div className="w-11 h-11 rounded-2xl bg-white/10 flex items-center justify-center shrink-0 border border-white/20">
+                <Zap size={22} className="text-[#1ed760]" />
+              </div>
+              <div className="flex flex-col">
+                <h3 className="font-black uppercase text-[10px] tracking-[0.2em] text-[#1ed760] mb-1">Visión</h3>
+                <p className="text-white text-[13.5px] leading-relaxed font-semibold">
+                  Ser al 2028 el referente nacional en energía fotovoltaica, reconocidos por calidad y garantía en todos los sectores productivos del Perú.
+                </p>
+              </div>
+            </div>
+          </div>
+        </motion.div>
+      </section>
+
+      <div className="max-w-7xl mx-auto px-6">
+        
+        {/* Título de la sección de valores para separar contenido */}
+        <div className="text-center mb-12">
+            <motion.h2
+              initial={{ opacity: 0, y: 15 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              className="text-2xl sm:text-3xl font-black text-[var(--color-primary-dark)] tracking-tight opacity-50"
+            >
+              Nuestra Cultura Core
+            </motion.h2>
+        </div>
         <section className="mb-24">
           <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
             {valores.map((v, i) => (

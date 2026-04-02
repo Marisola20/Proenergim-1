@@ -305,21 +305,23 @@ function Trayectoria() {
           className="flex flex-row justify-center gap-4 sm:gap-6 mb-12 sm:mb-14"
         >
           {[
-            { icon: Briefcase, label: "Proyectos", value: proyectos },
-            { icon: Award, label: "Años exp.", value: anos },
-            { icon: MapPin, label: "Sedes", value: sedes },
-          ].map(({ icon: Icon, label, value }) => (
+            { icon: Briefcase, label: "Proyectos Instalados", value: proyectos, color: "#0ea5e1" },
+            { icon: Award, label: "Años de Experiencia", value: anos, color: "#1b9b4a" },
+            { icon: MapPin, label: "Sedes en Perú", value: sedes, color: "#f59e0b" },
+          ].map(({ icon: Icon, label, value, color }) => (
             <div
               key={label}
-              className="w-42 h-20 flex flex-row items-center justify-center gap-6 bg-white rounded-xl shadow-sm border border-[var(--color-primary)]/15"
+              className="px-6 py-4 bg-white rounded-2xl shadow-[0_4px_20px_-8px_rgba(0,0,0,0.1)] border border-slate-100 flex flex-row items-center gap-4 transition-all hover:shadow-lg hover:-translate-y-0.5"
             >
-              
-              <div className="w-10 h-10 rounded-lg bg-[var(--color-green)] flex items-center justify-center shadow-md">
-                <Icon size={20} className="text-white" />
+              <div 
+                className="w-11 h-11 rounded-xl flex items-center justify-center shrink-0 shadow-inner"
+                style={{ backgroundColor: `${color}10`, color: color }}
+              >
+                <Icon size={20} strokeWidth={2.5} />
               </div>
-              <div className="flex flex-col items-start justify-start">
-                <div className="text-[var(--color-primary-dark)] font-bold text-xl leading-none">+{value}</div>
-                <div className="text-[var(--color-text-muted)] text-[10px] font-medium tracking-wider">{label}</div>
+              <div className="flex flex-col">
+                <div className="text-[var(--color-primary-dark)] font-black text-xl leading-none">+{value}</div>
+                <div className="text-slate-400 text-[9px] uppercase font-black tracking-widest leading-none mt-1">{label}</div>
               </div>
             </div>
           ))}
