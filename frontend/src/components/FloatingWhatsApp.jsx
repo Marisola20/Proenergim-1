@@ -197,7 +197,7 @@ const KB = [
     waLabel: "conocer las sedes",
     keywords: ["sede","sedes","oficina","oficinas","donde estan","donde están","ubicacion","sucursal","direccion","dirección"],
     answer: () =>
-      `📍 *Nuestras sedes zonales:*\n\n• 🏙️ *Zonal Lima* — Costa central\n• 🌊 *Zonal La Libertad* — Trujillo\n• 🌞 *Zonal Piura - Tumbes* — Norte del Perú\n• 🌿 *Zonal Selva Sur* — Madre de Dios\n\nAtendemos proyectos en *todo el territorio nacional.* 🗺️`,
+      `📍 *Nuestras sedes zonales:*\n\n• 🏙️ *Zonal Lima* — Costa central\n• 🌊 *Zonal La Libertad* — Trujillo\n• 🌞 *Zonal Norte* — Piura - Tumbes\n• 🌿 *Zonal Selva Sur* — Madre de Dios\n\nAtendemos proyectos en *todo el territorio nacional.* 🗺️`,
   },
   {
     key: "contacto",
@@ -211,9 +211,15 @@ const KB = [
     key: "nosotros",
     label: "🌟 Quiénes somos",
     waLabel: "conocer más sobre Proenergim",
-    keywords: ["quienes son","empresa","proenergim","historia","sobre","nosotros","años","fundada","trayectoria","vision","visión","mision","misión","valores"],
+    keywords: [
+      "quienes son","quienes somos","quiénes somos","quiénes son",
+      "empresa","proenergim","historia","sobre","nosotros",
+      "años","fundada","trayectoria","vision","visión","mision","misión","valores",
+      "quiero saber","cuéntame","cuentame","de ustedes","sobre ustedes",
+      "que empresa","qué empresa","que son","qué son","a que se dedican","a qué se dedican"
+    ],
     answer: () =>
-      `🌟 *¿Quiénes somos?*\n\n*Proenergim* es una empresa peruana especializada en soluciones de energía renovable con presencia nacional.\n\n🎯 *Misión:* Brindar soluciones energéticas sostenibles de alta calidad que mejoren la calidad de vida de nuestros clientes y contribuyan al desarrollo del Perú.\n\n👁️ *Visión:* Ser la empresa referente en energía renovable en el Perú, liderando la transición hacia un futuro más limpio y eficiente.\n\n✅ Equipo técnico certificado\n✅ Proyectos ejecutados en múltiples regiones\n✅ Atención personalizada y soporte post-venta\n✅ Comprometidos con la sostenibilidad 🌿\n\nConoce nuestra trayectoria en la sección *Nosotros* del sitio web. 🇵🇪`,
+      `🌿 *Proenergim* es una empresa peruana especializada en soluciones de energía renovable con presencia nacional.\n\n🎯 *Misión:* Brindar soluciones energéticas sostenibles de alta calidad que mejoren la calidad de vida de nuestros clientes y contribuyan al desarrollo del Perú.\n\n👁️ *Visión:* Ser la empresa referente en energía renovable en el Perú, liderando la transición hacia un futuro más limpio y eficiente.\n\n✅ Equipo técnico certificado\n✅ Proyectos ejecutados en múltiples regiones\n✅ Atención personalizada y soporte post-venta\n✅ Comprometidos con la sostenibilidad\n\nConoce nuestra trayectoria en la sección *Nosotros* del sitio web. 🇵🇪`,
   },
   {
     key: "solar",
@@ -239,10 +245,37 @@ const KB = [
     answer: () =>
       `💧 *Bombeo Solar:*\n\n• 🌱 *Riego tecnificado* — eficiencia y ahorro\n• 🏘️ *Agua potable rural* — sin necesidad de red eléctrica\n• 🐄 *Ganadería* — suministro confiable y continuo\n• 🌾 *Agricultura* — pozos y canales solares\n\nFuncionan incluso en días nublados. ¿Cuál es tu necesidad? 🤔`,
   },
+  {
+    key: "agradecimiento",
+    label: null,
+    waLabel: "agradecer",
+    keywords: ["gracias","muchas gracias","agradecido","vale","listo","ok","entendido","genial","perfecto","excelente"],
+    answer: (n) =>
+      `¡De nada${n ? `, ${n}` : ""}! 😊 Es un placer ayudarte. ¿Hay algo más en lo que pueda asesorarte hoy?`,
+  },
+  {
+    key: "saludo",
+    label: null,
+    waLabel: "saludar",
+    keywords: ["hola","hey","buenas","buenos dias","buenas tardes","buenas noches","saludos","holi"],
+    answer: (n) =>
+      `¡Hola${n ? ` de nuevo, ${n}` : ""}! 👋 ¿En qué más puedo ayudarte hoy?`,
+  },
+  {
+    key: "despedida",
+    label: null,
+    waLabel: "despedirse",
+    keywords: ["no","nada mas","nada más","chao","adios","adiós","hasta luego","todo bien","eso es todo","así está bien"],
+    answer: (n) =>
+      `¡Entendido${n ? `, ${n}` : ""}! Si necesitas algo más en el futuro, aquí estaré. ¡Que tengas un excelente día! 👋`,
+  },
 ]
 
 // Opciones que aparecen como botones rápidos
 const QUICK_OPTIONS = KB.filter(k => k.label).map(k => ({ key: k.key, label: k.label, waLabel: k.waLabel }))
+
+// Lista de departamentos formateada para el picker de ciudad
+const DEPTS = PERU_DEPARTMENTS.map(d => d.replace(/\b\w/g, c => c.toUpperCase()))
 
 const EMOJI_LIST = [
   "😊","👋","☀️","🔋","💡","✅","🏠","🌿","💚","❓",
@@ -536,23 +569,44 @@ function FloatingWhatsApp() {
     }
   }
 
-  const openWhatsApp = () => {
-    // Línea de presentación
-    const nombrePart = userName ? `*${userName}*` : "un visitante del sitio web"
+  const openWhatsApp = async () => {
+    // Guardar lead en BD
+    try {
+      await fetch("http://localhost:5000/api/chat-leads", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          nombre: userName || "Visitante",
+          ciudad: userCity || "",
+          tema: lastTopic || "consulta general",
+        })
+      })
+    } catch (e) {
+      console.error("Error guardando lead del chat:", e)
+    }
+
+    // Construir mensaje
+    const nombrePart = userName ? `*${userName}*` : "un visitante"
     const ciudadPart = userCity ? ` desde *${userCity}*` : ""
 
-    // Tema de consulta
-    const lastUserMsg = [...messages].reverse().find(m => m.sender === "user")
-    const tema = lastTopic !== "consulta general" && lastTopic
+    const noTemas = ["despedirse", "agradecer", "saludar", "consulta general"]
+    const tema = !noTemas.includes(lastTopic)
       ? lastTopic.charAt(0).toUpperCase() + lastTopic.slice(1)
-      : lastUserMsg?.text || "Quisiera recibir más información."
+      : "recibir mas informacion sobre sus servicios"
 
     const msg =
-      `👋 Hola, soy ${nombrePart}${ciudadPart}.\n` +
-      `Me comuniqué desde el sitio web y quería consultar sobre:\n\n` +
-      `❓ ${tema}`
+      `Hola, soy ${nombrePart}${ciudadPart}.\n` +
+      `Me comunique desde el sitio web y queria consultar sobre:\n\n` +
+      `${tema}`
 
-    window.open(`https://wa.me/${WHATSAPP}?text=${encodeURIComponent(msg)}`, "_blank")
+    // Abrir WhatsApp con anchor para evitar re-encoding
+    const link = document.createElement("a")
+    link.href = `https://wa.me/${WHATSAPP}?text=${encodeURIComponent(msg)}`
+    link.target = "_blank"
+    link.rel = "noreferrer"
+    document.body.appendChild(link)
+    link.click()
+    document.body.removeChild(link)
   }
 
   const lastBotMsg = [...messages].reverse().find(m => m.sender === "bot")
@@ -637,7 +691,7 @@ function FloatingWhatsApp() {
                         ? "bg-white text-gray-800 rounded-2xl rounded-tl-none border-gray-100/80"
                         : "bg-[#d9fdd3] text-gray-800 rounded-2xl rounded-tr-none border-[#c5f0be]"
                     }`}>
-                      {isBot && <p className="text-[9px] font-black text-[#075e54] mb-1 uppercase tracking-wider">Asesor Proenergim</p>}
+                      {isBot && <p className="text-[9px] font-black text-[#075e54] mb-1 uppercase tracking-wider">Asistente Proenergim</p>}
                       <div className="font-medium whitespace-pre-wrap">{formatText(msg.text)}</div>
                     </div>
                     <span className="text-[9px] text-gray-400 mt-0.5 px-1">{msg.time}</span>
