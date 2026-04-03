@@ -65,7 +65,7 @@ function Productos() {
           <div className="lg:w-2/5 p-10 md:p-14 flex flex-col justify-center bg-gradient-to-br from-white/40 to-transparent">
             <h2 className="text-4xl sm:text-5xl md:text-6xl font-black tracking-tight leading-none text-[var(--color-primary-dark)]">
               Calidad comprobada.<br />
-              <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#fcd34d] to-[#fb923c]">Rendimiento garantizado.</span>
+              <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#0ea5e1] to-[#1ed760]">Rendimiento garantizado.</span>
             </h2>
           </div>
 
@@ -80,10 +80,10 @@ function Productos() {
             {/* Garantía */}
             <div className="flex gap-5 relative z-10">
               <div className="w-11 h-11 rounded-2xl bg-white/10 flex items-center justify-center shrink-0 border border-white/20">
-                <ShieldCheck size={22} className="text-[#fcd34d]" />
+                <ShieldCheck size={22} className="text-[#7ad7ff]" />
               </div>
               <div className="flex flex-col">
-                <h3 className="font-black uppercase text-[10px] tracking-[0.2em] text-[#fcd34d] mb-1">Marcas Líderes</h3>
+                <h3 className="font-black uppercase text-[10px] tracking-[0.2em] text-[#7ad7ff] mb-1">Marcas Líderes</h3>
                 <p className="text-white text-[14px] leading-relaxed font-medium">
                   Trabajamos con el top 10 de fabricantes solares a nivel nacional.
                 </p>
@@ -93,10 +93,10 @@ function Productos() {
             {/* Soporte */}
             <div className="flex gap-5 relative z-10">
               <div className="w-11 h-11 rounded-2xl bg-white/10 flex items-center justify-center shrink-0 border border-white/20">
-                <Wrench size={22} className="text-[#fb923c]" />
+                <Wrench size={22} className="text-[#3cf57c]" />
               </div>
               <div className="flex flex-col">
-                <h3 className="font-black uppercase text-[10px] tracking-[0.2em] text-[#fb923c] mb-1">Soporte Continuo</h3>
+                <h3 className="font-black uppercase text-[10px] tracking-[0.2em] text-[#3cf57c] mb-1">Soporte Continuo</h3>
                 <p className="text-white text-[14px] leading-relaxed font-medium">
                   Acompañamiento técnico para el rendimiento óptimo de tu inversión.
                 </p>
