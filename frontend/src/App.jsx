@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react"
 import { BrowserRouter, Routes, Route, useLocation } from "react-router-dom"
 import { AnimatePresence } from "framer-motion"
+import Admin from "./pages/Admin"
 import Navbar from "./components/Navbar"
 import Footer from "./components/Footer"
 import Home from "./pages/Home"
@@ -26,6 +27,9 @@ function ScrollToTop({ location }) {
 
 function AppContent() {
   const location = useLocation()
+
+  // ── Detectar si es ruta admin ──
+  const isAdmin = location.pathname.startsWith("/admin")
   
   // Lógica para diferenciar entre Bienvenida Inicial y Carga de Rutas
   const [isFirstLoad, setIsFirstLoad] = useState(() => {
@@ -75,23 +79,33 @@ function AppContent() {
       <ScrollToTop location={displayLocation} />
       
       {/* Contenido principal: Solo ocultar si es la Bienvenida Inicial */}
-      <div className={isFirstLoad ? "opacity-0 invisible h-screen overflow-hidden" : "opacity-100 visible transition-opacity duration-700"}>
-        <Navbar />
-        <Routes location={displayLocation} key={displayLocation.pathname}>
-          <Route path="/" element={<Home />} />
-          <Route path="/nosotros" element={<Nosotros />} />
-          <Route path="/soluciones" element={<Soluciones />} />
-          <Route path="/contacto" element={<ContactoPage />} />
-          <Route path="/politica-privacidad" element={<PoliticaPrivacidad />} />
-          <Route path="/terminos-condiciones" element={<TerminosCondiciones />} />
-          <Route path="/proyectos" element={<ProyectosPage />} />
-          <Route path="/productos" element={<Productos />} />
-          <Route path="/proyecto/:id" element={<ProyectoDetalle />} />
+      {/* ── Ruta Admin (sin Navbar/Footer) ── */}
+      {isAdmin && (
+        <Routes location={displayLocation}>
+          <Route path="/admin/*" element={<Admin />} />
         </Routes>
-        <Novedades />
-        <Footer />
-        <FloatingWhatsApp />
-      </div>
+      )}
+
+      {/* Contenido principal */}
+      {!isAdmin && (
+        <div className={isFirstLoad ? "opacity-0 invisible h-screen overflow-hidden" : "opacity-100 visible transition-opacity duration-700"}>
+          <Navbar />
+          <Routes location={displayLocation} key={displayLocation.pathname}>
+            <Route path="/" element={<Home />} />
+            <Route path="/nosotros" element={<Nosotros />} />
+            <Route path="/soluciones" element={<Soluciones />} />
+            <Route path="/contacto" element={<ContactoPage />} />
+            <Route path="/politica-privacidad" element={<PoliticaPrivacidad />} />
+            <Route path="/terminos-condiciones" element={<TerminosCondiciones />} />
+            <Route path="/proyectos" element={<ProyectosPage />} />
+            <Route path="/productos" element={<Productos />} />
+            <Route path="/proyecto/:id" element={<ProyectoDetalle />} />
+          </Routes>
+          <Novedades />
+          <Footer />
+          <FloatingWhatsApp />
+        </div>
+      )}
     </>
   )
 }
