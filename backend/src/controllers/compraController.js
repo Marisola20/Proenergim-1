@@ -1,5 +1,4 @@
 import nodemailer from "nodemailer"
-import fetch from "node-fetch"
 import Compra from "../models/compra.js"
 
 
@@ -14,19 +13,12 @@ export const enviarSolicitudCompra = async (req, res) => {
 *Celular:* ${celular}
 *Correo:* ${correo || "No proporcionado"}
 *Descripción:* ${descripcion || "Sin descripción"}`
-
   try {
     // ── 1. Guardar en MongoDB ──
     // dentro del try, antes de enviar WhatsApp y correo:
     await Compra.create({ producto, precio, nombre, celular, correo, descripcion })
     
-    // ── 2. WhatsApp via CallMeBot ──
-    const phone = process.env.WHATSAPP_PHONE
-    const apikey = process.env.CALLMEBOT_APIKEY
-    const textEncoded = encodeURIComponent(mensaje)
-    await fetch(`https://api.callmebot.com/whatsapp.php?phone=${phone}&text=${textEncoded}&apikey=${apikey}`)
-
-    // ── 3. Correo via Nodemailer ──
+    // ── 2. Correo via Nodemailer ──
     const transporter = nodemailer.createTransport({
       service: "gmail",
       auth: {
