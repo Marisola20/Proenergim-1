@@ -572,7 +572,7 @@ function FloatingWhatsApp() {
   const openWhatsApp = async () => {
     // Guardar lead en BD
     try {
-      await fetch(`https://proenergim-1.onrender.com/api/leads`, {
+      await fetch(`https://proenergim-1.onrender.com/api/chat-leads`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({

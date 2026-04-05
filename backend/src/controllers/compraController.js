@@ -1,8 +1,10 @@
-import nodemailer from "nodemailer";
-import fetch from "node-fetch";
+import nodemailer from "nodemailer"
+import fetch from "node-fetch"
+import Compra from "../models/compra.js"
+
 
 export const enviarSolicitudCompra = async (req, res) => {
-  const { nombre, celular, correo, descripcion, producto, precio } = req.body;
+  const { nombre, celular, correo, descripcion, producto, precio } = req.body
 
   const mensaje = `🛒 *Nueva Solicitud de Compra - Proenergim*
   
@@ -14,14 +16,17 @@ export const enviarSolicitudCompra = async (req, res) => {
 *Descripción:* ${descripcion || "Sin descripción"}`
 
   try {
-    // ── 1. WhatsApp via CallMeBot ──
+    // ── 1. Guardar en MongoDB ──
+    // dentro del try, antes de enviar WhatsApp y correo:
+    await Compra.create({ producto, precio, nombre, celular, correo, descripcion })
+    
+    // ── 2. WhatsApp via CallMeBot ──
     const phone = process.env.WHATSAPP_PHONE
     const apikey = process.env.CALLMEBOT_APIKEY
     const textEncoded = encodeURIComponent(mensaje)
-
     await fetch(`https://api.callmebot.com/whatsapp.php?phone=${phone}&text=${textEncoded}&apikey=${apikey}`)
 
-    // ── 2. Correo via Nodemailer ──
+    // ── 3. Correo via Nodemailer ──
     const transporter = nodemailer.createTransport({
       service: "gmail",
       auth: {
@@ -50,5 +55,25 @@ export const enviarSolicitudCompra = async (req, res) => {
   } catch (error) {
     console.error("Error al enviar solicitud:", error)
     res.status(500).json({ success: false, message: "Error al enviar solicitud" })
+  }
+}
+
+export const getCompras = async (req, res) => {
+  try {
+    const compras = await Compra.find().sort({ createdAt: -1 })
+    res.json(compras)
+  } catch (error) {
+    console.error("Error al obtener compras:", error)
+    res.status(500).json({ success: false, message: "Error al obtener compras" })
+  }
+}
+
+export const eliminarCompras = async (req, res) => {
+  try {
+    await Compra.deleteMany({})
+    res.json({ success: true, message: "Todas las compras han sido eliminadas" })
+  } catch (error) {
+    console.error("Error al eliminar compras:", error)
+    res.status(500).json({ success: false, message: "Error al eliminar compras" })
   }
 }

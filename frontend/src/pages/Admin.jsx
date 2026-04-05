@@ -11,6 +11,7 @@ export default function Admin() {
   const [error, setError] = useState("")
   const [leads, setLeads] = useState([])
   const [chatLeads, setChatLeads] = useState([])
+  const [compras, setCompras] = useState([])
   const [loading, setLoading] = useState(false)
   const [tab, setTab] = useState("leads")
   const [toast, setToast] = useState(null)
@@ -55,8 +56,22 @@ export default function Admin() {
     setLoading(false)
   }
 
+  const cargarCompras = async () => {
+    setLoading(true)
+    try {
+      const res = await fetch(`${API_URL}/api/compra`)
+      const data = await res.json()
+      setCompras(Array.isArray(data) ? data : [])
+    } catch (e) { console.error(e) }
+    setLoading(false)
+  }
+
   useEffect(() => {
-    if (auth) { cargarLeads(); cargarChatLeads() }
+    if (auth) { 
+      cargarLeads()
+      cargarChatLeads()
+      cargarCompras()
+    }
   }, [auth])
 
   const limpiarLeads = async () => {
@@ -71,6 +86,13 @@ export default function Admin() {
     await fetch(`${API_URL}/api/chat-leads`, { method: "DELETE" })
     setChatLeads([])
     showToast("Leads del chat eliminados ✓")
+  }
+
+  const limpiarCompras = async () => {
+    if (!confirm("¿Segura que quieres limpiar todas las solicitudes de compra?")) return
+    await fetch(`${API_URL}/api/compra`, { method: "DELETE" })
+    setCompras([])
+    showToast("Solicitudes de compra eliminadas ✓")
   }
 
   const exportarCSV = (data, nombre) => {
@@ -88,7 +110,7 @@ export default function Admin() {
     showToast("CSV exportado correctamente ✓")
   }
 
-  const currentData = tab === "leads" ? leads : chatLeads
+  const currentData = tab === "leads" ? leads : tab === "chat" ? chatLeads : compras
 
   // ── LOGIN ──────────────────────────────────────────────────
   if (!auth) {
@@ -205,9 +227,10 @@ export default function Admin() {
           {[
             { label: "Leads Formulario", value: leads.length, icon: Users, color: "#0ea5e1", bg: "#e0f2fe" },
             { label: "Leads Chat", value: chatLeads.length, icon: MessageSquare, color: "#1ed760", bg: "#dcfce7" },
-            { label: "Total Leads", value: leads.length + chatLeads.length, icon: Users, color: "#8b5cf6", bg: "#f5f3ff" },
-            { label: "Esta semana", value: [...leads, ...chatLeads].filter(l => {
-              const d = new Date(l.fecha)
+            { label: "Total Compras", value: compras.length, icon: FileText, color: "#f59e0b", bg: "#fef3c7" },
+            { label: "Total Interacciones", value: leads.length + chatLeads.length + compras.length, icon: Users, color: "#8b5cf6", bg: "#f5f3ff" },
+            { label: "Esta semana", value: [...leads, ...chatLeads, ...compras].filter(l => {
+              const d = new Date(l.fecha || l.createdAt)
               const now = new Date()
               const diff = (now - d) / (1000 * 60 * 60 * 24)
               return diff <= 7
@@ -235,6 +258,7 @@ export default function Admin() {
               {[
                 { key: "leads", label: `Formulario (${leads.length})` },
                 { key: "chat", label: `Chat (${chatLeads.length})` },
+                { key: "compras", label: `Compras (${compras.length})` },
               ].map(t => (
                 <button
                   key={t.key}
@@ -252,20 +276,28 @@ export default function Admin() {
             {/* Acciones */}
             <div className="flex gap-2 flex-wrap">
               <button
-                onClick={() => tab === "leads" ? cargarLeads() : cargarChatLeads()}
+                onClick={() => {
+                  if (tab === "leads") cargarLeads()
+                  else if (tab === "chat") cargarChatLeads()
+                  else cargarCompras()
+                }}
                 className="flex items-center gap-1.5 px-4 py-2 rounded-xl border border-slate-200 text-slate-500 hover:bg-slate-50 font-bold text-xs transition-all"
               >
                 <RefreshCw size={13} /> Actualizar
               </button>
               <button
-                onClick={() => exportarCSV(currentData, tab === "leads" ? "leads_formulario" : "leads_chat")}
+                onClick={() => exportarCSV(currentData, tab === "leads" ? "leads_formulario" : tab === "chat" ? "leads_chat" : "compras")}
                 className="flex items-center gap-1.5 px-4 py-2 rounded-xl font-bold text-xs text-white transition-all hover:-translate-y-0.5"
                 style={{ background: "linear-gradient(135deg, #0ea5e1, #0284c7)" }}
               >
                 <FileText size={13} /> Exportar CSV
               </button>
               <button
-                onClick={() => tab === "leads" ? limpiarLeads() : limpiarChatLeads()}
+                onClick={() => {
+                  if (tab === "leads") limpiarLeads()
+                  else if (tab === "chat") limpiarChatLeads()
+                  else limpiarCompras()
+                }}
                 className="flex items-center gap-1.5 px-4 py-2 rounded-xl font-bold text-xs text-white bg-red-500 hover:bg-red-600 transition-all hover:-translate-y-0.5"
               >
                 <Trash2 size={13} /> Limpiar BD
@@ -296,7 +328,11 @@ export default function Admin() {
                       ? ["Nombre", "Teléfono", "Correo", "Origen", "Fecha"].map(h => (
                         <th key={h} className="text-left px-6 py-4 text-xs font-black text-slate-400 uppercase tracking-wider">{h}</th>
                       ))
-                      : ["Nombre", "Ciudad", "Tema", "Origen", "Fecha"].map(h => (
+                      : tab === "chat"
+                      ? ["Nombre", "Ciudad", "Tema", "Origen", "Fecha"].map(h => (
+                        <th key={h} className="text-left px-6 py-4 text-xs font-black text-slate-400 uppercase tracking-wider">{h}</th>
+                      ))
+                      : ["Producto", "Precio", "Cliente", "WhatsApp", "Fecha"].map(h => (
                         <th key={h} className="text-left px-6 py-4 text-xs font-black text-slate-400 uppercase tracking-wider">{h}</th>
                       ))
                     }
@@ -305,19 +341,34 @@ export default function Admin() {
                 <tbody>
                   {currentData.map((l, i) => (
                     <tr key={i} className="border-t border-slate-50 hover:bg-slate-50/80 transition-colors">
-                      <td className="px-6 py-4 font-black text-[#031e32] text-sm">{l.nombre || "-"}</td>
-                      <td className="px-6 py-4 text-slate-500 text-sm">{tab === "leads" ? (l.telefono || "-") : (l.ciudad || "-")}</td>
-                      <td className="px-6 py-4 text-slate-500 text-sm max-w-[200px] truncate">{tab === "leads" ? (l.empresa || "-") : (l.tema || "-")}</td>
-                      <td className="px-6 py-4">
-                        <span className="px-2.5 py-1 rounded-full text-[10px] font-black uppercase tracking-wider"
-                          style={l.origen === "chat_flotante"
-                            ? { background: "#dcfce7", color: "#15803d" }
-                            : { background: "#e0f2fe", color: "#0369a1" }}>
-                          {l.origen || "web"}
-                        </span>
-                      </td>
+                      {tab !== "compras" ? (
+                        <>
+                          <td className="px-6 py-4 font-black text-[#031e32] text-sm">{l.nombre || "-"}</td>
+                          <td className="px-6 py-4 text-slate-500 text-sm">{tab === "leads" ? (l.telefono || "-") : (l.ciudad || "-")}</td>
+                          <td className="px-6 py-4 text-slate-500 text-sm max-w-[200px] truncate">{tab === "leads" ? (l.empresa || "-") : (l.tema || "-")}</td>
+                          <td className="px-6 py-4">
+                            <span className="px-2.5 py-1 rounded-full text-[10px] font-black uppercase tracking-wider"
+                              style={l.origen === "chat_flotante"
+                                ? { background: "#dcfce7", color: "#15803d" }
+                                : { background: "#e0f2fe", color: "#0369a1" }}>
+                              {l.origen || "web"}
+                            </span>
+                          </td>
+                        </>
+                      ) : (
+                        <>
+                          <td className="px-6 py-4 font-black text-[#031e32] text-sm max-w-[180px] truncate">{l.producto || "-"}</td>
+                          <td className="px-6 py-4 text-slate-500 text-sm font-bold">S/. {l.precio || "-"}</td>
+                          <td className="px-6 py-4 text-slate-500 text-sm">{l.nombre || "-"}</td>
+                          <td className="px-6 py-4 text-[#0ea5e1] font-bold text-sm">
+                            <a href={`https://wa.me/51${l.celular}`} target="_blank" rel="noreferrer">
+                              {l.celular || "-"}
+                            </a>
+                          </td>
+                        </>
+                      )}
                       <td className="px-6 py-4 text-slate-400 text-xs font-medium">
-                        {new Date(l.fecha).toLocaleString("es-PE", { day: "2-digit", month: "short", hour: "2-digit", minute: "2-digit" })}
+                        {new Date(l.fecha || l.createdAt).toLocaleString("es-PE", { day: "2-digit", month: "short", hour: "2-digit", minute: "2-digit" })}
                       </td>
                     </tr>
                   ))}
