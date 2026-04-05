@@ -42,7 +42,7 @@ function Productos() {
     e.preventDefault()
     setEnviando(true)
     try {
-      const res = await fetch("http://localhost:5000/api/compra", {
+      const res = await fetch("https://proenergim-1.onrender.com/api/compra", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
