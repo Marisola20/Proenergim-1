@@ -92,7 +92,7 @@ function Hero() {
                 Soluciones de energía solar
               </span>
               <span className="block text-2xl sm:text-4xl md:text-5xl lg:text-[80px]">
-                que transforman tu hogar
+                que transforman tu negocio
               </span>
             </h1>
 

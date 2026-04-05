@@ -1,50 +1,17 @@
 import { motion } from "framer-motion"
-import { Zap, Sun, Droplets, Battery, Wind, Settings, ShieldCheck, Wrench } from "lucide-react"
+import { ShieldCheck, Wrench } from "lucide-react"
 import HeroBanner from "../components/HeroBanner"
 
 const productos = [
-  {
-    icon: Sun,
-    titulo: "Paneles Solares",
-    descripcion: "Sistemas fotovoltaicos residenciales e industriales de alta eficiencia para generación de energía limpia.",
-    color: "#f59e0b",
-    precio: null,
-  },
-  {
-    icon: Droplets,
-    titulo: "Bombas de Agua Solar",
-    descripcion: "Soluciones de bombeo solar para riego tecnificado, agua potable rural y uso agrícola.",
-    color: "#0ea5e9",
-    precio: null,
-  },
-  {
-    icon: Battery,
-    titulo: "Sistemas de Almacenamiento",
-    descripcion: "Baterías y sistemas de respaldo energético para garantizar autonomía las 24 horas.",
-    color: "#8b5cf6",
-    precio: null,
-  },
-  {
-    icon: Zap,
-    titulo: "Instalaciones Eléctricas",
-    descripcion: "Proyectos de electrificación rural y urbana con estándares de seguridad y calidad.",
-    color: "#1ed760",
-    precio: null,
-  },
-  {
-    icon: Wind,
-    titulo: "Energía Eólica",
-    descripcion: "Sistemas híbridos solar-eólico para comunidades remotas y proyectos de gran escala.",
-    color: "#06b6d4",
-    precio: null,
-  },
-  {
-    icon: Settings,
-    titulo: "Mantenimiento",
-    descripcion: "Servicio técnico especializado, monitoreo y mantenimiento preventivo de sistemas instalados.",
-    color: "#f97316",
-    precio: null,
-  },
+  { titulo: "Paneles Solares 400W Monocristalino", precio: "799.70" },
+  { titulo: "Bomba de Agua Solar 1HP", precio: "1,721.08" },
+  { titulo: "Batería Litio 100Ah 12V", precio: "1,112.62" },
+  { titulo: "Inversor Solar 3kW MPPT", precio: "1,477.70" },
+  { titulo: "Kit Solar Residencial 2kW", precio: "2,633.78" },
+  { titulo: "Panel Solar Industrial 550W", precio: "5,650.02" },
+  { titulo: "Sistema Eólico 1kW", precio: "7,388.49" },
+  { titulo: "Variador Bombeo Solar 5.5kW", precio: "10,083.12" },
+  { titulo: "Sistema Híbrido Solar-Eólico 10kW", precio: "17,993.15" },
 ]
 
 function Productos() {
@@ -67,17 +34,15 @@ function Productos() {
           transition={{ duration: 0.6 }}
           className="max-w-6xl mx-auto bg-white/80 backdrop-blur-xl rounded-4xl shadow-[0_20px_50px_-12px_rgba(0,0,0,0.12)] border-1 border-[var(--color-primary-light)] overflow-hidden flex flex-col lg:flex-row"
         >
-          {/* Lado Izquierdo */}
           <div className="lg:w-2/5 p-10 md:p-14 flex flex-col justify-center bg-gradient-to-br from-white/40 to-transparent">
             <h2 className="text-4xl sm:text-5xl md:text-6xl font-black tracking-tight leading-none text-[var(--color-primary-dark)]">
-              Calidad comprobada.<br />
+              Top calidad.<br />
               <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#0ea5e1] to-[#1ed760]">
                 Rendimiento garantizado.
               </span>
             </h2>
           </div>
 
-          {/* Lado Derecho */}
           <div className="lg:w-3/5 p-10 md:p-14 bg-[var(--color-primary-dark)] text-white flex flex-col justify-center gap-8 relative overflow-hidden">
             <div className="absolute top-[-20px] right-[10%] w-24 h-24 bg-white/[0.03] rounded-full pointer-events-none" />
             <div className="absolute bottom-[-10px] left-[15%] w-20 h-20 bg-white/[0.04] rounded-full pointer-events-none" />
@@ -109,68 +74,45 @@ function Productos() {
         </motion.div>
       </section>
 
-      {/* ── GRID DE PRODUCTOS ESTILO CATÁLOGO ── */}
+      {/* ── GRID DE PRODUCTOS ── */}
       <section className="pb-16 px-3 sm:px-6 bg-white">
-        <div className="max-w-6xl mx-auto">
-          <div className="grid grid-cols-3 sm:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-6">
-            {productos.map((prod, i) => {
-              const Icon = prod.icon
-              return (
-                <motion.div
-                  key={prod.titulo}
-                  initial={{ opacity: 0, y: 24 }}
-                  whileInView={{ opacity: 1, y: 0 }}
-                  viewport={{ once: true, margin: "-10% 0px" }}
-                  transition={{ duration: 0.45, delay: i * 0.07 }}
-                  className="group bg-white rounded-2xl border border-gray-100 hover:border-[var(--color-primary)]/30 shadow-sm hover:shadow-lg transition-all duration-300 overflow-hidden cursor-pointer"
-                >
-                  {/* Imagen con badge de precio */}
-                  <div className="relative">
-                    <img
-                      src="/prueba1.webp"
-                      alt={prod.titulo}
-                      className="w-full aspect-square object-cover bg-gray-50"
-                    />
-                    {/* Badge precio */}
-                    <div className="absolute bottom-0 left-0 right-0 bg-[#1a7a3f] text-white text-center py-1.5 px-2">
-                      <span className="font-bold text-xs sm:text-sm">
-                        {prod.precio ? `S/. ${prod.precio}` : "Precio a consultar"}
-                      </span>
-                    </div>
+        <div className="max-w-5xl mx-auto">
+          <div className="grid grid-cols-3 sm:grid-cols-3 md:grid-cols-3 lg:grid-cols-3 gap-2 sm:gap-4">
+            {productos.map((prod, i) => (
+              <motion.div
+                key={prod.titulo}
+                initial={{ opacity: 0, y: 24 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true, margin: "-10% 0px" }}
+                transition={{ duration: 0.45, delay: i * 0.07 }}
+                className="group bg-white rounded-xl border border-[var(--color-primary)]/40 hover:shadow-md transition-all duration-300 overflow-hidden cursor-pointer"
+              >
+                {/* Imagen con badge precio */}
+                <div className="relative">
+                  <img
+                    src="/images/Trayectoria/prueba1.webp"
+                    alt={prod.titulo}
+                    className="w-full aspect-square object-cover bg-gray-50"
+                  />
+                  {/* Badge precio */}
+                  <div
+                    className="absolute bottom-0 left-0 right-0 text-center py-1 px-1"
+                    style={{ backgroundColor: "var(--color-green)" }}
+                  >
+                    <span className="font-bold text-[14px] sm:text-xs md:text-lg lg:text-2xl text-white">
+                      S/. {prod.precio}
+                    </span>
                   </div>
+                </div>
 
-                  {/* Info del producto */}
-                  <div className="p-2 sm:p-4">
-                    {/* Icono pequeño + nombre */}
-                    <div className="flex items-start gap-2 mb-1">
-                      <div
-                        className="w-6 h-6 sm:w-8 sm:h-8 rounded-lg flex items-center justify-center shrink-0"
-                        style={{ backgroundColor: `${prod.color}20` }}
-                      >
-                        <Icon size={14} style={{ color: prod.color }} />
-                      </div>
-                      <h3
-                        className="font-bold text-xs sm:text-sm leading-tight"
-                        style={{ color: "var(--color-primary-dark)" }}
-                      >
-                        {prod.titulo}
-                      </h3>
-                    </div>
-
-                    {/* Descripción solo visible en pantallas más grandes */}
-                    <p className="hidden sm:block text-[var(--color-text-muted)] text-xs leading-relaxed mt-1">
-                      {prod.descripcion}
-                    </p>
-
-                    {/* Línea decorativa */}
-                    <div
-                      className="mt-2 h-0.5 w-8 rounded-full transition-all duration-300 group-hover:w-full"
-                      style={{ background: `linear-gradient(90deg, ${prod.color}, ${prod.color}55)` }}
-                    />
-                  </div>
-                </motion.div>
-              )
-            })}
+                {/* Nombre */}
+                <div className="px-2 py-1.5">
+                  <p className="text-[5px] sm:text-[10px] md:text-lg lg:text-xl font-medium leading-tight text-center text-[var(--color-primary-dark)] line-clamp-2">
+                    {prod.titulo}
+                  </p>
+                </div>
+              </motion.div>
+            ))}
           </div>
         </div>
       </section>

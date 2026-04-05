@@ -169,9 +169,8 @@ function Nosotros() {
           {/* Lado Izquierdo: El Gancho Visual/Texto */}
           <div className="lg:w-2/5 p-10 md:p-14 flex flex-col justify-center bg-gradient-to-br from-white/40 to-transparent">
             <h2 className="text-4xl sm:text-5xl md:text-6xl font-black tracking-tight leading-none text-[var(--color-primary-dark)]">
-              Más luz.<br />
-              Menos costo.<br />
-              <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#0ea5e1] to-[#1ed760]">Mejor futuro.</span>
+              Juntos.<br />
+              <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#0ea5e1] to-[#1ed760]">Crecemos.</span>
             </h2>
           </div>
 
@@ -191,7 +190,7 @@ function Nosotros() {
               <div className="flex flex-col">
                 <h3 className="font-black uppercase text-[10px] tracking-[0.2em] text-[#7ad7ff] mb-1">Misión</h3>
                 <p className="text-white text-[14px] leading-relaxed font-medium">
-                  Ser una empresa peruana que diseña, construye y mantiene sistemas solares que transforman vidas y sectores productivos en todo el Perú.
+                  Diseñamos y construimos sistemas solares para agricultura, electrificación e industria, impulsando el desarrollo sostenible de cada comunidad.
                 </p>
               </div>
             </div>
@@ -204,7 +203,7 @@ function Nosotros() {
               <div className="flex flex-col">
                 <h3 className="font-black uppercase text-[10px] tracking-[0.2em] text-[#3cf57c] mb-1">Visión</h3>
                 <p className="text-white text-[14px] leading-relaxed font-medium">
-                  Ser al 2028 el referente nacional en energía fotovoltaica, reconocidos por calidad y garantía en todos los sectores productivos del Perú.
+                  Al 2028, ser la mejor alternativa en calidad y garantía para proyectos fotovoltaicos en todos los sectores productivos del país.               
                 </p>
               </div>
             </div>
