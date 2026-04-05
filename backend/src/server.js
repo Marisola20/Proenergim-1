@@ -5,6 +5,7 @@ import dotenv from "dotenv";
 import connectDB from "./config/db.js";
 import leadRoutes from "./routes/leadRoutes.js";
 import chatLeadRoutes from "./routes/chatLeadRoutes.js";
+import compraRoutes from "./routes/compraRoutes.js"
 
 dotenv.config();
 
@@ -21,6 +22,7 @@ app.use(express.json());
 // rutas
 app.use("/api/leads", leadRoutes);
 app.use("/api/chat-leads", chatLeadRoutes);
+app.use("/api/compra", compraRoutes)
 
 // test
 app.get("/api/health", (req, res) => {
