@@ -4,17 +4,17 @@ import { ShieldCheck, Wrench, X } from "lucide-react"
 import HeroBanner from "../components/HeroBanner"
 
 const productos = [
-  { titulo: "2.2 KW Monofásico 220V", precio: "799.70" },
-  { titulo: "5.5 KW Monofásico 220V", precio: "1,721.08" },
-  { titulo: "5.5 KW Trifásico 380V", precio: "1,112.62" },
-  { titulo: "11 KW Trifásico 380V", precio: "1,477.70" },
-  { titulo: "22 KW Trifásico 380V", precio: "2,633.78" },
-  { titulo: "55 KW Trifásico 380V", precio: "5,650.02" },
-  { titulo: "75 KW Trifásico 380V", precio: "7,388.49" },
-  { titulo: "110 KW Trifásico 380V", precio: "10,083.12" },
-  { titulo: "200 KW Trifásico 380V", precio: "17,993.15" },
-  { titulo: "Disyuntor de CC de Polos 600V CC. 16A", precio: "38.25" },
-  { titulo: "Disyuntor de CC de Polos 320A", precio: "305.91" },
+  { titulo: "Inversor 2.2 KW Monofásico 220V", marca: "Usfull", precio: "799.70" },
+  { titulo: "Inversor 5.5 KW Monofásico 220V", marca: "Usfull", precio: "1,721.08" },
+  { titulo: "Inversor 5.5 KW Trifásico 380V", marca: "Usfull", precio: "1,112.62" },
+  { titulo: "Inversor 11 KW Trifásico 380V", marca: "Usfull", precio: "1,477.70" },
+  { titulo: "Inversor 22 KW Trifásico 380V", marca: "Usfull", precio: "2,633.78" },
+  { titulo: "Inversor 55 KW Trifásico 380V", marca: "Usfull", precio: "5,650.02" },
+  { titulo: "Inversor 75 KW Trifásico 380V", marca: "Usfull", precio: "7,388.49" },
+  { titulo: "Inversor 110 KW Trifásico 380V", marca: "Usfull", precio: "10,083.12" },
+  { titulo: "Inversor 200 KW Trifásico 380V", marca: "Usfull", precio: "17,993.15" },
+  { titulo: "Disyuntor CC 2 Polos 600V 16A", marca: "Usfull", precio: "38.25" },
+  { titulo: "Disyuntor CC 2 Polos 320A", marca: "Usfull", precio: "305.91" },
 ]
 
 function Productos() {
@@ -49,7 +49,7 @@ function Productos() {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           ...form,
-          producto: productoSeleccionado.titulo,
+          producto: `${prod.marca} ${productoSeleccionado.titulo}`,
           precio: productoSeleccionado.precio,
         }),
       })
@@ -136,18 +136,27 @@ function Productos() {
                 transition={{ duration: 0.45, delay: i * 0.07 }}
                 className="group bg-white rounded-xl border border-[var(--color-primary)]/40 hover:shadow-md transition-all duration-300 overflow-hidden"
               >
-                {/* Imagen con badge precio */}
+                {/* Imagen */}
                 <div className="relative">
                   <img
                     src="/images/productos/producto1.webp"
                     alt={prod.titulo}
                     className="w-full aspect-square object-cover bg-gray-50"
                   />
+
+                  {/* Badge marca */}
+                  <div className="absolute top-2 left-2 bg-white/90 backdrop-blur-sm rounded-md px-1.5 py-0.5 shadow-sm border border-gray-100">
+                    <span className="text-[8px] sm:text-[10px] font-black tracking-wide text-[var(--color-primary-dark)]">
+                      {prod.marca}
+                    </span>
+                  </div>
+
+                  {/* Precio */}
                   <div
                     className="absolute bottom-0 left-0 right-0 text-center py-1 px-1"
                     style={{ backgroundColor: "var(--color-green)" }}
                   >
-                    <span className="font-bold text-[10px] sm:text-xs text-white">
+                    <span className="font-bold text-[9px] sm:text-xs md:text-sm lg:text-base text-white">
                       S/. {prod.precio}
                     </span>
                   </div>
@@ -155,7 +164,8 @@ function Productos() {
 
                 {/* Nombre + Botón */}
                 <div className="px-2 py-2 flex flex-col gap-1.5">
-                  <p className="text-[9px] sm:text-[11px] font-medium leading-tight text-center text-[var(--color-primary-dark)] line-clamp-2">
+                  <p className="text-[8px] leading-tight text-center font-medium text-[var(--color-primary-dark)] line-clamp-3"
+                    style={{ fontSize: "clamp(7px, 2vw, 14px)" }}>
                     {prod.titulo}
                   </p>
                   <button
@@ -189,7 +199,6 @@ function Productos() {
               className="bg-white rounded-2xl p-6 w-full max-w-md shadow-2xl relative"
               onClick={(e) => e.stopPropagation()}
             >
-              {/* Cerrar */}
               <button
                 onClick={cerrarModal}
                 className="absolute top-4 right-4 text-gray-400 hover:text-gray-600"
@@ -203,7 +212,10 @@ function Productos() {
                     Solicitar compra
                   </h2>
                   <p className="text-xs text-gray-500 mb-4">
-                    <span className="font-semibold text-[var(--color-primary-dark)]">{productoSeleccionado?.titulo}</span> — S/. {productoSeleccionado?.precio}
+                    <span className="font-semibold text-[var(--color-primary-dark)]">
+                      {productoSeleccionado?.marca} {productoSeleccionado?.titulo}
+                    </span>{" "}
+                    — S/. {productoSeleccionado?.precio}
                   </p>
 
                   <form onSubmit={handleSubmit} className="flex flex-col gap-3">
