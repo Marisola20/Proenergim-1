@@ -4,15 +4,17 @@ import { ShieldCheck, Wrench, X } from "lucide-react"
 import HeroBanner from "../components/HeroBanner"
 
 const productos = [
-  { titulo: "Paneles Solares 400W Monocristalino", precio: "799.70" },
-  { titulo: "Bomba de Agua Solar 1HP", precio: "1,721.08" },
-  { titulo: "Batería Litio 100Ah 12V", precio: "1,112.62" },
-  { titulo: "Inversor Solar 3kW MPPT", precio: "1,477.70" },
-  { titulo: "Kit Solar Residencial 2kW", precio: "2,633.78" },
-  { titulo: "Panel Solar Industrial 550W", precio: "5,650.02" },
-  { titulo: "Sistema Eólico 1kW", precio: "7,388.49" },
-  { titulo: "Variador Bombeo Solar 5.5kW", precio: "10,083.12" },
-  { titulo: "Sistema Híbrido Solar-Eólico 10kW", precio: "17,993.15" },
+  { titulo: "2.2 KW Monofásico 220V", precio: "799.70" },
+  { titulo: "5.5 KW Monofásico 220V", precio: "1,721.08" },
+  { titulo: "5.5 KW Trifásico 380V", precio: "1,112.62" },
+  { titulo: "11 KW Trifásico 380V", precio: "1,477.70" },
+  { titulo: "22 KW Trifásico 380V", precio: "2,633.78" },
+  { titulo: "55 KW Trifásico 380V", precio: "5,650.02" },
+  { titulo: "75 KW Trifásico 380V", precio: "7,388.49" },
+  { titulo: "110 KW Trifásico 380V", precio: "10,083.12" },
+  { titulo: "200 KW Trifásico 380V", precio: "17,993.15" },
+  { titulo: "Disyuntor de CC de Polos 600V CC. 16A", precio: "38.25" },
+  { titulo: "Disyuntor de CC de Polos 320A", precio: "305.91" },
 ]
 
 function Productos() {
@@ -137,7 +139,7 @@ function Productos() {
                 {/* Imagen con badge precio */}
                 <div className="relative">
                   <img
-                    src="/images/Trayectoria/prueba1.webp"
+                    src="/images/productos/producto1.webp"
                     alt={prod.titulo}
                     className="w-full aspect-square object-cover bg-gray-50"
                   />
