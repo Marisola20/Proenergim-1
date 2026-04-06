@@ -75,8 +75,17 @@ function Contacto({ mostrarBloqueProveedores = false }) {
   // Validaciones por campo
   const nombreValido = /^[a-zA-ZáéíóúÁÉÍÓÚñÑüÜ\s]+$/.test(nombre.trim()) && nombre.trim() !== ""
   const correoValido = correo.includes("@") && correo.trim() !== ""
-  const telefonoValido = /^[0-9]+$/.test(telefono.trim()) && telefono.trim() !== ""
+  const telefonoValido = /^[0-9]{9}$/.test(telefono.trim()) && telefono.trim() !== ""
   const camposCompletos = nombreValido && correoValido && telefonoValido
+
+  const formatearTelefono = (valor) => {
+    const soloDigitos = valor.replace(/\D/g, "").slice(0, 9)
+    setTelefono(soloDigitos)
+  }
+
+  const telefonoFormateado = telefono
+    .replace(/^(\d{3})(\d{1,3})?/, (_, a, b) => b ? `${a} ${b}` : a)
+    .replace(/^(\d{3} \d{3})(\d{1,3})?/, (_, a, b) => b ? `${a} ${b}` : a)
 
   const enviarFormulario = async () => {
     if (!camposCompletos) return
@@ -189,7 +198,7 @@ function Contacto({ mostrarBloqueProveedores = false }) {
                           : "border-slate-200 focus:ring-[var(--color-primary)]"}`} />
                   </div>
                   {nombre && !nombreValido && (
-                    <p className="text-red-500 text-xs pl-4">Ingresar correctamente sus nombres</p>
+                    <p className="text-slate-400 text-xs pl-4">*Ingresar correctamente sus nombres</p>
                   )}
                 </div>
                 {/* Correo + Teléfono en la misma fila */}
@@ -208,23 +217,28 @@ function Contacto({ mostrarBloqueProveedores = false }) {
                             : "border-slate-200 focus:ring-[var(--color-primary)]"}`} />
                     </div>
                     {correo && !correoValido && (
-                      <p className="text-red-500 text-xs pl-4">Ingresar correctamente su correo</p>
+                      <p className="text-slate-400 text-xs pl-4">*Ingresar correctamente su correo</p>
                     )}
                   </div>
                   <div className="flex flex-col gap-1">
                     <div className="relative">
                       <Phone size={16} className={`absolute left-4 top-1/2 -translate-y-1/2 ${telefono && !telefonoValido ? "text-red-400" : "text-[var(--color-primary)]"}`} />
                       <input
-                        value={telefono}
-                        onChange={(e) => setTelefono(e.target.value)}
+                        value={telefonoFormateado}
+                        onChange={(e) => formatearTelefono(e.target.value)}
                         type="tel"
-                        placeholder="Teléfono / Celular"
+                        inputMode="numeric"
+                        placeholder="+51 912 345 678"
+                        maxLength={11}
                         className={`w-full border rounded-full pl-11 pr-4 py-3.5 text-sm focus:outline-none focus:ring-2 bg-slate-50 transition-all
                           ${telefono && !telefonoValido
                             ? "border-red-400 focus:ring-red-300"
                             : "border-slate-200 focus:ring-[var(--color-primary)]"}`} />
                     </div>
-                    {telefono && !telefonoValido && (
+                    {telefono && telefono.length < 9 && (
+                      <p className="text-slate-400 text-xs pl-4">*Número de teléfono incompleto</p>
+                    )}
+                    {telefono && telefono.length === 9 && !telefonoValido && (
                       <p className="text-red-500 text-xs pl-4">Ingrese correctamente su número</p>
                     )}
                   </div>
@@ -265,15 +279,47 @@ function Contacto({ mostrarBloqueProveedores = false }) {
                 )}
 
                 {estado === "enviado" && (
-                  <p className="text-green-600 text-sm text-center mt-2 font-medium">
-                    Muchas gracias! En breve nos pondremos en contacto contigo.
-                  </p>
+                  <motion.div
+                    initial={{ opacity: 0, scale: 0.95 }}
+                    animate={{ opacity: 1, scale: 1 }}
+                    className="flex items-center gap-3 bg-green-50 border border-green-200 rounded-2xl px-5 py-3 mt-2"
+                  >
+                    <div className="w-10 h-10 rounded-full bg-green-100 flex items-center justify-center shrink-0">
+                      <Send size={18} className="text-green-600" />
+                    </div>
+                    <div className="flex-1">
+                      <p className="font-bold text-green-700 text-sm">¡Mensaje enviado!</p>
+                      <p className="text-xs text-green-600">Muchas gracias, en breve nos pondremos en contacto.</p>
+                    </div>
+                    <button
+                      onClick={() => { setEstado("idle"); setNombre(""); setCorreo(""); setTelefono("") }}
+                      className="text-xs text-green-600 hover:text-green-700 font-bold underline underline-offset-2 whitespace-nowrap"
+                    >
+                      Enviar otra solicitud
+                    </button>
+                  </motion.div>
                 )}
 
                 {estado === "error" && (
-                  <p className="text-red-500 text-sm text-center mt-2">
-                    Ocurrio un error. Por favor intenta nuevamente.
-                  </p>
+                  <motion.div
+                    initial={{ opacity: 0, scale: 0.95 }}
+                    animate={{ opacity: 1, scale: 1 }}
+                    className="flex items-center gap-3 bg-red-50 border border-red-200 rounded-2xl px-5 py-3 mt-2"
+                  >
+                    <div className="w-10 h-10 rounded-full bg-red-100 flex items-center justify-center shrink-0">
+                      <Send size={18} className="text-red-600" />
+                    </div>
+                    <div className="flex-1">
+                      <p className="font-bold text-red-700 text-sm">¡Error al enviar!</p>
+                      <p className="text-xs text-red-600">Ocurrio un error. Por favor intenta nuevamente.</p>
+                    </div>
+                    <button
+                      onClick={() => setEstado("idle")}
+                      className="text-xs text-red-600 hover:text-red-700 font-bold underline underline-offset-2 whitespace-nowrap"
+                    >
+                      Intentar de nuevo
+                    </button>
+                  </motion.div>
                 )}
               </div>
             </div>
