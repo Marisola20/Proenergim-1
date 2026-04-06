@@ -15,6 +15,7 @@ export default function Admin() {
   const [loading, setLoading] = useState(false)
   const [tab, setTab] = useState("leads")
   const [toast, setToast] = useState(null)
+  const [suscriptors, setSuscriptors] = useState([])
 
   const showToast = (msg, type = "ok") => {
     setToast({ msg, type })
@@ -66,11 +67,29 @@ export default function Admin() {
     setLoading(false)
   }
 
+  const cargarSuscriptors = async () => {
+    setLoading(true)
+    try {
+      const res = await fetch(`${API_URL}/api/suscriptors`)
+      const data = await res.json()
+      setSuscriptors(Array.isArray(data) ? data : [])
+    } catch (e) { console.error(e) }
+    setLoading(false)
+  }
+
+  const limpiarSuscriptors = async () => {
+    if (!confirm("¿Segura que quieres limpiar todos los suscriptores?")) return
+    await fetch(`${API_URL}/api/suscriptors`, { method: "DELETE" })
+    setSuscriptors([])
+    showToast("Suscriptors eliminados ✓")
+  }
+
   useEffect(() => {
     if (auth) { 
       cargarLeads()
       cargarChatLeads()
       cargarCompras()
+      cargarSuscriptors()
     }
   }, [auth])
 
@@ -110,7 +129,7 @@ export default function Admin() {
     showToast("CSV exportado correctamente ✓")
   }
 
-  const currentData = tab === "leads" ? leads : tab === "chat" ? chatLeads : compras
+  const currentData = tab === "leads" ? leads : tab === "chat" ? chatLeads : tab === "compras" ? compras : suscriptors
 
   // ── LOGIN ──────────────────────────────────────────────────
   if (!auth) {
@@ -223,10 +242,11 @@ export default function Admin() {
       <div className="max-w-6xl mx-auto px-4 sm:px-6 py-8">
 
         {/* Stats Cards */}
-        <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 mb-8">
+        <div className="grid grid-cols-2 sm:grid-cols-3 gap-4 mb-8">
           {[
             { label: "Leads Formulario", value: leads.length, icon: Users, color: "#0ea5e1", bg: "#e0f2fe" },
             { label: "Leads Chat", value: chatLeads.length, icon: MessageSquare, color: "#1ed760", bg: "#dcfce7" },
+            { label: "Suscriptores", value: suscriptors.length, icon: Users, color: "#d71ebbff", bg: "#fce7f3" },
             { label: "Total Compras", value: compras.length, icon: FileText, color: "#f59e0b", bg: "#fef3c7" },
             { label: "Total Interacciones", value: leads.length + chatLeads.length + compras.length, icon: Users, color: "#8b5cf6", bg: "#f5f3ff" },
             { label: "Esta semana", value: [...leads, ...chatLeads, ...compras].filter(l => {
@@ -259,6 +279,7 @@ export default function Admin() {
                 { key: "leads", label: `Formulario (${leads.length})` },
                 { key: "chat", label: `Chat (${chatLeads.length})` },
                 { key: "compras", label: `Compras (${compras.length})` },
+                { key: "suscriptors", label: `Suscriptores (${suscriptors.length})` },
               ].map(t => (
                 <button
                   key={t.key}
@@ -279,14 +300,15 @@ export default function Admin() {
                 onClick={() => {
                   if (tab === "leads") cargarLeads()
                   else if (tab === "chat") cargarChatLeads()
-                  else cargarCompras()
+                  else if (tab === "compras") cargarCompras()
+                  else if (tab === "suscriptors") cargarSuscriptors()
                 }}
                 className="flex items-center gap-1.5 px-4 py-2 rounded-xl border border-slate-200 text-slate-500 hover:bg-slate-50 font-bold text-xs transition-all"
               >
                 <RefreshCw size={13} /> Actualizar
               </button>
               <button
-                onClick={() => exportarCSV(currentData, tab === "leads" ? "leads_formulario" : tab === "chat" ? "leads_chat" : "compras")}
+                onClick={() => exportarCSV(currentData, tab === "leads" ? "leads_formulario" : tab === "chat" ? "leads_chat" : tab === "compras" ? "compras" : "suscriptors")}
                 className="flex items-center gap-1.5 px-4 py-2 rounded-xl font-bold text-xs text-white transition-all hover:-translate-y-0.5"
                 style={{ background: "linear-gradient(135deg, #0ea5e1, #0284c7)" }}
               >
@@ -296,7 +318,8 @@ export default function Admin() {
                 onClick={() => {
                   if (tab === "leads") limpiarLeads()
                   else if (tab === "chat") limpiarChatLeads()
-                  else limpiarCompras()
+                  else if (tab === "compras") limpiarCompras()
+                  else if (tab === "suscriptors") limpiarSuscriptors()
                 }}
                 className="flex items-center gap-1.5 px-4 py-2 rounded-xl font-bold text-xs text-white bg-red-500 hover:bg-red-600 transition-all hover:-translate-y-0.5"
               >
@@ -332,6 +355,10 @@ export default function Admin() {
                       ? ["Nombre", "Ciudad", "Tema", "Origen", "Fecha"].map(h => (
                         <th key={h} className="text-left px-6 py-4 text-xs font-black text-slate-400 uppercase tracking-wider">{h}</th>
                       ))
+                      : tab === "suscriptors"
+                      ? ["Correo", "Fecha"].map(h => (
+                        <th key={h} className="text-left px-6 py-4 text-xs font-black text-slate-400 uppercase tracking-wider">{h}</th>
+                      ))
                       : ["Producto", "Precio", "Cliente", "WhatsApp", "Fecha"].map(h => (
                         <th key={h} className="text-left px-6 py-4 text-xs font-black text-slate-400 uppercase tracking-wider">{h}</th>
                       ))
@@ -341,7 +368,9 @@ export default function Admin() {
                 <tbody>
                   {currentData.map((l, i) => (
                     <tr key={i} className="border-t border-slate-50 hover:bg-slate-50/80 transition-colors">
-                      {tab !== "compras" ? (
+                      {tab === "suscriptors" ? (
+                        <td className="px-6 py-4 font-bold text-[#031e32] text-sm">{l.email || "-"}</td>
+                      ) : tab !== "compras" ? (
                         <>
                           <td className="px-6 py-4 font-black text-[#031e32] text-sm">{l.nombre || "-"}</td>
                           <td className="px-6 py-4 text-slate-500 text-sm">{tab === "leads" ? (l.telefono || "-") : (l.ciudad || "-")}</td>
