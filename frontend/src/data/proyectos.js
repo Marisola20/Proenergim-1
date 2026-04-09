@@ -34,7 +34,7 @@ export const proyectos = [
     ubicacion: "Somate Bajo, Sullana, Piura",
     categoria: "Riego Tecnificado",
     cliente: "Limones Piuranos",
-    descripcion: "Riego tecnificado con sistema solar para 20 hectáreas de mango. Sistema de bombeo de 150 HP alimentado 100% con energía solar, eliminando el consumo de combustible y garantizando riego continuo para cultivos de exportación.",
+    descripcion: "Riego tecnificado con sistema solar para 20 hectáreas de mango.",
     video: "/videos/proyectos/proyecto1.mp4",
     images: [
       "/images/proyecto/Galeria/proyecto1/Imagen1.webp",
@@ -50,7 +50,7 @@ export const proyectos = [
     ubicacion: "Somate Bajo, Sullana, Piura",
     categoria: "Industrial",
     cliente: "Agrimuto",
-    descripcion: "Línea de clasificación, lavado y calibración de limones energizado con sistema solar para todos los motores industriales y otros equipos eléctricos. Solución integral que reduce drásticamente los costos operativos de la planta.",
+    descripcion: "Línea de clasificación, lavado y calibración de limones energizado con sistema solar para todos los motores industriales y otros equipos eléctricos.",
     video: "/videos/proyectos/proyecto2.mp4",
     images: [
       "/images/proyecto/Galeria/proyecto2/Imagen1.webp",
@@ -66,7 +66,7 @@ export const proyectos = [
     ubicacion: "Caserío Pedregal, Tambogrande, Piura",
     categoria: "Riego Tecnificado",
     cliente: "Fundo La Bodega",
-    descripcion: "Riego tecnificado con sistema solar para 20 hectáreas de mango. Instalación de sistema de bombeo solar de alta eficiencia que garantiza el suministro de agua constante para cultivos de mango de exportación.",
+    descripcion: "Riego tecnificado con sistema solar para 20 hectáreas de mango.",
     video: "/videos/proyectos/proyecto3.mp4",
     images: [
       "/images/proyecto/Galeria/proyecto3/Imagen1.webp",
@@ -82,7 +82,7 @@ export const proyectos = [
     ubicacion: "Cruceta, Tambogrande, Piura",
     categoria: "Riego Tecnificado",
     cliente: "Agrícola Romero",
-    descripcion: "Línea de riego semitecnificado de 04 pulgadas para 40 hectáreas con energía solar para cultivo de limón, mango, pitahaya y palta. Sistema diseñado para maximizar la eficiencia hídrica en cultivos mixtos de exportación.",
+    descripcion: "Línea de riego semitecnificado de 04 pulgadas para 40 hectáreas con energía solar para cultivo de limón, mango, pitahaya y palta.",
     video: "/videos/proyectos/proyecto4.mp4",
     images: [
       "/images/proyecto/Galeria/proyecto4/Imagen1.webp",
@@ -98,7 +98,7 @@ export const proyectos = [
     ubicacion: "Pedregal, Tambogrande, Piura",
     categoria: "Riego Tecnificado",
     cliente: "Fundo La Bodega",
-    descripcion: "Inyección de fertilizantes con electrobomba energizada con paneles solares. Sistema automatizado que permite la fertirrigación precisa y eficiente, reduciendo a cero el consumo eléctrico del proceso de fertilización.",
+    descripcion: "Inyección de fertilizantes con electrobomba energizada con paneles solares.",
     video: "/videos/proyectos/proyecto5.mp4",
     images: [
       "/images/proyecto/Galeria/proyecto5/Imagen1.webp",
@@ -114,7 +114,7 @@ export const proyectos = [
     ubicacion: "En todo el Perú",
     categoria: "Industrial",
     cliente: "",
-    descripcion: "Moto furgón con motor eléctrico y auto carga de paneles solares con capacidad para cargar una tonelada. Solución de transporte sostenible que aprovecha la energía solar para operar sin combustibles fósiles en todo el territorio nacional.",
+    descripcion: "Moto furgón con motor eléctrico y auto carga de paneles solares con capacidad para cargar una tonelada.",
     video: "/videos/proyectos/proyecto6.mp4",
     images: [
       "/images/proyecto/Galeria/proyecto6/Imagen1.webp",
@@ -130,7 +130,7 @@ export const proyectos = [
     ubicacion: "Chuquillanqui, Lucma, La Libertad",
     categoria: "Bombeo Solar",
     cliente: "Agrícola Chuquillanqui",
-    descripcion: "Impulsión de 2 pulgadas de agua desde el río Chicama hasta el reservorio ubicado a 300 mt de distancia y un diferencial de altura de 120 mt sobre un cerro. Para cultivos de pitahaya, palta, maracuyá y aloe vera.",
+    descripcion: "Impulsión de 2 pulgadas de agua desde el río Chicama hasta el reservorio ubicado a 300 mt de distancia y un diferencial de altura de 120 mt sobre un cerro.",
     video: "/videos/proyectos/proyecto7.mp4",
     images: [
       "/images/proyecto/Galeria/proyecto7/Imagen1.webp",
@@ -162,7 +162,7 @@ export const proyectos = [
     ubicacion: "El Papayal, Zarumilla, Tumbes",
     categoria: "Riego Tecnificado",
     cliente: "Agrícola Rentería",
-    descripcion: "Sistema de riego semitecnificado con energía solar para 5 hectáreas de limón. Solución completa que integra paneles solares, variador de frecuencia y sistema de riego por goteo para optimizar el uso del agua.",
+    descripcion: "Sistema de riego semitecnificado con energía solar para 5 hectáreas de limón.",
     video: "/videos/proyectos/proyecto9.mp4",
     images: [
       "/images/proyecto/Galeria/proyecto9/Imagen1.webp",

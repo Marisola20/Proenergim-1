@@ -70,7 +70,7 @@ function ClientesProveedores() {
             <span className="inline-block bg-[var(--color-primary)]/10 text-[var(--color-primary-dark)] text-xs font-bold px-3 py-1 rounded-full mb-3 uppercase tracking-widest">
               Confían en nosotros
             </span>
-            <h2 className="text-3xl font-bold text-[var(--color-primary-dark)]">
+            <h2 className="text-2xl md:text-3xl font-bold text-[var(--color-primary-dark)]">
               Nuestros clientes
             </h2>
           </div>
@@ -91,7 +91,7 @@ function ClientesProveedores() {
             <span className="inline-block bg-[var(--color-primary)]/10 text-[var(--color-primary-dark)] text-xs font-bold px-3 py-1 rounded-full mb-3 uppercase tracking-widest">
               Trabajamos con los mejores
             </span>
-            <h2 className="text-3xl font-bold text-[var(--color-primary-dark)]">
+            <h2 className="text-2xl md:text-3xl font-bold text-[var(--color-primary-dark)]">
               Nuestros proveedores
             </h2>
           </div>

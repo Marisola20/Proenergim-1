@@ -41,37 +41,88 @@ const chevronVariants = {
 
 function Hero() {
   const videoRef = useRef(null)
+  const [videoVisible, setVideoVisible] = useState(false)
 
   useEffect(() => {
+    const video = videoRef.current
+    if (!video) return
+
+    // Revisar cada 500ms si el video está corriendo de verdad
+    const interval = setInterval(() => {
+      const isPaused = video.paused || video.ended || document.hidden
+      setVideoVisible(v => !isPaused)
+    }, 500)
+
+    const handleVisibilityChange = () => {
+      if (!document.hidden) {
+        video.play().catch(() => {})
+      } else {
+        video.pause()
+        setVideoVisible(false)
+      }
+    }
+
+    // Escucha cualquier pausa/play del video directamente
+    const handlePlaying = () => setVideoVisible(true)
+    const handlePause = () => setVideoVisible(false)
+    const handleWaiting = () => setVideoVisible(false)
+
     const observer = new IntersectionObserver(
       ([entry]) => {
-        if (videoRef.current) {
-          if (entry.isIntersecting && !document.hidden) {
-            videoRef.current.play().catch(() => {})
-          } else {
-            videoRef.current.pause()
-          }
+        if (entry.isIntersecting && !document.hidden) {
+          video.play().catch(() => {})
+        } else {
+          video.pause()
         }
       },
       { threshold: 0.1 }
     )
-    if (videoRef.current) observer.observe(videoRef.current)
-    return () => observer.disconnect()
+
+    observer.observe(video)
+    video.addEventListener("playing", handlePlaying)
+    video.addEventListener("pause", handlePause)
+    video.addEventListener("waiting", handleWaiting)
+    document.addEventListener("visibilitychange", handleVisibilityChange)
+
+    return () => {
+      clearInterval(interval)
+      observer.disconnect()
+      video.removeEventListener("playing", handlePlaying)
+      video.removeEventListener("pause", handlePause)
+      video.removeEventListener("waiting", handleWaiting)
+      document.removeEventListener("visibilitychange", handleVisibilityChange)
+    }
   }, [])
 
   return (
-    <section id="inicio" className="relative min-h-[100dvh] flex items-center overflow-hidden pt-24">
-      {/* Video de fondo */}
+    <section 
+      id="inicio" 
+      className="relative min-h-[100dvh] flex items-center overflow-hidden pt-24 bg-gray-900"
+      style={{ 
+        backgroundImage: "url('/images/bienvenida/img-hero.webp')",
+        backgroundSize: "cover",
+        backgroundPosition: "center",
+      }}
+    >
+      {/* Imagen de fondo — solo visible cuando video NO está activo */}
+      <div
+        className="absolute inset-0 z-0 bg-cover bg-center bg-no-repeat transition-opacity duration-500"
+        style={{
+          backgroundImage: "url('/images/bienvenida/img-hero.webp')",
+          opacity: videoVisible ? 0 : 1,
+        }}
+      />
+
+      {/* Video */}
       <video
         ref={videoRef}
         autoPlay
         muted
         loop
         playsInline
-        poster="/images/bienvenida/img-hero.webp"
-        className="absolute inset-0 w-full h-full object-cover z-0"
         preload="metadata"
-        style={{ opacity: 0.9 }}
+        className="absolute inset-0 w-full h-full object-cover z-[1] transition-opacity duration-500"
+        style={{ opacity: videoVisible ? 0.9 : 0 }}
       >
         <source src="/videos/bienvenida/video-hero.mp4" type="video/mp4" />
       </video>
