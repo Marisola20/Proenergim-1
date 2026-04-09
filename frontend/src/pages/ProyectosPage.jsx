@@ -78,16 +78,11 @@ function ProyectoCard({ proyecto }) {
     >
       {/* Video miniatura */}
       <div className="h-52 w-full relative bg-slate-100 overflow-hidden">
-        <video
-          src={proyecto.video}
-          preload="none"
+        <img
+          src={proyecto.images[0]}
+          alt={proyecto.nombre}
           className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
-          style={{ willChange: "transform" }}
-          loop
-          muted
-          playsInline
-          onMouseEnter={(e) => e.target.play()}
-          onMouseLeave={(e) => { e.target.pause(); e.target.currentTime = 0 }}
+          style={{ loading: "lazy" }}
         />
         {/* Overlay */}
         <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-transparent to-transparent" />
@@ -103,12 +98,7 @@ function ProyectoCard({ proyecto }) {
           </span>
         </div>
 
-        {/* Play hint */}
-        <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-          <div className="w-12 h-12 rounded-full bg-white/20 backdrop-blur-sm border border-white/40 flex items-center justify-center">
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="white"><path d="M5 3l14 9-14 9V3z"/></svg>
-          </div>
-        </div>
+
       </div>
 
       {/* Contenido */}

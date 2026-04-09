@@ -68,11 +68,12 @@ function Hero() {
         muted
         loop
         playsInline
+        poster="/images/bienvenida/img-hero.webp"
         className="absolute inset-0 w-full h-full object-cover z-0"
         preload="metadata"
         style={{ opacity: 0.9 }}
       >
-        <source src="/videos/video-hero.mp4" type="video/mp4" />
+        <source src="/videos/bienvenida/video-hero.mp4" type="video/mp4" />
       </video>
 
       {/* Overlay transparente para eventos */}
