@@ -4,6 +4,7 @@ import { Target, Heart, BadgeCheck, ClipboardCheck, HandshakeIcon, Lightbulb, Tr
 import HeroBanner from "../components/HeroBanner"
 import Trayectoria from "../sections/Trayectoria"
 import ActionSection from "../components/ActionSection"
+import ImpactSection from "../components/ImpactSection"
 
 const valores = [
   {
@@ -159,58 +160,24 @@ function Nosotros() {
       />
 
       {/* ── SECCIÓN DE PROPÓSITO ÚNICO (LA GRAN PROMESA) ── */}
-      <section className="relative z-30 -mt-24 px-6 mb-24">
-        <motion.div
-           initial={{ opacity: 0, y: 30 }}
-           whileInView={{ opacity: 1, y: 0 }}
-           viewport={{ once: true }}
-           transition={{ duration: 0.6 }}
-           className="max-w-6xl mx-auto bg-white/80 backdrop-blur-xl rounded-4xl shadow-[0_20px_50px_-12px_rgba(0,0,0,0.12)] border-1 border-[var(--color-primary-light)] overflow-hidden flex flex-col lg:flex-row"
-        >
-          {/* Lado Izquierdo: El Gancho Visual/Texto */}
-          <div className="lg:w-2/5 p-10 md:p-14 flex flex-col justify-center bg-gradient-to-br from-white/40 to-transparent">
-            <h2 className="text-4xl sm:text-5xl md:text-6xl font-black tracking-tight leading-none text-[var(--color-primary-dark)]">
-              Juntos.<br />
-              <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#0ea5e1] to-[#1ed760]">Crecemos.</span>
-            </h2>
-          </div>
-
-          {/* Lado Derecho: Misión y Visión */}
-          <div className="lg:w-3/5 p-10 md:p-14 bg-[var(--color-primary-dark)] text-white flex flex-col justify-center gap-8 relative overflow-hidden">
-            {/* Círculos decorativos (Pequeños y sutiles) */}
-            <div className="absolute top-[-20px] right-[10%] w-24 h-24 bg-white/[0.03] rounded-full pointer-events-none" />
-            <div className="absolute bottom-[-10px] left-[15%] w-20 h-20 bg-white/[0.04] rounded-full pointer-events-none" />
-            <div className="absolute top-[40%] right-[5%] w-16 h-16 bg-white/[0.02] rounded-full blur-md pointer-events-none" />
-            <div className="absolute bottom-[20%] left-[5%] w-12 h-12 bg-white/[0.05] rounded-full pointer-events-none" />
-            
-            {/* Misión */}
-            <div className="flex gap-5 relative z-10">
-              <div className="w-11 h-11 rounded-2xl bg-white/10 flex items-center justify-center shrink-0 border border-white/20">
-                <Target size={22} className="text-[#7ad7ff]" />
-              </div>
-              <div className="flex flex-col">
-                <h3 className="font-black uppercase text-[10px] tracking-[0.2em] text-[#7ad7ff] mb-1">Misión</h3>
-                <p className="text-white text-[14px] leading-relaxed font-medium">
-                  Diseñamos y construimos sistemas solares para agricultura, electrificación e industria, impulsando el desarrollo sostenible de cada comunidad.
-                </p>
-              </div>
-            </div>
-
-            {/* Visión */}
-            <div className="flex gap-5 relative z-10">
-              <div className="w-11 h-11 rounded-2xl bg-white/10 flex items-center justify-center shrink-0 border border-white/20">
-                <Zap size={22} className="text-[#3cf57c]" />
-              </div>
-              <div className="flex flex-col">
-                <h3 className="font-black uppercase text-[10px] tracking-[0.2em] text-[#3cf57c] mb-1">Visión</h3>
-                <p className="text-white text-[14px] leading-relaxed font-medium">
-                  Al 2028, ser la mejor alternativa en calidad y garantía para proyectos fotovoltaicos en todos los sectores productivos del país.               
-                </p>
-              </div>
-            </div>
-          </div>
-        </motion.div>
-      </section>
+      <ImpactSection
+        title={<>Juntos.<br /></>}
+        highlight="Crecemos."
+        points={[
+          {
+            icon: Target,
+            label: "Misión",
+            text: "Diseñamos y construimos sistemas solares para agricultura, electrificación e industria, impulsando el desarrollo sostenible de cada comunidad.",
+            color: "#7ad7ff"
+          },
+          {
+            icon: Zap,
+            label: "Visión",
+            text: "Al 2028, ser la mejor alternativa en calidad y garantía para proyectos fotovoltaicos en todos los sectores productivos del país.",
+            color: "#3cf57c"
+          }
+        ]}
+      />
 
       <div className="max-w-7xl mx-auto px-6">
         

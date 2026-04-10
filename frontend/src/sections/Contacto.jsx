@@ -158,12 +158,12 @@ function Contacto({ mostrarBloqueProveedores = false }) {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true, margin: "-10% 0px" }}
               transition={{ delay: 0.1 }}
-              className="text-3xl sm:text-4xl md:text-5xl font-black text-[var(--color-primary-dark)] mb-5 tracking-tight"
+              className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-black text-[var(--color-primary-dark)] mb-5 tracking-tight"
             >
               Estamos{" "}<br className="hidden sm:block" />
               <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#0ea5e1] to-[#1ed760]">para ayudarte</span>
             </motion.h2>
-            <p className="text-[var(--color-text-muted)] text-base md:text-lg max-w-2xl mx-auto font-medium leading-relaxed">
+            <p className="text-[var(--color-text-muted)] text-sm sm:text-base md:text-lg max-w-2xl mx-auto font-medium leading-relaxed">
               Nuestro equipo está listo para asesorarte en soluciones de energía solar a medida.
             </p>
           </div>
