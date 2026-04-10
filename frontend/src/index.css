@@ -128,4 +128,8 @@ video {
   scrollbar-color: var(--color-primary) rgba(0, 0, 0, 0.05);
 }
 
+@keyframes ripple {
+  to { transform: scale(4); opacity: 0; }
+}
+
 

@@ -1,8 +1,9 @@
 import { useState } from "react"
 import { motion, AnimatePresence } from "framer-motion"
 import { servicios } from "../data/servicios"
-import { HelpCircle, MessageCircle, ShieldCheck, Zap, HeartHandshake, TrendingDown } from "lucide-react"
+import { HelpCircle, MessageCircle, ShieldCheck, Zap, HeartHandshake, TrendingDown, Sun } from "lucide-react"
 import HeroBanner from "../components/HeroBanner"
+import ActionSection from "../components/ActionSection"
 
 const WHATSAPP = "51936954890"
 
@@ -149,11 +150,12 @@ function Soluciones() {
               }}
               viewport={{ once: true }}
               transition={{ 
-                duration: 0.2, // Bajada rápida (por defecto)
+                duration: 0.15, 
                 type: "spring", 
-                damping: 25 
+                stiffness: 300,
+                damping: 20 
               }}
-              className="group relative bg-white/70 backdrop-blur-xl rounded-[2.5rem] p-8 shadow-[0_8px_40px_-12px_rgba(0,0,0,0.08)] border-2 flex flex-col items-center text-center gap-5 transition-all duration-500 hover:shadow-[0_20px_50px_-12px_rgba(0,0,0,0.12)] overflow-hidden"
+              className="group relative bg-white/70 backdrop-blur-xl rounded-[2.5rem] p-8 shadow-[0_8px_40px_-12px_rgba(0,0,0,0.08)] border-2 flex flex-col items-center text-center gap-5 hover:shadow-[0_20px_50px_-12px_rgba(0,0,0,0.12)] overflow-hidden"
               style={{ borderColor: `${b.color}60` }} // Borde de color inicial bien visible
             >
               {/* Brillo de fondo al hover */}
@@ -315,45 +317,18 @@ function Soluciones() {
         </section>
 
         {/* ── CTA FINAL ── */}
-        <motion.section
-          initial={{ opacity: 0, y: 24 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.5 }}
-          className="relative overflow-hidden rounded-3xl bg-[var(--color-primary-dark)] text-white text-center p-12 md:p-16"
-        >
-          {/* Decoración */}
-          <div className="absolute top-0 right-0 w-80 h-80 bg-white/5 rounded-full -translate-y-1/3 translate-x-1/3 pointer-events-none" />
-          <div className="absolute bottom-0 left-0 w-64 h-64 bg-white/5 rounded-full translate-y-1/3 -translate-x-1/3 pointer-events-none" />
-          <div className="absolute inset-0 opacity-[0.04] pointer-events-none"
-            style={{ backgroundImage: "radial-gradient(circle, #fff 1px, transparent 1px)", backgroundSize: "28px 28px" }}
+        <div className="mt-20">
+          <ActionSection
+            icon={<Sun size={28} className="text-[#fcd34d]" />}
+            title={({ accentFrom, accentTo }) => (
+              <>Da el paso a la <span className="text-transparent bg-clip-text" style={{ backgroundImage: `linear-gradient(to right, ${accentFrom}, ${accentTo})` }}>energía solar</span></>
+            )}
+            description="Cotiza gratis y recibe una propuesta a medida para tu empresa, fundo o comunidad."
+            buttonLabel="Hablar con un experto"
+            buttonHref={`https://wa.me/${WHATSAPP}?text=Hola, me interesa conocer más sobre sus soluciones solares`}
+            buttonEffect="magnetic"
           />
-
-          <div className="relative z-10">
-            <div className="w-16 h-16 rounded-2xl bg-white/10 border border-white/20 flex items-center justify-center mx-auto mb-6">
-              <svg viewBox="0 0 24 24" className="w-7 h-7 text-[#fcd34d]" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                <circle cx="12" cy="12" r="4"/>
-                <path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41"/>
-              </svg>
-            </div>
-            <h2 className="text-2xl sm:text-3xl md:text-4xl font-black mb-4 tracking-tight">
-              Da el paso a la{" "}
-              <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#38bdf8] to-[#1ed760]">energía solar</span>
-            </h2>
-            <p className="text-white/80 text-base md:text-lg font-medium mb-8 max-w-lg mx-auto leading-relaxed">
-              Cotiza gratis y recibe una propuesta a medida para tu empresa, fundo o comunidad.
-            </p>
-            <a
-              href={`https://wa.me/${WHATSAPP}?text=Hola, me interesa conocer más sobre sus soluciones solares`}
-              target="_blank"
-              rel="noreferrer noopener"
-              className="inline-flex items-center gap-2 bg-[#25D366] hover:bg-[#20BE5C] text-white font-black px-8 py-4 rounded-full transition-all duration-300 shadow-lg hover:shadow-xl hover:-translate-y-0.5"
-            >
-              <MessageCircle size={20} />
-              Hablar con un experto
-            </a>
-          </div>
-        </motion.section>
+        </div>
 
       </div>
     </main>
