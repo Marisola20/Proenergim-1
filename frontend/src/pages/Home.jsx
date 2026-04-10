@@ -8,7 +8,7 @@ import Contacto from "../sections/Contacto"
 
 function Home() {
   return (
-    <>
+    <div className="flex flex-col gap-16 md:gap-24">
       <Hero />
       <Servicios />
       <Trayectoria />
@@ -16,7 +16,7 @@ function Home() {
       <Proyectos />
       <Proveedores />
       <Contacto />
-    </>
+    </div>
   )
 }
 
