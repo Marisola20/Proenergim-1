@@ -3,14 +3,23 @@ import { motion, AnimatePresence } from "framer-motion"
 import { ChevronLeft, ChevronRight } from "lucide-react"
 import { servicios } from "../data/servicios"
 
-function useIsMobile() {
-  const [isMobile, setIsMobile] = useState(() => (typeof window !== "undefined" ? window.innerWidth < 768 : false))
+function useBreakpoint() {
+  const [bp, setBp] = useState(() => {
+    if (typeof window === "undefined") return "desktop"
+    if (window.innerWidth < 768) return "mobile"
+    if (window.innerWidth < 1100) return "tablet"
+    return "desktop"
+  })
   useEffect(() => {
-    const handler = () => setIsMobile(window.innerWidth < 768)
+    const handler = () => {
+      if (window.innerWidth < 768) setBp("mobile")
+      else if (window.innerWidth < 1100) setBp("tablet")
+      else setBp("desktop")
+    }
     window.addEventListener("resize", handler)
     return () => window.removeEventListener("resize", handler)
   }, [])
-  return isMobile
+  return bp
 }
 
 const ServiceCard = memo(({ servicio }) => {
@@ -69,8 +78,8 @@ const ServiceCard = memo(({ servicio }) => {
 ServiceCard.displayName = "ServiceCard";
 
 function Servicios() {
-  const isMobile = useIsMobile()
-  const VISIBLE = isMobile ? 1 : 3
+  const breakpoint = useBreakpoint()
+  const VISIBLE = breakpoint === "mobile" ? 1 : breakpoint === "tablet" ? 2 : 3
 
   const [startIndex, setStartIndex] = useState(0)
   
@@ -155,7 +164,11 @@ function Servicios() {
                 animate={{ opacity: 1, x: 0 }}
                 exit={{ opacity: 0, x: -20 }}
                 transition={{ duration: 0.4 }}
-                className={`grid gap-8 ${isMobile ? "grid-cols-1" : "grid-cols-3"}`}
+                className={`grid gap-8 ${
+                  breakpoint === "mobile" ? "grid-cols-1" 
+                  : breakpoint === "tablet" ? "grid-cols-2" 
+                  : "grid-cols-3"
+                }`}
               >
                 {visibleServicios.map((servicio) => (
                   <ServiceCard key={servicio.nombre} servicio={servicio} />

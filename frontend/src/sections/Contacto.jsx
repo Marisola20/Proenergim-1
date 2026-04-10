@@ -149,7 +149,7 @@ function Contacto({ mostrarBloqueProveedores = false }) {
               initial={{ opacity: 0, y: 15 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true, margin: "-10% 0px" }}
-              className="inline-block text-[var(--color-primary)] font-black tracking-[0.25em] uppercase text-[10px] sm:text-xs mb-4 py-1.5 px-4 bg-[var(--color-primary)]/5 rounded-full border border-[var(--color-primary)]/10"
+              className="inline-block text-[var(--color-primary)] font-black tracking-[0.25em] uppercase text-[10px] sm:text-xs mb-4 mt-12 py-1.5 px-4 bg-[var(--color-primary)]/5 rounded-full border border-[var(--color-primary)]/10"
             >
               Contáctanos
             </motion.span>
@@ -390,7 +390,7 @@ function Contacto({ mostrarBloqueProveedores = false }) {
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
           transition={{ duration: 0.5 }}
-          className="mt-10 bg-white rounded-[2rem] p-8 shadow-sm border border-slate-100 w-full"
+          className="mt-10 mb-10 bg-white rounded-[2rem] p-8 shadow-sm border border-slate-100 w-full"
         >
           <div className="text-center mb-6">
             <span className="inline-block text-[var(--color-primary)] font-black tracking-[0.25em] uppercase text-[10px] mb-3 py-1 px-3 bg-[var(--color-primary)]/5 rounded-full border border-[var(--color-primary)]/10">

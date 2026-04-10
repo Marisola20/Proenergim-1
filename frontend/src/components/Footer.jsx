@@ -170,8 +170,8 @@ function Footer() {
             <div>
               <h4 className="footer-section-title">Contacto</h4>
               <div className="flex flex-col gap-2">
-                <a href="tel:+51936954890"
-                   className="flex items-center gap-2 text-sm font-black hover:text-white/70 transition-all">
+                <a href="https://wa.me/51936954890"
+                   className="flex items-center gap-2 text-sm font-semibold hover:text-white/70 transition-all">
                   <Phone size={13} className="opacity-60 flex-shrink-0" />
                   +51 936 954 890
                 </a>
@@ -204,10 +204,10 @@ function Footer() {
       {/* Barra inferior */}
       <div style={{ backgroundColor: "rgba(0,0,0,0.22)", borderTop: "1px solid rgba(255,255,255,0.07)" }}>
         <div className="max-w-7xl mx-auto px-6 py-4 flex flex-col md:flex-row items-center justify-between gap-3">
-          <p className="text-white/35 text-xs font-bold">
-            © 2025 PROENERGIM E.I.R.L. — Todos los derechos reservados.
+          <p className="text-white/35 text-xs font-semibold">
+            © 2026 PROENERGIM E.I.R.L. — Todos los derechos reservados.
           </p>
-          <div className="flex items-center gap-6 text-xs font-bold">
+          <div className="flex items-center gap-6 text-xs font-semibold">
             <Link to="/politica-privacidad" className="text-white/30 hover:text-white transition-colors">POLÍTICA DE PRIVACIDAD</Link>
             <Link to="/terminos-condiciones" className="text-white/30 hover:text-white transition-colors">TÉRMINOS Y CONDICIONES</Link>
           </div>

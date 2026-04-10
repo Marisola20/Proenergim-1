@@ -302,7 +302,7 @@ function Trayectoria() {
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true, margin: "-10%" }}
           transition={{ duration: 0.5 }}
-          className="flex flex-row justify-center gap-4 sm:gap-6 mb-12 sm:mb-14"
+          className="grid grid-cols-3 gap-2 sm:gap-6 mb-12 sm:mb-14"
         >
           {[
             { icon: Briefcase, label: "Proyectos Instalados", value: proyectos, color: "#0ea5e1" },
@@ -311,17 +311,17 @@ function Trayectoria() {
           ].map(({ icon: Icon, label, value, color }) => (
             <div
               key={label}
-              className="px-6 py-4 bg-white rounded-2xl shadow-[0_4px_20px_-8px_rgba(0,0,0,0.1)] border border-slate-100 flex flex-row items-center gap-4 transition-all hover:shadow-lg hover:-translate-y-0.5"
+              className="px-2 sm:px-6 py-3 sm:py-4 bg-white rounded-2xl shadow-[0_4px_20px_-8px_rgba(0,0,0,0.1)] border border-slate-100 flex flex-col sm:flex-row items-center gap-1 sm:gap-4 transition-all hover:shadow-lg hover:-translate-y-0.5 text-center sm:text-left"
             >
               <div 
-                className="w-11 h-11 rounded-xl flex items-center justify-center shrink-0 shadow-inner"
+                className="w-8 h-8 sm:w-11 sm:h-11 rounded-xl flex items-center justify-center shrink-0 shadow-inner"
                 style={{ backgroundColor: `${color}10`, color: color }}
               >
-                <Icon size={20} strokeWidth={2.5} />
+                <Icon size={16} sm:size={20} strokeWidth={2.5} />
               </div>
               <div className="flex flex-col">
-                <div className="text-[var(--color-primary-dark)] font-black text-xl leading-none">+{value}</div>
-                <div className="text-slate-400 text-[9px] uppercase font-black tracking-widest leading-none mt-1">{label}</div>
+                <div className="text-[var(--color-primary-dark)] font-black text-sm sm:text-xl leading-none">+{value}</div>
+                <div className="text-slate-400 text-[7px] sm:text-[9px] uppercase font-black tracking-wider leading-tight mt-1">{label}</div>
               </div>
             </div>
           ))}

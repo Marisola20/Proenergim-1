@@ -1,17 +1,53 @@
 import { useState, useEffect, useRef, memo, useCallback, useMemo } from "react"
 import { motion, AnimatePresence } from "framer-motion"
-import { MapPin, ArrowRight, ChevronLeft, ChevronRight } from "lucide-react"
+import { MapPin, ArrowRight, ChevronLeft, ChevronRight, Award, Globe, Users } from "lucide-react"
 import { Link } from "react-router-dom"
 import { proyectos, REGION_COORDS } from "../data/proyectos"
 import PeruMap from "../components/PeruMap"
 
 const WHATSAPP = "51936954890"
 
+const STATS = [
+  { icon: <Award size={15} />, num: "+15",   label: "Años exp."  },
+  { icon: <Globe size={15} />, num: "Top 10", label: "Marcas"    },
+  { icon: <Users size={15} />, num: "Staff",  label: "Espec."    },
+  { icon: <Award size={15} />, num: "+200",  label: "Proyectos" },
+]
+
 function WhatsappIcon({ size = 18 }) {
   return (
     <svg width={size} height={size} viewBox="0 0 24 24" fill="currentColor" aria-hidden>
       <path d="M17.498 14.382c-.301-.15-1.767-.867-2.04-.966-.273-.101-.473-.15-.673.15-.197.295-.771.964-.944 1.162-.175.195-.349.21-.646.065-.301-.15-1.265-.458-2.406-1.474-.89-.788-1.489-1.762-1.664-2.062-.175-.3-.019-.462.131-.611.136-.134.301-.349.45-.523.15-.174.2-.3.301-.497.101-.202.05-.376-.025-.525-.075-.15-.672-1.62-.924-2.215-.244-.58-.492-.501-.672-.51-.174-.008-.374-.008-.574-.008s-.525.074-.798.375c-.276.3-1.045 1.025-1.045 2.499s1.07 2.894 1.219 3.094c.15.195 2.109 3.238 5.106 4.536.713.31 1.267.495 1.701.633.714.227 1.365.195 1.88.118.575-.086 1.767-.721 2.016-1.42s.25-1.299.175-1.424c-.074-.125-.274-.2-.574-.35zM12.002 22C6.48 22 2 17.514 2 12S6.48 2 12.002 2c5.523 0 10.001 4.486 10.001 10s-4.478 10-10.001 10zM12.002 0C5.373 0 0 5.372 0 12c0 2.126.549 4.133 1.517 5.864L.015 24l6.305-1.654C8.016 23.364 9.944 24 12.002 24 18.631 24 24 18.628 24 12c0-6.628-5.369-12-11.998-12z" />
     </svg>
+  )
+}
+
+function StatsMobile() {
+  return (
+    <div className="flex gap-2 flex-wrap justify-center sm:hidden mt-3">
+      {STATS.map((s, i) => (
+        <div key={i} className="flex items-center gap-1.5 bg-gray-100 rounded-full px-3 py-1.5">
+          <span className="text-[var(--color-primary)]">{s.icon}</span>
+          <span className="text-xs font-black text-[var(--color-primary-dark)]">{s.num}</span>
+        </div>
+      ))}
+    </div>
+  )
+}
+
+function StatsTablet() {
+  return (
+    <div className="hidden sm:flex lg:hidden border border-gray-100 rounded-xl overflow-hidden mt-6 w-full">
+      {STATS.map((s, i) => (
+        <div key={i} className={`flex items-center gap-2 px-3 py-2.5 flex-1 ${i < STATS.length - 1 ? "border-r border-gray-100" : ""}`}>
+          <span className="text-[var(--color-primary)]">{s.icon}</span>
+          <div>
+            <div className="text-xs font-black text-[var(--color-primary-dark)] leading-none">{s.num}</div>
+            <div className="text-[9px] font-bold text-gray-400 uppercase tracking-tight">{s.label}</div>
+          </div>
+        </div>
+      ))}
+    </div>
   )
 }
 
@@ -112,16 +148,29 @@ const ProjectInfo = memo(({ p, isInView, onPrev, onNext, hasMultiple }) => {
           {p.descripcion}
         </p>
         
-        <div className="grid grid-cols-1 gap-3 mb-6 w-full">
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 mb-6 w-full">
+          {/* Ubicación — siempre visible */}
           <div className="flex items-center gap-2.5 p-2.5 rounded-xl bg-slate-50 border border-slate-100 transition-colors hover:bg-white hover:border-[var(--color-primary)]/20 shadow-sm">
-            <div className="w-7 h-7 rounded-full bg-[var(--color-primary)]/10 flex items-center justify-center">
-              <MapPin size={14} className="text-[var(--color-primary)]" />
+            <div className="w-7 h-7 rounded-full bg-[var(--color-primary)]/10 flex items-center justify-center shrink-0">
+              <MapPin size={13} className="text-[var(--color-primary)]" />
             </div>
-            <div>
+            <div className="min-w-0">
               <span className="block text-[9px] text-gray-400 font-bold uppercase tracking-tighter">Ubicación</span>
-              <span className="text-xs font-bold text-[var(--color-primary-dark)]">{p.ubicacion}</span>
+              <span className="text-[11px] font-bold text-[var(--color-primary-dark)] truncate block">{p.ubicacion}</span>
             </div>
           </div>
+          {/* Cliente — solo sm+ */}
+          {p.cliente && (
+            <div className="hidden sm:flex items-center gap-2.5 p-2.5 rounded-xl bg-slate-50 border border-slate-100 transition-colors hover:bg-white hover:border-[var(--color-primary)]/20 shadow-sm">
+              <div className="w-7 h-7 rounded-full bg-green-500/10 flex items-center justify-center shrink-0">
+                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="text-green-600"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+              </div>
+              <div className="min-w-0">
+                <span className="block text-[9px] text-gray-400 font-bold uppercase tracking-tighter">Cliente</span>
+                <span className="text-[11px] font-bold text-[var(--color-primary-dark)] truncate block">{p.cliente}</span>
+              </div>
+            </div>
+          )}
         </div>
 
         {/* Galería de Imágenes */}
@@ -155,15 +204,11 @@ const ProjectInfo = memo(({ p, isInView, onPrev, onNext, hasMultiple }) => {
             className="shrink-0 text-[var(--color-primary-dark)] hover:text-white border-2 border-[var(--color-primary-dark)] hover:bg-[var(--color-primary-dark)] font-bold text-sm px-6 py-2.5 rounded-full flex items-center gap-2 transition-all shadow-sm"
           >
             Ver info
-            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-arrow-right" aria-hidden="true">
-              <path d="M5 12h14"></path>
-              <path d="m12 5 7 7-7 7"></path>
-            </svg>
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
           </Link>
           <a
             href={`https://wa.me/${WHATSAPP}?text=Hola, me interesa saber más sobre el proyecto: ${p.nombre}`}
-            target="_blank"
-            rel="noreferrer noopener"
+            target="_blank" rel="noreferrer noopener"
             className="shrink-0 text-[#25D366] hover:text-white border-2 border-[#25D366]/30 hover:bg-[#25D366] font-bold text-sm px-6 py-2.5 rounded-full flex items-center gap-2 transition-all shadow-sm"
           >
             WhatsApp
@@ -283,7 +328,7 @@ function Proyectos() {
         
         {/* BLOQUE SUPERIOR: CONTENIDO + MAPA */}
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 items-center mb-10 px-6 lg:px-12">
-          <div className="text-left order-1 lg:order-1">
+          <div className="text-center lg:text-left order-1 lg:order-1">
             <motion.span
               initial={{ opacity: 0, x: -15 }}
               whileInView={{ opacity: 1, x: 0 }}
@@ -301,53 +346,58 @@ function Proyectos() {
             >
               Proyectos <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#0ea5e1] to-[#1ed760]">Destacados</span>
             </motion.h2>
-            <p className="text-[var(--color-text-muted)] text-base md:text-xl font-medium leading-relaxed mb-8 max-w-xl">
+            <p className="text-[var(--color-text-muted)] text-base md:text-xl font-medium leading-relaxed max-w-xl mx-auto lg:mx-0">
               Descubre cómo transformamos la energía en soluciones reales para nuestros clientes en todo el Perú.
             </p>
-            <Link 
-              to="/proyectos" 
-              className="shrink-0 text-[var(--color-primary-dark)] hover:text-white border-2 border-[var(--color-primary-dark)] hover:bg-[var(--color-primary-dark)] font-bold text-sm px-7 py-3 rounded-full flex items-center gap-2 transition-all w-fit shadow-lg shadow-black/5"
-            >
-              Ver todos los proyectos
-              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-arrow-right" aria-hidden="true">
-                <path d="M5 12h14"></path>
-                <path d="m12 5 7 7-7 7"></path>
-              </svg>
-            </Link>
           </div>
 
-          <div className="flex justify-center order-2 lg:order-2">
+          <div className="flex flex-col items-center order-2 lg:order-2">
             <PeruMap 
               projects={visibleProjects} 
               currentIndex={globalIndex} 
               onSelectProject={handleMapSelect} 
             />
+            <StatsMobile />
+            <StatsTablet />
           </div>
         </div>
 
         {/* BLOQUE MEDIO: TAGS DE DEPARTAMENTOS */}
         <div className="mb-8">
-          <div className="flex items-center gap-6 mb-6">
-            <h4 className="shrink-0 text-sm font-black tracking-[0.2em] text-gray-400">Departamentos:</h4>
-            <div className="flex gap-2 overflow-x-auto p-4 scrollbar-custom flex-1 items-center">
+          <div className="flex items-center gap-4 mb-4 flex-wrap">
+            <h4 className="shrink-0 text-sm font-black tracking-[0.2em] text-gray-400 hidden sm:block">Departamentos:</h4>
+            <div className="flex gap-2 overflow-x-auto p-2 scrollbar-custom flex-1 items-center">
               {groupedProjects.map((group, idx) => {
                 const isActive = idx === activeRegionIdx
                 return (
                   <button
                     key={group.region}
                     onClick={() => handleManualRegionSelect(idx)}
-                    className={`shrink-0 flex items-center gap-1.5 px-5 py-2.5 rounded-full text-xs font-bold transition-all duration-300 border ${
-                      isActive 
-                        ? "bg-gradient-to-r from-[var(--color-primary-dark)] to-[var(--color-primary)] text-white border-[var(--color-primary)] shadow-lg shadow-[var(--color-primary)]/25 scale-105" 
-                        : "bg-white text-gray-500 border-gray-200 hover:border-[var(--color-primary)]/40 hover:bg-[var(--color-primary)]/5 hover:text-[var(--color-primary-dark)]"
+                    className={`shrink-0 flex items-center gap-1.5 px-3 pb-2 pt-1 text-xs font-bold transition-all duration-200 bg-transparent border-b-2 ${
+                      isActive
+                        ? "border-[#0ea5e1] text-[#0a6b90]"
+                        : "border-transparent text-gray-400 hover:border-[#b3e4f7] hover:text-[#0ea5e1]"
                     }`}
                   >
-                    <MapPin size={11} className={isActive ? "text-white/80" : "text-[var(--color-primary)]/50"} />
+                    {isActive && <span className="w-1.5 h-1.5 rounded-full bg-[#0ea5e1] shrink-0" />}
                     <span>{group.region}</span>
                   </button>
                 )
               })}
             </div>
+          </div>
+          {/* Botón Ver todos — movido aquí debajo de departamentos */}
+          <div className="flex justify-center lg:justify-start">
+            <Link
+              to="/proyectos"
+              className="shrink-0 text-[var(--color-primary-dark)] hover:text-white border-2 border-[var(--color-primary-dark)] hover:bg-[var(--color-primary-dark)] font-bold text-sm px-7 py-3 rounded-full flex items-center gap-2 transition-all w-fit shadow-lg shadow-black/5"
+            >
+              Ver todos los proyectos
+              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+                <path d="M5 12h14"></path>
+                <path d="m12 5 7 7-7 7"></path>
+              </svg>
+            </Link>
           </div>
         </div>
 

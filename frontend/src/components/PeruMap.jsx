@@ -1,6 +1,6 @@
 import { useMemo } from "react"
 import { motion } from "framer-motion"
-import { MapPin, Globe, Users, Clock, Award } from "lucide-react"
+import { Award, Globe, Users } from "lucide-react"
 import { REGION_COORDS } from "../data/proyectos"
 
 const PeruMap = ({ projects, currentIndex, onSelectProject }) => {
@@ -76,7 +76,6 @@ const PeruMap = ({ projects, currentIndex, onSelectProject }) => {
                 fill={isActive ? "var(--color-primary)" : "var(--color-green)"}
                 stroke="white"
                 strokeWidth="2.5"
-                whileHover={{ scale: 1, strokeWidth: 2 }}
                 animate={{
                   scale: isActive ? 0.8 : 1,
                   filter: isActive ? "drop-shadow(0 0 8px rgba(30,215,96,0.5))" : "none"
@@ -86,16 +85,16 @@ const PeruMap = ({ projects, currentIndex, onSelectProject }) => {
           )
         })}
       </svg>
-      
-      {/* Decorative Expert Info Cards */}
+
+      {/* Decorative Expert Info Cards — Only for Desktop/Laptop */}
       {/* Card 1: Experience (Top Left) */}
       <motion.div 
         initial={{ opacity: 0, x: -20 }}
         whileInView={{ opacity: 1, x: 0 }}
         transition={{ delay: 0.2 }}
-        className="absolute top-[-8%] -left-[1%] z-20 pointer-events-none"
+        className="absolute top-[-8%] -left-[1%] z-20 pointer-events-none hidden lg:block"
       >
-        <div className="bg-white/80 backdrop-blur-md border-1 border-[var(--color-primary)] p-3 rounded-2xl flex items-center gap-2.5">
+        <div className="bg-white/80 backdrop-blur-md border-1 border-[var(--color-primary)] p-3 rounded-2xl flex items-center gap-2.5 shadow-lg">
           <div className="w-8 h-8 rounded-lg bg-[var(--color-primary)]/10 flex items-center justify-center">
             <Award size={16} className="text-[var(--color-primary)]" />
           </div>
@@ -111,9 +110,9 @@ const PeruMap = ({ projects, currentIndex, onSelectProject }) => {
         initial={{ opacity: 0, x: 20 }}
         whileInView={{ opacity: 1, x: 0 }}
         transition={{ delay: 0.3 }}
-        className="absolute top-[30%] -right-[8%] z-20 pointer-events-none"
+        className="absolute top-[30%] -right-[8%] z-20 pointer-events-none hidden lg:block"
       >
-        <div className="bg-white/80 backdrop-blur-md border-1 border-blue-600 p-3 rounded-2xl flex items-center gap-2.5">
+        <div className="bg-white/80 backdrop-blur-md border-1 border-blue-600 p-3 rounded-2xl flex items-center gap-2.5 shadow-lg">
           <div className="w-8 h-8 rounded-lg bg-blue-500/10 flex items-center justify-center">
             <Globe size={16} className="text-blue-600" />
           </div>
@@ -129,9 +128,9 @@ const PeruMap = ({ projects, currentIndex, onSelectProject }) => {
         initial={{ opacity: 0, y: 20 }}
         whileInView={{ opacity: 1, y: 0 }}
         transition={{ delay: 0.35 }}
-        className="absolute bottom-[20%] -left-[5%] z-20 pointer-events-none"
+        className="absolute bottom-[20%] -left-[5%] z-20 pointer-events-none hidden lg:block"
       >
-        <div className="bg-white/80 backdrop-blur-md border-1 border-green-600 p-3 rounded-2xl flex items-center gap-2.5">
+        <div className="bg-white/80 backdrop-blur-md border-1 border-green-600 p-3 rounded-2xl flex items-center gap-2.5 shadow-lg">
           <div className="w-8 h-8 rounded-lg bg-green-500/10 flex items-center justify-center">
             <Users size={16} className="text-green-600" />
           </div>
@@ -147,9 +146,9 @@ const PeruMap = ({ projects, currentIndex, onSelectProject }) => {
         initial={{ opacity: 0, scale: 0.8 }}
         whileInView={{ opacity: 1, scale: 1 }}
         transition={{ delay: 0.4 }}
-        className="absolute bottom-[5%] -right-[15%] z-20 pointer-events-none"
+        className="absolute bottom-[5%] -right-[15%] z-20 pointer-events-none hidden lg:block"
       >
-        <div className="bg-white/90 border-1 border-orange-600 backdrop-blur-md p-3.5 rounded-2xl flex items-center gap-3">
+        <div className="bg-white/90 border-1 border-orange-600 backdrop-blur-md p-3.5 rounded-2xl flex items-center gap-3 shadow-lg">
           <div className="w-10 h-10 rounded-full bg-orange-500/10 flex items-center justify-center">
             <Award size={20} className="text-orange-600" />
           </div>
