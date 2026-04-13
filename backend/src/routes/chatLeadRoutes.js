@@ -1,10 +1,16 @@
 import express from "express";
-import { crearChatLead, obtenerChatLeads, limpiarChatLeads } from "../controllers/chatLeadController.js";
+import {
+  crearChatLead,
+  enviarEmailChatLead,
+  obtenerChatLeads,
+  limpiarChatLeads
+} from "../controllers/chatLeadController.js";
 
 const router = express.Router();
 
 router.post("/", crearChatLead);
-router.get("/", obtenerChatLeads)      
-router.delete("/", limpiarChatLeads)   
+router.post("/email", enviarEmailChatLead);   // ← lead por email
+router.get("/", obtenerChatLeads);
+router.delete("/", limpiarChatLeads);
 
 export default router;

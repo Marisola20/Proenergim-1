@@ -1,22 +1,26 @@
-import { useEffect, useState } from "react"
+import { useEffect, useState, lazy, Suspense } from "react"
 import { BrowserRouter, Routes, Route, useLocation } from "react-router-dom"
 import { AnimatePresence } from "framer-motion"
-import Admin from "./pages/Admin"
+
+// ── Carga inmediata (presentes en todas las rutas) ──
 import Navbar from "./components/Navbar"
 import Footer from "./components/Footer"
-import Home from "./pages/Home"
-import Nosotros from "./pages/Nosotros"
-import Soluciones from "./pages/Soluciones"
-import ContactoPage from "./pages/ContactoPage"
-import PoliticaPrivacidad from "./pages/PoliticaPrivacidad"
-import TerminosCondiciones from "./pages/TerminosCondiciones"
-import ProyectosPage from "./pages/ProyectosPage"
-import ProyectoDetalle from "./pages/ProyectoDetalle"
-import Productos from "./pages/Productos"
 import Novedades from "./sections/Novedades"
 import Loading from "./components/Loading"
 import Welcome from "./components/Welcome"
 import FloatingWhatsApp from "./components/FloatingWhatsApp"
+
+// ── Lazy loading de páginas (se descargan solo cuando se visitan) ──
+const Home             = lazy(() => import("./pages/Home"))
+const Nosotros         = lazy(() => import("./pages/Nosotros"))
+const Soluciones       = lazy(() => import("./pages/Soluciones"))
+const ContactoPage     = lazy(() => import("./pages/ContactoPage"))
+const PoliticaPrivacidad   = lazy(() => import("./pages/PoliticaPrivacidad"))
+const TerminosCondiciones  = lazy(() => import("./pages/TerminosCondiciones"))
+const ProyectosPage    = lazy(() => import("./pages/ProyectosPage"))
+const ProyectoDetalle  = lazy(() => import("./pages/ProyectoDetalle"))
+const Productos        = lazy(() => import("./pages/Productos"))
+const Admin            = lazy(() => import("./pages/Admin"))
 
 function ScrollToTop({ location }) {
   useEffect(() => {
@@ -81,26 +85,30 @@ function AppContent() {
       {/* Contenido principal: Solo ocultar si es la Bienvenida Inicial */}
       {/* ── Ruta Admin (sin Navbar/Footer) ── */}
       {isAdmin && (
-        <Routes location={displayLocation}>
-          <Route path="/admin/*" element={<Admin />} />
-        </Routes>
+        <Suspense fallback={<Loading />}>
+          <Routes location={displayLocation}>
+            <Route path="/admin/*" element={<Admin />} />
+          </Routes>
+        </Suspense>
       )}
 
       {/* Contenido principal */}
       {!isAdmin && (
         <div className={isFirstLoad ? "opacity-0 invisible h-screen overflow-hidden" : "opacity-100 visible transition-opacity duration-700"}>
           <Navbar />
-          <Routes location={displayLocation} key={displayLocation.pathname}>
-            <Route path="/" element={<Home />} />
-            <Route path="/nosotros" element={<Nosotros />} />
-            <Route path="/soluciones" element={<Soluciones />} />
-            <Route path="/contacto" element={<ContactoPage />} />
-            <Route path="/politica-privacidad" element={<PoliticaPrivacidad />} />
-            <Route path="/terminos-condiciones" element={<TerminosCondiciones />} />
-            <Route path="/proyectos" element={<ProyectosPage />} />
-            <Route path="/productos" element={<Productos />} />
-            <Route path="/proyecto/:id" element={<ProyectoDetalle />} />
-          </Routes>
+          <Suspense fallback={<Loading />}>
+            <Routes location={displayLocation} key={displayLocation.pathname}>
+              <Route path="/" element={<Home />} />
+              <Route path="/nosotros" element={<Nosotros />} />
+              <Route path="/soluciones" element={<Soluciones />} />
+              <Route path="/contacto" element={<ContactoPage />} />
+              <Route path="/politica-privacidad" element={<PoliticaPrivacidad />} />
+              <Route path="/terminos-condiciones" element={<TerminosCondiciones />} />
+              <Route path="/proyectos" element={<ProyectosPage />} />
+              <Route path="/productos" element={<Productos />} />
+              <Route path="/proyecto/:id" element={<ProyectoDetalle />} />
+            </Routes>
+          </Suspense>
           <Novedades />
           <Footer />
           <FloatingWhatsApp />
