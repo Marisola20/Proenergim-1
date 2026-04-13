@@ -44,6 +44,15 @@ function AppContent() {
   const [displayLocation, setDisplayLocation] = useState(location)
   const [isLoading, setIsLoading] = useState(false)
 
+  // ── Keep-alive: evita cold-starts en Vercel serverless ──────────────────
+  useEffect(() => {
+    const ping = () =>
+      fetch(`${import.meta.env.VITE_API_URL}/api/health`).catch(() => {})
+    ping()
+    const id = setInterval(ping, 14 * 60 * 1000)
+    return () => clearInterval(id)
+  }, [])
+
   // Manejo de Carga entre Rutas posteriores a la Bienvenida
   useEffect(() => {
     if (!isFirstLoad && location.pathname !== displayLocation.pathname) {
