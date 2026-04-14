@@ -14,7 +14,7 @@ dotenv.config();
 const REQUIRED_ENV = ["MONGO_URI", "EMAIL_USER", "EMAIL_PASS", "EMAIL_DESTINO"];
 const missing = REQUIRED_ENV.filter(k => !process.env[k]);
 if (missing.length > 0) {
-  console.error(`❌ Variables de entorno faltantes: ${missing.join(", ")}`);
+  console.error(`Variables de entorno faltantes: ${missing.join(", ")}`);
   process.exit(1);
 }
 
@@ -53,13 +53,13 @@ app.use("/api/suscriptors", suscriptorRoutes);
 
 // Health check
 app.get("/api/health", (req, res) => {
-  res.json({ status: "ok", message: "Proenergim API funcionando 🚀" });
+  res.json({ status: "ok", message: "Proenergim API funcionando" });
 });
 
 // ✅ Solo escuchar en local; en Vercel el export es suficiente
 if (process.env.NODE_ENV !== "production") {
   const PORT = process.env.PORT || 5000;
-  app.listen(PORT, () => console.log(`🚀 Server running on port ${PORT}`));
+  app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
 }
 
-export default app; // ✅ Requerido por Vercel serverless
+export default app; // Requerido por Vercel serverless

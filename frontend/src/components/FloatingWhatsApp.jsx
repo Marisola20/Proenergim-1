@@ -4,7 +4,7 @@ import { X, Send, Trash2 } from "lucide-react"
 import logoMobile from "../assets/logo-movile.webp"
 
 const WHATSAPP = "51936954890"
-const API_URL = import.meta.env.VITE_API_URL || "https://proenergim-1.onrender.com"
+const API_URL = import.meta.env.VITE_API_URL
 const STORAGE_KEY = "proenergim_chat_v4"
 
 // ─── Persistencia segura (no crashea en Safari privado) ───────────────────────
