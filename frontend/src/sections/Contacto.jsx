@@ -141,7 +141,7 @@ function Contacto({ mostrarBloqueProveedores = false }) {
   }
 
   return (
-    <section id="contacto" className="section-py bg-[var(--color-bg-soft)]">
+    <section id="contacto" className="pt-0 pb-20 bg-[var(--color-bg-soft)]">
       <div className="max-w-7xl mx-auto px-6">
         {!mostrarBloqueProveedores && (
           <div className="text-center mb-12">

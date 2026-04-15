@@ -161,13 +161,14 @@ function Nosotros() {
 
       {/* ── SECCIÓN DE PROPÓSITO ÚNICO (LA GRAN PROMESA) ── */}
       <ImpactSection
-        title={<>Juntos.<br /></>}
+        wideRight
+        title={<>Juntos</>}
         highlight="Crecemos."
         points={[
           {
             icon: Target,
             label: "Misión",
-            text: "Diseñamos y construimos sistemas solares para agricultura, electrificación e industria, impulsando el desarrollo sostenible de cada comunidad.",
+            text: "Diseñamos y construimos sistemas solares para tu negocio, impulsando el desarrollo sostenible de cada comunidad.",
             color: "#7ad7ff"
           },
           {
@@ -205,7 +206,7 @@ function Nosotros() {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ delay: 0.1 }}
-              className="text-lg mt-4 text-gray-600 max-w-3xl mx-auto"
+              className="text-sm sm:text-base md:text-lg mt-4 text-gray-600 max-w-3xl mx-auto"
             >
               Cada proyecto lleva nuestra firma — y nuestra firma tiene estos principios.
             </motion.p>
@@ -246,7 +247,7 @@ function Nosotros() {
               Nuestro{" "}
               <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#0ea5e1] to-[#1ed760]">equipo</span>
             </motion.h2>
-            <p className="text-[var(--color-text-muted)] text-base md:text-lg font-medium max-w-xl mx-auto leading-relaxed">
+            <p className="text-[var(--color-text-muted)] text-sm sm:text-base md:text-lg font-medium max-w-xl mx-auto leading-relaxed">
               Profesionales apasionados por la energía solar que trabajan cada día para ti.
             </p>
           </div>

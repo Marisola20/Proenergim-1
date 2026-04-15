@@ -8,9 +8,9 @@ import { motion } from "framer-motion";
  * @param {React.Node} highlight - Optional highlighted text/gradient.
  * @param {Array} points - Array of { icon: Icon, label: string, text: string, color: string }
  */
-export default function ImpactSection({ title, highlight, points = [] }) {
+export default function ImpactSection({ title, highlight, points = [], wideRight = false, bgColor = "" }) {
   return (
-    <section className="relative z-30 -mt-16 sm:-mt-24 px-6 mb-24">
+    <section className={`relative z-30 -mt-24 sm:-mt-24 lg:-mt-28 px-4 sm:px-6 mb-16 sm:mb-18 lg:mb-20 ${bgColor}`}>
       <motion.div
         initial={{ opacity: 0, y: 30 }}
         whileInView={{ opacity: 1, y: 0 }}
@@ -19,8 +19,8 @@ export default function ImpactSection({ title, highlight, points = [] }) {
         className="max-w-6xl mx-auto bg-white/80 backdrop-blur-xl rounded-4xl shadow-[0_20px_50px_-12px_rgba(0,0,0,0.12)] border border-[var(--color-primary-light)] overflow-hidden flex flex-col lg:flex-row"
       >
         {/* Lado Izquierdo: El Gancho Visual/Texto */}
-        <div className="lg:w-2/5 p-10 md:p-14 flex flex-col justify-center bg-gradient-to-br from-white/40 to-transparent">
-          <h2 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-black tracking-tight leading-tight text-[var(--color-primary-dark)]">
+        <div className={`${wideRight ? 'lg:w-1/3' : 'lg:w-2/5'} p-8 sm:p-10 lg:p-12 flex flex-col justify-center bg-gradient-to-br from-white/40 to-transparent`}>
+          <h2 className="text-2xl sm:text-3xl md:text-4xl lg:text-[45px] font-black tracking-tight leading-tight text-[var(--color-primary-dark)]">
             {title}
             {highlight && (
               <>
@@ -34,7 +34,7 @@ export default function ImpactSection({ title, highlight, points = [] }) {
         </div>
  
         {/* Lado Derecho: Puntos clave (Misión/Visión/Características) */}
-        <div className="lg:w-3/5 p-10 md:p-14 bg-[var(--color-primary-dark)] text-white flex flex-col justify-center gap-6 sm:gap-8 relative overflow-hidden">
+        <div className={`${wideRight ? 'lg:w-2/3' : 'lg:w-3/5'} p-8 sm:p-10 lg:p-12 bg-[var(--color-primary-dark)] text-white flex flex-col justify-center gap-6 sm:gap-8 relative overflow-hidden`}>
           {/* Círculos decorativos */}
           <div className="absolute top-[-20px] right-[10%] w-24 h-24 bg-white/[0.03] rounded-full pointer-events-none" />
           <div className="absolute bottom-[-10px] left-[15%] w-20 h-20 bg-white/[0.04] rounded-full pointer-events-none" />
@@ -51,12 +51,12 @@ export default function ImpactSection({ title, highlight, points = [] }) {
               </div>
               <div className="flex flex-col">
                 <h3
-                  className="font-black uppercase text-xs sm:text-sm md:text-base tracking-[0.2em] mb-1"
+                  className="font-black uppercase text-[11px] sm:text-xs lg:text-sm tracking-[0.2em] mb-1"
                   style={{ color: p.color }}
                 >
                   {p.label}
                 </h3>
-                <p className="text-white text-xs sm:text-sm md:text-base leading-relaxed font-medium">
+                <p title={p.text} className="text-white/90 text-xs sm:text-sm lg:text-base leading-relaxed font-medium line-clamp-3 sm:line-clamp-4 lg:line-clamp-none">
                   {p.text}
                 </p>
               </div>

@@ -133,7 +133,7 @@ function Productos() {
 
       {/* ── SECCIÓN DE IMPACTO ── */}
       <ImpactSection
-        title={<>Top calidad.<br /></>}
+        title={<>Top calidad.</>}
         highlight="Rendimiento garantizado."
         points={[
           {

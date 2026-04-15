@@ -99,7 +99,7 @@ const IconPattern = ({ patternId }) => {
 
 function HeroBanner({ subtitle, title, highlight, description, patternId }) {
   return (
-    <div className="relative bg-white pt-40 pb-20 px-6 text-center overflow-hidden border-b border-[var(--color-primary-light)] mb-16">
+    <div className="relative bg-white pt-34 pb-20 px-6 text-center overflow-hidden border-b border-[var(--color-primary-light)] mb-16">
       <IconPattern patternId={patternId} />
       
       {/* Halo de legibilidad: El fondo que resalta las letras y atenúa los iconos solo al centro */}
