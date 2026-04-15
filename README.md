@@ -8,6 +8,8 @@ Sitio web oficial de **Proenergim**, empresa peruana especializada en soluciones
 - **Backend:** Node.js + Express
 - **Base de datos:** MongoDB Atlas
 
+update
+
 proenergim/
 ├── frontend/ # React + Vite
 │ ├── src/
