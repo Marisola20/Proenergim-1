@@ -78,22 +78,22 @@ function FAQItem({ faq, i, abierto, setAbierto }) {
       <button
         type="button"
         onClick={() => setAbierto(isOpen ? null : i)}
-        className="w-full relative flex items-center justify-between px-8 py-6 text-left gap-5 outline-none"
+        className="w-full relative flex items-center justify-between px-5 py-3 text-left gap-3 outline-none"
       >
         {/* Acento lateral */}
         <div className={`absolute left-0 top-1/2 -translate-y-1/2 w-1.5 h-8 rounded-r-full transition-all duration-300 ${isOpen ? "bg-[var(--color-primary)]" : "bg-slate-200 group-hover:bg-slate-300"}`} />
         
-        <span className={`flex items-center gap-4 font-bold transition-colors duration-300 text-sm sm:text-base md:text-lg tracking-tight ${isOpen ? "text-[var(--color-primary-dark)]" : "text-slate-700"}`}>
-          <div className={`p-2 rounded-xl transition-all border ${isOpen ? "bg-[var(--color-primary)] text-white border-[var(--color-primary)] shadow-lg shadow-[var(--color-primary)]/20" : "bg-slate-50 text-slate-400 border-slate-100"}`}>
-            <HelpCircle size={18} strokeWidth={2.5} />
+        <span className={`flex items-center gap-3 font-semibold transition-colors duration-300 text-sm tracking-tight ${isOpen ? "text-[var(--color-primary-dark)]" : "text-slate-700"}`}>
+          <div className={`p-1.5 rounded-lg transition-all border ${isOpen ? "bg-[var(--color-primary)] text-white border-[var(--color-primary)] shadow-md" : "bg-slate-50 text-slate-400 border-slate-100"}`}>
+            <HelpCircle size={14} strokeWidth={2.5} />
           </div>
           {faq.p}
         </span>
         
-        <div className={`shrink-0 w-10 h-10 rounded-2xl flex items-center justify-center transition-all duration-500 ${
+        <div className={`shrink-0 w-7 h-7 rounded-xl flex items-center justify-center transition-all duration-500 ${
           isOpen ? "bg-[var(--color-primary)] text-white rotate-180" : "bg-slate-50 text-slate-400 group-hover:bg-slate-100"
         }`}>
-          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round">
             <path d="m6 9 6 6 6-6"/>
           </svg>
         </div>
@@ -106,9 +106,9 @@ function FAQItem({ faq, i, abierto, setAbierto }) {
             exit={{ height: 0, opacity: 0 }}
             transition={{ duration: 0.4, ease: "circOut" }}
           >
-            <div className="px-8 pb-8 pl-[4.5rem]">
-               <div className="h-px w-full bg-[var(--color-primary)]/10 mb-6" />
-               <p className="text-[var(--color-text-muted)] text-sm md:text-base leading-relaxed font-medium">
+            <div className="px-5 pb-4 pl-10">
+               <div className="h-px w-full bg-[var(--color-primary)]/10 mb-3" />
+               <p className="text-[var(--color-text-muted)] text-xs md:text-sm leading-relaxed font-medium">
                 {faq.r}
               </p>
             </div>
@@ -279,26 +279,26 @@ function Soluciones() {
 
         {/* ── FAQ ── */}
         <section className="mb-28">
-          <div className="text-center mb-16">
+          <div className="text-center mb-10">
             <motion.div
               initial={{ opacity: 0, scale: 0.9 }}
               whileInView={{ opacity: 1, scale: 1 }}
               viewport={{ once: true }}
-              className="inline-flex items-center gap-2 text-[var(--color-primary)] font-black tracking-[0.3em] text-[10px] sm:text-xs mb-6 py-2 px-6 bg-[var(--color-primary)]/5 rounded-full border border-[var(--color-primary)]/10 mx-auto group hover:bg-[var(--color-primary)]/10 transition-colors cursor-default"
+              className="inline-flex items-center gap-2 text-[var(--color-primary)] font-black tracking-[0.3em] text-[10px] sm:text-xs mb-4 py-2 px-6 bg-[var(--color-primary)]/5 rounded-full border border-[var(--color-primary)]/10 mx-auto group hover:bg-[var(--color-primary)]/10 transition-colors cursor-default"
             >
-              FAQ
+              FAQs
             </motion.div>
             <motion.h2
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ delay: 0.1, duration: 0.6 }}
-              className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-black text-[var(--color-primary-dark)] mb-6 tracking-tight leading-[1.1]"
+              className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-black text-[var(--color-primary-dark)] mb-4 tracking-tight leading-[1.1]"
             >
               Preguntas{" "}
               <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#0ea5e1] to-[#1ed760] px-2">Frecuentes</span>
             </motion.h2>
-            <p className="text-[var(--color-text-muted)] text-base md:text-lg lg:text-xl max-w-3xl mx-auto font-medium leading-relaxed opacity-80">
+            <p className="text-[var(--color-text-muted)] text-sm sm:text-base md:text-base max-w-3xl mx-auto font-medium leading-relaxed opacity-80">
               Todo lo que necesitas saber antes de dar el primer paso hacia la energía solar.
             </p>
           </div>

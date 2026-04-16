@@ -1,6 +1,6 @@
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import { motion, AnimatePresence } from "framer-motion"
-import { ShieldCheck, Wrench, X, BadgeCheck } from "lucide-react"
+import { ShieldCheck, Wrench, X, BadgeCheck, PartyPopper } from "lucide-react"
 import HeroBanner from "../components/HeroBanner"
 import ImpactSection from "../components/ImpactSection"
 
@@ -25,12 +25,76 @@ const accesorios = [
   { titulo: "Conector MC4 de 6mm 1000V CC", marca: "Usfull", precio: "4.35", imagen: "/images/productos/CONECTOR-MC4.webp" },
 ]
 
+// ── Componente de tarjeta (fuera de Productos para evitar remontaje en cada render) ──
+function CardProducto({ prod, i, onComprar }) {
+  return (
+    <motion.div
+      initial={{ opacity: 0, y: 24 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      viewport={{ once: true, margin: "-10% 0px" }}
+      transition={{ duration: 0.45, delay: i * 0.07 }}
+      className="group bg-white rounded-xl border border-[var(--color-primary)]/40 hover:shadow-md transition-all duration-300 overflow-hidden"
+    >
+      {/* Imagen */}
+      <div className="relative">
+        <img
+          src={prod.imagen}
+          alt={prod.titulo}
+          className="w-full aspect-square object-cover bg-gray-50"
+        />
+        {/* Badge marca */}
+        <div className="absolute top-2 left-2 bg-white/90 backdrop-blur-sm rounded-md px-1.5 py-0.5 shadow-sm border border-gray-100">
+          <span className="font-black tracking-wide text-[var(--color-primary-dark)]" style={{ fontSize: "clamp(8px, 1.2vw, 16px)" }}>
+            {prod.marca}
+          </span>
+        </div>
+        {/* Precio */}
+        <div
+          className="absolute bottom-0 left-0 right-0 text-center py-1 px-1"
+          style={{ backgroundColor: "var(--color-green)" }}
+        >
+          <span className="font-bold text-white whitespace-nowrap" style={{ fontSize: "clamp(9px, 2.2vw, 26px)" }}>
+            S/. {prod.precio}
+          </span>
+        </div>
+      </div>
+
+      {/* Nombre + Botón */}
+      <div className="px-2 py-2 flex flex-col gap-1.5">
+        <p
+          className="leading-tight text-center font-medium text-[var(--color-primary-dark)] line-clamp-3"
+          style={{ fontSize: "clamp(7px, 2vw, 16px)" }}
+        >
+          {prod.titulo}
+        </p>
+        <button
+          onClick={() => onComprar(prod)}
+          className="w-full font-bold py-1 sm:py-1.5 rounded-lg text-white transition-all duration-200 hover:opacity-90 active:scale-95"
+          style={{ backgroundColor: "var(--color-primary-dark)", fontSize: "clamp(8px, 2vw, 17px)" }}
+        >
+          Comprar
+        </button>
+      </div>
+    </motion.div>
+  )
+}
+
 function Productos() {
   const [modalOpen, setModalOpen] = useState(false)
   const [productoSeleccionado, setProductoSeleccionado] = useState(null)
   const [form, setForm] = useState({ nombre: "", celular: "", correo: "", descripcion: "" })
   const [enviando, setEnviando] = useState(false)
   const [exito, setExito] = useState(false)
+  const [dots, setDots] = useState("")
+
+  // Animación de puntos mientras envía
+  useEffect(() => {
+    if (!enviando) { setDots(""); return }
+    const ciclo = [".", "..", "..."]
+    let i = 0
+    const id = setInterval(() => { i = (i + 1) % 3; setDots(ciclo[i]) }, 400)
+    return () => clearInterval(id)
+  }, [enviando])
 
   const abrirModal = (prod) => {
     setProductoSeleccionado(prod)
@@ -70,59 +134,10 @@ function Productos() {
     }
   }
 
-  const CardProducto = ({ prod, i }) => (
-    <motion.div
-      initial={{ opacity: 0, y: 24 }}
-      whileInView={{ opacity: 1, y: 0 }}
-      viewport={{ once: true, margin: "-10% 0px" }}
-      transition={{ duration: 0.45, delay: i * 0.07 }}
-      className="group bg-white rounded-xl border border-[var(--color-primary)]/40 hover:shadow-md transition-all duration-300 overflow-hidden"
-    >
-      {/* Imagen */}
-      <div className="relative">
-        <img
-          src={prod.imagen}
-          alt={prod.titulo}
-          className="w-full aspect-square object-cover bg-gray-50"
-        />
-        {/* Badge marca */}
-        <div className="absolute top-2 left-2 bg-white/90 backdrop-blur-sm rounded-md px-1.5 py-0.5 shadow-sm border border-gray-100">
-          <span className="font-black tracking-wide text-[var(--color-primary-dark)]" style={{ fontSize: "clamp(8px, 1.2vw, 13px)" }}>
-            {prod.marca}
-          </span>
-        </div>
-        {/* Precio */}
-        <div
-          className="absolute bottom-0 left-0 right-0 text-center py-1 px-1"
-          style={{ backgroundColor: "var(--color-green)" }}
-        >
-          <span className="font-bold text-white" style={{ fontSize: "clamp(9px, 2.2vw, 18px)" }}>
-            S/. {prod.precio}
-          </span>
-        </div>
-      </div>
 
-      {/* Nombre + Botón */}
-      <div className="px-2 py-2 flex flex-col gap-1.5">
-        <p
-          className="leading-tight text-center font-medium text-[var(--color-primary-dark)] line-clamp-3"
-          style={{ fontSize: "clamp(7px, 2vw, 14px)" }}
-        >
-          {prod.titulo}
-        </p>
-        <button
-          onClick={() => abrirModal(prod)}
-          className="w-full font-bold py-1 sm:py-1.5 rounded-lg text-white transition-all duration-200 hover:opacity-90 active:scale-95"
-          style={{ backgroundColor: "var(--color-primary-dark)", fontSize: "clamp(8px, 2vw, 12px)" }}
-        >
-          Comprar
-        </button>
-      </div>
-    </motion.div>
-  )
 
   return (
-    <main className="min-h-screen pb-24 bg-white">
+    <main className="min-h-screen bg-white">
       <HeroBanner
         subtitle="Tecnología solar"
         title="Nuestros"
@@ -196,7 +211,7 @@ function Productos() {
           </motion.div>
           <div className="grid grid-cols-3 gap-2 sm:gap-4">
             {variadores.map((prod, i) => (
-              <CardProducto key={prod.titulo} prod={prod} i={i} />
+              <CardProducto key={prod.titulo} prod={prod} i={i} onComprar={abrirModal} />
             ))}
           </div>
         </div>
@@ -222,7 +237,7 @@ function Productos() {
           </motion.div>
           <div className="grid grid-cols-3 gap-2 sm:gap-4">
             {accesorios.map((prod, i) => (
-              <CardProducto key={prod.titulo} prod={prod} i={i} />
+              <CardProducto key={prod.titulo} prod={prod} i={i} onComprar={abrirModal} />
             ))}
           </div>
         </div>
@@ -302,26 +317,21 @@ function Productos() {
                       className="w-full py-2.5 rounded-xl font-bold text-white text-sm transition-all hover:opacity-90 disabled:opacity-60"
                       style={{ backgroundColor: "var(--color-primary-dark)" }}
                     >
-                      {enviando ? "Enviando..." : "Enviar solicitud"}
+                      {enviando ? `Enviando${dots}` : "Enviar solicitud"}
                     </button>
                   </form>
                 </>
               ) : (
                 <div className="text-center py-6">
-                  <div className="text-4xl mb-3">🎉</div>
+                  <div className="flex justify-center mb-3">
+                    <PartyPopper size={48} className="text-[var(--color-primary-dark)]" />
+                  </div>
                   <h3 className="text-lg font-black text-[var(--color-primary-dark)] mb-2">
                     ¡Solicitud enviada!
                   </h3>
                   <p className="text-sm text-gray-500">
                     En breve un asesor especializado se comunicará contigo para ayudarte con tu compra.
                   </p>
-                  <button
-                    onClick={cerrarModal}
-                    className="mt-5 px-6 py-2 rounded-xl font-bold text-white text-sm"
-                    style={{ backgroundColor: "var(--color-primary-dark)" }}
-                  >
-                    Cerrar
-                  </button>
                 </div>
               )}
             </motion.div>
