@@ -2,6 +2,10 @@ import mongoose from "mongoose";
 
 const leadSchema = new mongoose.Schema({
 
+  ciudad: String,
+  empresa: String,
+  mensaje: String,
+
   nombre: {
     type: String,
     required: true
@@ -12,15 +16,15 @@ const leadSchema = new mongoose.Schema({
     default: ""
   },
 
-  ciudad: String,
-
-  empresa: String,
-
-  mensaje: String,
-
   origen: {
     type: String,
     default: "web"
+  },
+
+  estado: {
+    type: String,
+    enum: ["Pendiente", "En Proceso", "Completado", "Cancelado"],
+    default: "Pendiente"
   },
 
   fecha: {

@@ -11,6 +11,11 @@ const chatLeadSchema = new mongoose.Schema({
     type: String,
     default: "chat_flotante"
   },
+  estado: {
+    type: String,
+    enum: ["Pendiente", "En Proceso", "Completado", "Cancelado"],
+    default: "Pendiente"
+  },
   fecha: {
     type: Date,
     default: Date.now

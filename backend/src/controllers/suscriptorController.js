@@ -35,3 +35,22 @@ export const limpiarSuscriptors = async (req, res) => {
     res.status(500).json({ message: "Error al limpiar suscriptores" })
   }
 }
+
+export const eliminarSuscriptor = async (req, res) => {
+  try {
+    await Suscriptor.findByIdAndDelete(req.params.id)
+    res.json({ success: true, message: "Suscriptor eliminado correctamente" })
+  } catch (error) {
+    res.status(500).json({ success: false, message: "Error al eliminar suscriptor" })
+  }
+}
+
+export const actualizarEstadoSuscriptor = async (req, res) => {
+  try {
+    const { estado } = req.body
+    await Suscriptor.findByIdAndUpdate(req.params.id, { estado }, { new: true })
+    res.json({ success: true, message: "Estado actualizado correctamente" })
+  } catch (error) {
+    res.status(500).json({ success: false, message: "Error al actualizar estado" })
+  }
+}

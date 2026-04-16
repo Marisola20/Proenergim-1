@@ -57,3 +57,23 @@ export const limpiarChatLeads = async (req, res) => {
     res.status(500).json({ error: "Error al limpiar" });
   }
 }
+
+export const eliminarChatLead = async (req, res) => {
+  try {
+    await ChatLead.findByIdAndDelete(req.params.id)
+    res.json({ message: "Chat lead eliminado" })
+  } catch (error) {
+    res.status(500).json({ error: "Error al eliminar" })
+  }
+}
+
+export const actualizarEstadoChatLead = async (req, res) => {
+  try {
+    const { estado } = req.body
+    await ChatLead.findByIdAndUpdate(req.params.id, { estado }, { new: true })
+    res.json({ message: "Estado actualizado" })
+  } catch (error) {
+    res.status(500).json({ error: "Error al actualizar estado" })
+  }
+}
+

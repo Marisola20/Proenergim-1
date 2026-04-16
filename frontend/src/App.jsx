@@ -44,6 +44,16 @@ function AppContent() {
   const [displayLocation, setDisplayLocation] = useState(location)
   const [isLoading, setIsLoading] = useState(false)
 
+  // ── Analytics: Incrementa contador de visitas una vez por sesión ─────────
+  useEffect(() => {
+    const isCounted = sessionStorage.getItem("proenergim-counted")
+    if (!isCounted) {
+      fetch(`${import.meta.env.VITE_API_URL}/api/visits/increment`, { method: "POST" })
+        .then(() => sessionStorage.setItem("proenergim-counted", "true"))
+        .catch(() => {})
+    }
+  }, [])
+
   // ── Keep-alive: evita cold-starts en Vercel serverless ──────────────────
   useEffect(() => {
     const ping = () =>

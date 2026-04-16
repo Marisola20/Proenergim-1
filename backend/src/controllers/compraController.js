@@ -226,3 +226,22 @@ export const eliminarCompras = async (req, res) => {
     res.status(500).json({ success: false, message: "Error al eliminar compras" })
   }
 }
+
+export const eliminarCompra = async (req, res) => {
+  try {
+    await Compra.findByIdAndDelete(req.params.id)
+    res.json({ success: true, message: "Compra eliminada correctamente" })
+  } catch (error) {
+    res.status(500).json({ success: false, message: "Error al eliminar compra" })
+  }
+}
+
+export const actualizarEstadoCompra = async (req, res) => {
+  try {
+    const { estado } = req.body
+    await Compra.findByIdAndUpdate(req.params.id, { estado }, { new: true })
+    res.json({ success: true, message: "Estado actualizado correctamente" })
+  } catch (error) {
+    res.status(500).json({ success: false, message: "Error al actualizar estado" })
+  }
+}

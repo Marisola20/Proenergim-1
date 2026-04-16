@@ -8,6 +8,11 @@ const suscriptorSchema = new mongoose.Schema({
     trim: true,
     lowercase: true
   },
+  estado: {
+    type: String,
+    enum: ["Pendiente", "En Proceso", "Completado", "Cancelado"],
+    default: "Pendiente"
+  },
 }, { timestamps: true })
 
 export default mongoose.model("Suscriptor", suscriptorSchema)

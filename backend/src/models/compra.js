@@ -7,6 +7,11 @@ const compraSchema = new mongoose.Schema({
   celular: { type: String, required: true },
   correo: { type: String, default: "" },
   descripcion: { type: String, default: "" },
+  estado: {
+    type: String,
+    enum: ["Pendiente", "En Proceso", "Completado", "Cancelado"],
+    default: "Pendiente"
+  },
 }, { timestamps: true })
 
 export default mongoose.model("Compra", compraSchema)
