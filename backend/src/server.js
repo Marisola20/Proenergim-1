@@ -8,6 +8,7 @@ import chatLeadRoutes from "./routes/chatLeadRoutes.js";
 import compraRoutes from "./routes/compraRoutes.js";
 import suscriptorRoutes from "./routes/suscriptorRoutes.js";
 import visitRoutes from "./routes/visitRoutes.js";
+import resenaRoutes from "./routes/resenaRoutes.js";
 
 dotenv.config();
 
@@ -52,6 +53,7 @@ app.use("/api/chat-leads", chatLeadRoutes);
 app.use("/api/compra", compraRoutes);
 app.use("/api/suscriptors", suscriptorRoutes);
 app.use("/api/visits", visitRoutes);
+app.use("/api/resenas", resenaRoutes);
 
 // Health check
 app.get("/api/health", (req, res) => {
