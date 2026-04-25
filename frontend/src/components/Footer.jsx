@@ -1,13 +1,11 @@
 import { useState } from "react"
 import { Link } from "react-router-dom"
-import { Facebook, Instagram, Linkedin, Youtube, Phone, Mail, MapPin, ChevronDown } from "lucide-react"
+import { Facebook, Instagram, Linkedin, Phone, Mail, MapPin, ChevronDown } from "lucide-react"
 
 /* ── Redes ── */
 const redes = [
   { label: "Facebook",  icon: Facebook,  href: "https://www.facebook.com/share/1DdKNkDJVa/",  color: "#1877F2" },
   { label: "Instagram", icon: Instagram, href: "https://www.instagram.com/proenergim?igsh=OGgzYWV3NzF4OWw2", color: "#E1306C" },
-  { label: "TikTok",    icon: null,      href: "https://tiktok.com",    color: "#555555" },
-  { label: "YouTube",   icon: Youtube,   href: "https://youtube.com",   color: "#FF0000" },
   { label: "LinkedIn",  icon: Linkedin,  href: "https://linkedin.com",  color: "#0A66C2" },
 ]
 
@@ -71,13 +69,7 @@ const sedes = [
   { nombre: "Zonal Selva Sur"},
 ]
 
-function TikTokIcon({ size = 18 }) {
-  return (
-    <svg viewBox="0 0 24 24" width={size} height={size} fill="currentColor" aria-hidden>
-      <path d="M16.5 3.5c.5 1.3 1.5 2.4 2.8 3v3.1a6.3 6.3 0 01-3.2-1.1v5.9a5.3 5.3 0 11-5.3-5.3c.4 0 .9.1 1.3.2v2.4a2.7 2.7 0 00-1.3-.3 2.1 2.1 0 102.1 2.1V3.5h3.6z" />
-    </svg>
-  )
-}
+
 
 function SocialIcon({ r }) {
   return (
@@ -100,7 +92,7 @@ function SocialIcon({ r }) {
         e.currentTarget.style.backgroundColor = "rgba(255,255,255,0.12)"
       }}
     >
-      {r.label === "TikTok" ? <TikTokIcon size={18} /> : <r.icon size={18} />}
+      <r.icon size={18} />
     </a>
   )
 }
@@ -205,7 +197,7 @@ function Footer() {
       <div style={{ backgroundColor: "rgba(0,0,0,0.22)", borderTop: "1px solid rgba(255,255,255,0.07)" }}>
         <div className="max-w-7xl mx-auto px-6 py-4 flex flex-col md:flex-row items-center justify-between gap-3">
           <p className="text-white/35 text-xs font-semibold">
-            © 2026 PROENERGIM E.I.R.L. — Todos los derechos reservados.
+            PROENERGIM E.I.R.L. © Todos los derechos reservados.
           </p>
           <div className="flex items-center gap-6 text-xs font-semibold">
             <Link to="/politica-privacidad" className="text-white/30 hover:text-white transition-colors">POLÍTICA DE PRIVACIDAD</Link>

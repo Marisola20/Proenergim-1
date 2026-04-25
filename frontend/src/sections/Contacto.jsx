@@ -1,6 +1,6 @@
 import { useState } from "react"
 import { motion, AnimatePresence } from "framer-motion"
-import { Phone, Mail, User, Send, Facebook, Instagram, Linkedin, Twitter, Youtube, Heart } from "lucide-react"
+import { Phone, Mail, User, Send, Facebook, Instagram, Linkedin, Heart } from "lucide-react"
 import ActionSection from "../components/ActionSection"
 
 const WHATSAPP = "51936954890"
@@ -15,8 +15,6 @@ const sedes = [
 const redes = [
   { icon: Facebook, href: "https://www.facebook.com/share/1DdKNkDJVa/", label: "Facebook" },
   { icon: Instagram, href: "https://www.instagram.com/proenergim?igsh=OGgzYWV3NzF4OWw2", label: "Instagram" },
-  { icon: Twitter, href: "https://twitter.com", label: "Twitter" },
-  { icon: Youtube, href: "https://youtube.com", label: "YouTube" },
   { icon: Linkedin, href: "https://linkedin.com", label: "LinkedIn" },
 ]
 
