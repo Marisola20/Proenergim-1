@@ -1,0 +1,63 @@
+name: Deploy frontend a cPanel
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'frontend/**'
+      - '.github/workflows/deploy.yml'
+  workflow_dispatch:
+
+# Si haces varios push seguidos, cancela el deploy anterior y sube solo el ultimo
+concurrency:
+  group: deploy-cpanel
+  cancel-in-progress: true
+
+jobs:
+  build-deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+          cache-dependency-path: frontend/package-lock.json
+
+      - name: Instalar dependencias
+        working-directory: frontend
+        run: npm ci
+
+      - name: Compilar
+        working-directory: frontend
+        env:
+          # VITE_API_URL se incrusta en el bundle EN TIEMPO DE BUILD.
+          # Se define en Settings > Secrets and variables > Actions > Variables.
+          VITE_API_URL: ${{ vars.VITE_API_URL }}
+        run: npm run build
+
+      - name: Verificar el build
+        run: |
+          test -f frontend/dist/index.html || { echo "::error::No se genero index.html"; exit 1; }
+          test -f frontend/dist/.htaccess  || { echo "::error::Falta .htaccess en dist/"; exit 1; }
+          if ! grep -rq "https://" frontend/dist/assets/*.js; then
+            echo "::warning::No se detecto ninguna URL de API en el bundle. Revisa la variable VITE_API_URL."
+          fi
+
+      - name: Subir a cPanel por FTPS
+        uses: SamKirkland/FTP-Deploy-Action@v4.3.5
+        with:
+          server: ${{ secrets.FTP_SERVER }}
+          protocol: ftps
+          username: ${{ secrets.FTP_USER }}
+          password: ${{ secrets.FTP_PASSWORD }}
+          local-dir: ./frontend/dist/
+          server-dir: ${{ secrets.FTP_SERVER_DIR }}
+          # Nunca borrar estas rutas del servidor aunque no esten en dist/
+          exclude: |
+            **/.git*
+            **/.git*/**
+            **/cgi-bin/**
+            **/.well-known/**

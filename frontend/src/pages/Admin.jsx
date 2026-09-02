@@ -269,7 +269,7 @@ export default function Admin() {
           </div>
         </div>
         <div className="overflow-x-auto">
-          <table className="w-full text-left border-collapse min-w-[800px]">
+          <table className="w-full text-left border-collapse min-w-200">
             <thead>
               <tr className="bg-slate-50 border-b border-slate-200">
                 {columns.map(c => (
@@ -384,7 +384,7 @@ export default function Admin() {
       
       {/* Toast Notification Minimalista */}
       {toast && (
-        <div className="fixed bottom-6 right-6 z-[100] bg-slate-800 text-white px-5 py-3 rounded-lg shadow-lg flex items-center gap-3">
+        <div className="fixed bottom-6 right-6 z-100 bg-slate-800 text-white px-5 py-3 rounded-lg shadow-lg flex items-center gap-3">
           <CheckCircle size={18} className="text-emerald-400" />
           <span className="text-sm font-medium">{toast}</span>
         </div>
@@ -474,7 +474,7 @@ export default function Admin() {
 
         {/* Zona de Contenido Scrolleable */}
         <main className="flex-1 overflow-y-auto p-4 lg:p-8">
-          <div className="max-w-[1400px] mx-auto pb-12">
+          <div className="max-w-350 mx-auto pb-12">
             {activeTab === "dashboard" && <DashboardView />}
             {activeTab === "leads" && (
               <TableView title="Formularios de Contacto" category="leads" data={leads}

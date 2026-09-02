@@ -1,0 +1,64 @@
+# ─────────────────────────────────────────────────────────────
+#  proenergim.com — configuracion Apache / cPanel
+#  Este archivo vive en frontend/public/ y Vite lo copia a dist/
+# ─────────────────────────────────────────────────────────────
+
+# ─── Forzar HTTPS y dominio con www unificado ───────────────
+<IfModule mod_rewrite.c>
+  RewriteEngine On
+  RewriteBase /
+
+  # Redirigir http -> https
+  RewriteCond %{HTTPS} !=on
+  RewriteRule ^ https://%{HTTP_HOST}%{REQUEST_URI} [L,R=301]
+
+  # ─── Routing de la SPA ───────────────────────────────────
+  # Si el archivo o la carpeta existen de verdad, servirlos tal cual
+  RewriteCond %{REQUEST_FILENAME} -f [OR]
+  RewriteCond %{REQUEST_FILENAME} -d
+  RewriteRule ^ - [L]
+
+  # Todo lo demas (/nosotros, /proyecto/5, /admin/...) lo maneja React Router
+  RewriteRule . /index.html [L]
+</IfModule>
+
+# ─── Compresion ─────────────────────────────────────────────
+<IfModule mod_deflate.c>
+  AddOutputFilterByType DEFLATE text/html text/plain text/css text/xml
+  AddOutputFilterByType DEFLATE application/javascript application/json
+  AddOutputFilterByType DEFLATE image/svg+xml
+</IfModule>
+
+# ─── Cache ──────────────────────────────────────────────────
+# Los assets de Vite llevan hash en el nombre, asi que se pueden
+# cachear para siempre. index.html nunca, o los usuarios se quedan
+# con la version vieja despues de cada deploy.
+<IfModule mod_expires.c>
+  ExpiresActive On
+  ExpiresByType text/css                "access plus 1 year"
+  ExpiresByType application/javascript  "access plus 1 year"
+  ExpiresByType image/webp              "access plus 1 year"
+  ExpiresByType image/png               "access plus 1 year"
+  ExpiresByType image/jpeg              "access plus 1 year"
+  ExpiresByType image/svg+xml           "access plus 1 year"
+  ExpiresByType video/mp4               "access plus 1 year"
+  ExpiresByType font/woff2              "access plus 1 year"
+  ExpiresByType text/html               "access plus 0 seconds"
+</IfModule>
+
+<IfModule mod_headers.c>
+  <FilesMatch "\.(html)$">
+    Header set Cache-Control "no-cache, must-revalidate"
+  </FilesMatch>
+  <FilesMatch "\.(js|css|webp|png|jpe?g|svg|mp4|woff2)$">
+    Header set Cache-Control "public, max-age=31536000, immutable"
+  </FilesMatch>
+
+  # Cabeceras basicas de seguridad
+  Header always set X-Content-Type-Options "nosniff"
+  Header always set X-Frame-Options "SAMEORIGIN"
+  Header always set Referrer-Policy "strict-origin-when-cross-origin"
+</IfModule>
+
+# ─── Evitar listado de directorios ──────────────────────────
+Options -Indexes
