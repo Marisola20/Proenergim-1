@@ -1,34 +1,19 @@
-import { useState, useEffect } from "react"
-import { motion, AnimatePresence } from "framer-motion"
-import { ShieldCheck, Wrench, X, BadgeCheck, PartyPopper } from "lucide-react"
+import { useCallback, useState, useEffect } from "react"
+import { motion as Motion, AnimatePresence } from "framer-motion"
+import { ShieldCheck, Wrench, X, BadgeCheck, PartyPopper, RefreshCw } from "lucide-react"
 import HeroBanner from "../components/HeroBanner"
 import ImpactSection from "../components/ImpactSection"
 
-const variadores = [
-  { titulo: "Inversor de Frecuencia Solar Híbrido 2.2 KW Monofásico 220V", marca: "Usfull", precio: "799.70", imagen: "/images/productos/INVERSOR-SOLAR-HIBRIDO.webp" },
-  { titulo: "Inversor de Frecuencia Solar Híbrido 5.5 KW Monofásico 220V", marca: "Usfull", precio: "1,721.08", imagen: "/images/productos/INVERSOR-SOLAR-HIBRIDO.webp" },
-  { titulo: "Inversor de Frecuencia Solar Híbrido 5.5 KW Trifásico 380V", marca: "Usfull", precio: "1,112.62", imagen: "/images/productos/INVERSOR-SOLAR-HIBRIDO.webp" },
-  { titulo: "Inversor de Frecuencia Solar Híbrido 11 KW Trifásico 380V", marca: "Usfull", precio: "1,477.70", imagen: "/images/productos/INVERSOR-SOLAR-HIBRIDO.webp" },
-  { titulo: "Inversor de Frecuencia Solar Híbrido 22 KW Trifásico 380V", marca: "Usfull", precio: "2,633.78", imagen: "/images/productos/INVERSOR-SOLAR-HIBRIDO.webp" },
-  { titulo: "Inversor de Frecuencia Solar Híbrido 55 KW Trifásico 380V", marca: "Usfull", precio: "5,650.02", imagen: "/images/productos/INVERSOR-SOLAR-HIBRIDO.webp" },
-  { titulo: "Inversor de Frecuencia Solar Híbrido 75 KW Trifásico 380V", marca: "Usfull", precio: "7,388.49", imagen: "/images/productos/INVERSOR-SOLAR-HIBRIDO.webp" },
-  { titulo: "Inversor de Frecuencia Solar Híbrido 110 KW Trifásico 380V", marca: "Usfull", precio: "10,083.12", imagen: "/images/productos/INVERSOR-SOLAR-HIBRIDO.webp" },
-  { titulo: "Inversor de Frecuencia Solar Híbrido 200 KW Trifásico 380V", marca: "Usfull", precio: "17,993.15", imagen: "/images/productos/INVERSOR-SOLAR-HIBRIDO.webp" },
-]
-
-const accesorios = [
-  { titulo: "Disyuntor de CC 2 Polos 600V CC 16A", marca: "Usfull", precio: "38.25", imagen: "/images/productos/Disyuntor-CC-2-Polos-600V-CC-16A.webp" },
-  { titulo: "Disyuntor de Caja Moldeada de CC 2 Polos 320A", marca: "Usfull", precio: "305.91", imagen: "/images/productos/Disyuntor-Caja-Moldeada-CC2.webp" },
-  { titulo: "Disyuntor de Caja Moldeada de CC 2 Polos 500A", marca: "Usfull", precio: "513.69", imagen: "/images/productos/Disyuntor-Caja-Moldeada-CC2.webp" },
-  { titulo: "Disyuntor de Caja Moldeada de CC 2 Polos 800A", marca: "Usfull", precio: "788.26", imagen: "/images/productos/Disyuntor-Caja-Moldeada-CC2.webp" },
-  { titulo: "Supresor de Picos de CC 2 Polos 40kA 800V CC", marca: "Usfull", precio: "33.90", imagen: "/images/productos/DISYUNTOR-CC-2-POLOs-40-kA-800V-CC.webp" },
-  { titulo: "Conector MC4 de 6mm 1000V CC", marca: "Usfull", precio: "4.35", imagen: "/images/productos/CONECTOR-MC4.webp" },
-]
+const API_URL = import.meta.env.VITE_API_URL || ""
+const formatPrice = (price) => new Intl.NumberFormat("es-PE", {
+  minimumFractionDigits: 2,
+  maximumFractionDigits: 2,
+}).format(Number(price) || 0)
 
 // ── Componente de tarjeta (fuera de Productos para evitar remontaje en cada render) ──
 function CardProducto({ prod, i, onComprar }) {
   return (
-    <motion.div
+    <Motion.div
       initial={{ opacity: 0, y: 24 }}
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true, margin: "-10% 0px" }}
@@ -44,7 +29,7 @@ function CardProducto({ prod, i, onComprar }) {
         />
         {/* Badge marca */}
         <div className="absolute top-2 left-2 bg-white/90 backdrop-blur-sm rounded-md px-1.5 py-0.5 shadow-sm border border-gray-100">
-          <span className="font-black tracking-wide text-[var(--color-primary-dark)]" style={{ fontSize: "clamp(8px, 1.2vw, 16px)" }}>
+          <span className="font-black tracking-wide text-[var(--color-primary-dark)]" style={{ fontSize: "clamp(10px, 1.2vw, 16px)" }}>
             {prod.marca}
           </span>
         </div>
@@ -53,8 +38,8 @@ function CardProducto({ prod, i, onComprar }) {
           className="absolute bottom-0 left-0 right-0 text-center py-1 px-1"
           style={{ backgroundColor: "var(--color-green)" }}
         >
-          <span className="font-bold text-white whitespace-nowrap" style={{ fontSize: "clamp(9px, 2.2vw, 26px)" }}>
-            S/. {prod.precio}
+          <span className="font-bold text-white whitespace-nowrap" style={{ fontSize: "clamp(13px, 2.2vw, 26px)" }}>
+            S/. {formatPrice(prod.precio)}
           </span>
         </div>
       </div>
@@ -63,29 +48,58 @@ function CardProducto({ prod, i, onComprar }) {
       <div className="px-2 py-2 flex flex-col gap-1.5">
         <p
           className="leading-tight text-center font-medium text-[var(--color-primary-dark)] line-clamp-3"
-          style={{ fontSize: "clamp(7px, 2vw, 16px)" }}
+          style={{ fontSize: "clamp(12px, 2vw, 16px)" }}
         >
           {prod.titulo}
         </p>
         <button
           onClick={() => onComprar(prod)}
           className="w-full font-bold py-1 sm:py-1.5 rounded-lg text-white transition-all duration-200 hover:opacity-90 active:scale-95"
-          style={{ backgroundColor: "var(--color-primary-dark)", fontSize: "clamp(8px, 2vw, 17px)" }}
+          style={{ backgroundColor: "var(--color-primary-dark)", fontSize: "clamp(12px, 2vw, 17px)" }}
         >
           Comprar
         </button>
       </div>
-    </motion.div>
+    </Motion.div>
   )
 }
 
 function Productos() {
+  const [productos, setProductos] = useState([])
+  const [cargandoProductos, setCargandoProductos] = useState(true)
+  const [errorProductos, setErrorProductos] = useState("")
   const [modalOpen, setModalOpen] = useState(false)
   const [productoSeleccionado, setProductoSeleccionado] = useState(null)
   const [form, setForm] = useState({ nombre: "", celular: "", correo: "", descripcion: "" })
   const [enviando, setEnviando] = useState(false)
   const [exito, setExito] = useState(false)
   const [dots, setDots] = useState("")
+
+  const cargarProductos = useCallback(async () => {
+    setCargandoProductos(true)
+    setErrorProductos("")
+    try {
+      const res = await fetch(`${API_URL}/api/productos`, { cache: "no-store" })
+      if (!res.ok) throw new Error("No se pudo cargar el catálogo")
+      const data = await res.json()
+      if (!Array.isArray(data)) throw new Error("Respuesta de catálogo no válida")
+      setProductos(data)
+    } catch (error) {
+      console.error("Error al cargar productos:", error)
+      setErrorProductos("No pudimos actualizar el catálogo. Inténtalo nuevamente.")
+    } finally {
+      setCargandoProductos(false)
+    }
+  }, [])
+
+  useEffect(() => {
+    cargarProductos()
+    window.addEventListener("focus", cargarProductos)
+    return () => window.removeEventListener("focus", cargarProductos)
+  }, [cargarProductos])
+
+  const variadores = productos.filter(prod => prod.categoria === "variadores")
+  const accesorios = productos.filter(prod => prod.categoria === "accesorios")
 
   // Animación de puntos mientras envía
   useEffect(() => {
@@ -122,7 +136,7 @@ function Productos() {
         body: JSON.stringify({
           ...form,
           producto: `${productoSeleccionado.marca} ${productoSeleccionado.titulo}`,
-          precio: productoSeleccionado.precio,
+          precio: formatPrice(productoSeleccionado.precio),
         }),
       })
       const data = await res.json()
@@ -169,7 +183,7 @@ function Productos() {
       {/* ── BANNER GARANTÍA ── */}
       <section className="px-3 sm:px-6 mb-10">
         <div className="max-w-5xl mx-auto">
-          <motion.div
+          <Motion.div
             initial={{ opacity: 0, y: 16 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
@@ -181,20 +195,53 @@ function Productos() {
             </div>
             <div>
               <h3 className="font-black text-sm sm:text-base text-[var(--color-primary-dark)]">
-                Garantía de 2 años en todos nuestros productos
+                Garantía y soporte en nuestros productos
               </h3>
               <p className="text-xs sm:text-sm text-gray-500 mt-0.5">
-                Equipos respaldados por el fabricante Usfull con soporte técnico incluido.
+                Consulta las condiciones registradas para cada equipo al solicitar tu compra.
               </p>
             </div>
-          </motion.div>
+          </Motion.div>
         </div>
       </section>
 
-      {/* ── VARIADORES DE FRECUENCIA SOLAR ── */}
-      <section className="pb-16 px-3 sm:px-6 bg-white">
+      {cargandoProductos && productos.length === 0 && (
+        <section className="px-3 sm:px-6 pb-16">
+          <div className="max-w-5xl mx-auto flex items-center justify-center gap-3 py-12 text-gray-500">
+            <RefreshCw size={20} className="animate-spin" />
+            <span className="text-sm font-medium">Actualizando catálogo...</span>
+          </div>
+        </section>
+      )}
+
+      {errorProductos && productos.length === 0 && (
+        <section className="px-3 sm:px-6 pb-16">
+          <div className="max-w-5xl mx-auto rounded-xl border border-red-200 bg-red-50 p-6 text-center">
+            <p className="text-sm font-medium text-red-700">{errorProductos}</p>
+            <button
+              type="button"
+              onClick={cargarProductos}
+              className="mt-4 rounded-lg bg-[var(--color-primary-dark)] px-4 py-2 text-sm font-bold text-white"
+            >
+              Reintentar
+            </button>
+          </div>
+        </section>
+      )}
+
+      {!cargandoProductos && !errorProductos && productos.length === 0 && (
+        <section className="px-3 sm:px-6 pb-16">
+          <p className="max-w-5xl mx-auto py-12 text-center text-sm text-gray-500">
+            No hay productos disponibles en este momento.
+          </p>
+        </section>
+      )}
+
+      {productos.length > 0 && <>
+        {/* ── VARIADORES DE FRECUENCIA SOLAR ── */}
+        <section className="pb-16 px-3 sm:px-6 bg-white">
         <div className="max-w-5xl mx-auto">
-          <motion.div
+          <Motion.div
             initial={{ opacity: 0, y: 16 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
@@ -208,19 +255,19 @@ function Productos() {
               </span>
             </h2>
             <p className="text-xs sm:text-sm text-gray-400 mt-1">Inversores híbridos de alta eficiencia</p>
-          </motion.div>
-          <div className="grid grid-cols-3 gap-2 sm:gap-4">
+          </Motion.div>
+          <div className="grid grid-cols-2 sm:grid-cols-3 gap-2 sm:gap-4">
             {variadores.map((prod, i) => (
-              <CardProducto key={prod.titulo} prod={prod} i={i} onComprar={abrirModal} />
+              <CardProducto key={prod._id || prod.codigo} prod={prod} i={i} onComprar={abrirModal} />
             ))}
           </div>
         </div>
-      </section>
+        </section>
 
-      {/* ── ACCESORIOS ELÉCTRICOS ── */}
-      <section className="pb-16 px-3 sm:px-6 bg-gray-50">
+        {/* ── ACCESORIOS ELÉCTRICOS ── */}
+        <section className="pb-16 px-3 sm:px-6 bg-gray-50">
         <div className="max-w-5xl mx-auto pt-10">
-          <motion.div
+          <Motion.div
             initial={{ opacity: 0, y: 16 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
@@ -234,26 +281,27 @@ function Productos() {
               </span>
             </h2>
             <p className="text-xs sm:text-sm text-gray-400 mt-1">Componentes de protección y conexión solar</p>
-          </motion.div>
-          <div className="grid grid-cols-3 gap-2 sm:gap-4">
+          </Motion.div>
+          <div className="grid grid-cols-2 sm:grid-cols-3 gap-2 sm:gap-4">
             {accesorios.map((prod, i) => (
-              <CardProducto key={prod.titulo} prod={prod} i={i} onComprar={abrirModal} />
+              <CardProducto key={prod._id || prod.codigo} prod={prod} i={i} onComprar={abrirModal} />
             ))}
           </div>
         </div>
-      </section>
+        </section>
+      </>}
 
       {/* ── MODAL ── */}
       <AnimatePresence>
         {modalOpen && (
-          <motion.div
+          <Motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 px-4"
             onClick={cerrarModal}
           >
-            <motion.div
+            <Motion.div
               initial={{ scale: 0.9, opacity: 0 }}
               animate={{ scale: 1, opacity: 1 }}
               exit={{ scale: 0.9, opacity: 0 }}
@@ -277,7 +325,9 @@ function Productos() {
                       {productoSeleccionado?.marca} — {productoSeleccionado?.titulo}
                     </span>
                   </p>
-                  <p className="text-xs text-gray-400 mb-4">S/. {productoSeleccionado?.precio} · Garantía 2 años</p>
+                  <p className="text-xs text-gray-400 mb-4">
+                    S/. {formatPrice(productoSeleccionado?.precio)} · Garantía {productoSeleccionado?.garantiaAnos ?? 2} años
+                  </p>
 
                   <form onSubmit={handleSubmit} className="flex flex-col gap-3">
                     <input
@@ -334,8 +384,8 @@ function Productos() {
                   </p>
                 </div>
               )}
-            </motion.div>
-          </motion.div>
+            </Motion.div>
+          </Motion.div>
         )}
       </AnimatePresence>
     </main>

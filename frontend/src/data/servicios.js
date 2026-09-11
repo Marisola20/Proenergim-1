@@ -14,7 +14,7 @@ export const servicios = [
     iconBg: "#3b82f6",
     nombre: "Electrificación Solar",
     descripcion: "Sistemas solares para hogares, comercios e industrias. Paneles, inversores y baterías.",
-    imagen: "/images/servicios/Electrificación-solar.webp",
+    imagen: "/images/servicios/Electrificacion-solar.webp",
   },
   {
     icon: Droplets,

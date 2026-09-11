@@ -88,10 +88,30 @@ function Contacto({ mostrarBloqueProveedores = false }) {
 
   const enviarFormulario = async () => {
     if (!camposCompletos) return
+
+    const lineas = [
+      "Hola, acabo de enviar una solicitud desde la web.",
+      "",
+      "*Datos del cliente:*",
+      "*Nombre:* " + nombre,
+      "*Telefono:* " + telefono,
+      "*Correo:* " + correo,
+      "",
+      "Estoy interesado en recibir informacion sobre sus servicios.",
+      "Quedo atento a la asesoria. Gracias!",
+    ]
+
+    const mensaje = lineas.join("\n")
+    const url = `https://wa.me/${WHATSAPP}?text=${encodeURIComponent(mensaje)}`
+    const waWindow = window.open(url, "_blank")
+    const fallbackToSameWindow = !waWindow
+
+    if (waWindow) waWindow.opener = null
+
     try {
       setEstado("loading")
 
-      const res = await fetch(`${import.meta.env.VITE_API_URL}/api/leads`, {
+      const request = fetch(`${import.meta.env.VITE_API_URL}/api/leads`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -99,38 +119,16 @@ function Contacto({ mostrarBloqueProveedores = false }) {
           telefono,
           empresa: correo,
           mensaje: "Solicitud desde formulario web"
-        })
+        }),
+        keepalive: true
       })
 
+      if (fallbackToSameWindow) window.location.assign(url)
+
+      const res = await request
       if (!res.ok) throw new Error("Error")
 
-      setEstado("redirigiendo")
-
-      const lineas = [
-        "Hola, acabo de enviar una solicitud desde la web.",
-        "",
-        "*Datos del cliente:*",
-        "*Nombre:* " + nombre,
-        "*Telefono:* " + telefono,
-        "*Correo:* " + correo,
-        "",
-        "Estoy interesado en recibir informacion sobre sus servicios.",
-        "Quedo atento a la asesoria. Gracias!",
-      ]
-
-      const mensaje = lineas.join("\n")
-      const url = `https://wa.me/${WHATSAPP}?text=${encodeURIComponent(mensaje)}`
-
-      setTimeout(() => {
-        const link = document.createElement("a")
-        link.href = url
-        link.target = "_blank"
-        link.rel = "noreferrer"
-        document.body.appendChild(link)
-        link.click()
-        document.body.removeChild(link)
-        setEstado("enviado")
-      }, 1500)
+      setEstado("enviado")
 
     } catch (error) {
       console.error(error)
@@ -244,12 +242,12 @@ function Contacto({ mostrarBloqueProveedores = false }) {
                 
                 <button
                   onClick={enviarFormulario}
-                  disabled={!camposCompletos || estado === "loading" || estado === "redirigiendo" || estado === "enviado"}
+                  disabled={!camposCompletos || estado === "loading" || estado === "enviado"}
                   className={`flex items-center justify-center gap-2 font-bold py-3.5 rounded-full transition-all duration-300 w-full
                     ${
                       estado === "enviado"
                         ? "bg-green-100 text-green-700 cursor-default"
-                        : estado === "loading" || estado === "redirigiendo"
+                        : estado === "loading"
                         ? "bg-[#25D366]/70 text-white cursor-not-allowed"
                         : camposCompletos
                         ? "bg-[#25D366] hover:bg-[#20BE5C] text-white shadow-sm hover:shadow-md hover:-translate-y-0.5 cursor-pointer"
@@ -265,16 +263,9 @@ function Contacto({ mostrarBloqueProveedores = false }) {
                     </>
                   )}
                   {estado === "loading" && "Enviando..."}
-                  {estado === "redirigiendo" && "Te estamos redirigiendo..."}
-                  {estado === "enviado" && "Enviado"}
+                  {estado === "enviado" && "Solicitud registrada"}
                   {estado === "error" && "Error — intenta nuevamente"}
                 </button>
-
-                {estado === "redirigiendo" && (
-                  <p className="text-slate-500 text-sm text-center mt-2">
-                    Abriendo WhatsApp con tu informacion...
-                  </p>
-                )}
 
                 {estado === "enviado" && (
                   <motion.div
@@ -286,8 +277,8 @@ function Contacto({ mostrarBloqueProveedores = false }) {
                       <Send size={18} className="text-green-600" />
                     </div>
                     <div className="flex-1">
-                      <p className="font-bold text-green-700 text-sm">¡Mensaje enviado!</p>
-                      <p className="text-xs text-green-600">Muchas gracias, en breve nos pondremos en contacto.</p>
+                      <p className="font-bold text-green-700 text-sm">¡Solicitud registrada!</p>
+                      <p className="text-xs text-green-600">WhatsApp está listo; envía allí el mensaje para completar el contacto.</p>
                     </div>
                     <button
                       onClick={() => { setEstado("idle"); setNombre(""); setCorreo(""); setTelefono("") }}
@@ -335,7 +326,7 @@ function Contacto({ mostrarBloqueProveedores = false }) {
             {/* Datos de contacto y Redes */}
             <div className="rounded-[2rem] p-8 text-white shadow-sm flex flex-col h-full" style={{ backgroundColor: "var(--color-primary-dark)" }}>
               <h3 className="font-black text-white text-lg mb-6">Información de contacto</h3>
-              <div className="grid grid-cols-2 gap-3 mb-8">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 mb-8">
                 <a
                   href="tel:+51936954890"
                   className="flex items-center gap-3 bg-white/10 hover:bg-white/20 border border-white/10 rounded-2xl px-4 py-4 transition-all duration-300 group"

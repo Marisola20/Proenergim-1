@@ -179,18 +179,22 @@ function Servicios() {
         </div>
 
         {/* Indicators */}
-        <div className="flex justify-center gap-2.5 mt-14">
+        <div className="flex justify-center items-center mt-14">
           {Array.from({ length: maxStart + 1 }).map((_, i) => (
             <button
               key={i}
               type="button"
               onClick={() => setStartIndex(i)}
-              className={`h-2.5 transition-all duration-500 rounded-full ${i === startIndex
-                  ? "bg-gradient-to-r from-[#0ea5e1] to-[#1ed760] w-12 shadow-sm shadow-green-400/20"
-                  : "bg-gray-200 w-2.5 hover:bg-gray-300"
-                }`}
+              className="group flex items-center justify-center h-11 px-2 cursor-pointer"
               aria-label={`Ir al servicio ${i + 1}`}
-            />
+            >
+              <span
+                className={`block h-2.5 transition-all duration-500 rounded-full ${i === startIndex
+                    ? "bg-gradient-to-r from-[#0ea5e1] to-[#1ed760] w-12 shadow-sm shadow-green-400/20"
+                    : "bg-gray-200 w-2.5 group-hover:bg-gray-300"
+                  }`}
+              />
+            </button>
           ))}
         </div>
       </div>

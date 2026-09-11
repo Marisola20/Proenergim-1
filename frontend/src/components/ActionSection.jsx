@@ -120,8 +120,6 @@ export default function ActionSection({
     e.preventDefault();
     if (!form.nombre || !form.correo || !form.telefono) return;
     
-    setStatus("success");
-    
     // Armar el mensaje dinámico
     const lineas = [
       "Hola, me interesa unirme a su red de proveedores y aliados estratégicos.",
@@ -137,20 +135,22 @@ export default function ActionSection({
     const phone = buttonHref.match(/\d{9,15}/)?.[0] || "51936954890";
     const waUrl = `https://wa.me/${phone}?text=${mensaje}`;
 
-    // Flujo solicitado: 
-    // 1. Mostrar éxito inmediatamente.
-    // 2. A los 2 segundos abrir WhatsApp.
-    // 3. Mantener el mensaje de éxito 5 segundos más (total 7s) y resetear "suavecito".
+    // La apertura debe ocurrir directamente en el clic para que el navegador o
+    // WebView no la bloquee como ventana emergente.
+    const waWindow = window.open(waUrl, "_blank");
+    if (waWindow) {
+      waWindow.opener = null;
+    } else {
+      window.location.assign(waUrl);
+    }
+
+    setStatus("success");
+
     setTimeout(() => {
-      window.open(waUrl, "_blank");
-      
-      // Resetear suavemente tras 5 segundos adicionales
-      setTimeout(() => {
-        setStatus("idle");
-        setShowForm(false);
-        setForm({ nombre: "", correo: "", telefono: "" });
-      }, 5000);
-    }, 2000);
+      setStatus("idle");
+      setShowForm(false);
+      setForm({ nombre: "", correo: "", telefono: "" });
+    }, 5000);
   };
 
   return (
@@ -208,7 +208,7 @@ export default function ActionSection({
                   </div>
                   <div className="text-left">
                     <p className="font-black text-white text-lg leading-tight">¡Solicitud preparada!</p>
-                    <p className="text-white/70 text-sm">Abriendo WhatsApp con tus datos en unos segundos...</p>
+                    <p className="text-white/70 text-sm">WhatsApp está listo. Envía allí el mensaje para completar tu solicitud.</p>
                   </div>
                   <div className="w-8 h-8 rounded-full bg-white/10 flex items-center justify-center">
                     <CheckCircle size={18} className="text-[#1ed760] animate-pulse" />

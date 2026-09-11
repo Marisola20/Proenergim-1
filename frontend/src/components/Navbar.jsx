@@ -20,13 +20,13 @@ function Navbar() {
     <nav className="fixed top-0 w-full z-50 bg-white border-b border-[var(--color-primary)] shadow-sm">
       <div className="max-w-7xl mx-auto px-6 py-3 flex items-center justify-between relative">
 
-        <Link to="/" className="flex items-center gap-2 shrink-0">
+        <Link to="/" className="flex items-center gap-2 min-w-0">
           <img
             src={logoWeb}
             alt="Proenergim"
             loading="eager"
             decoding="async"
-            className="h-14 lg:h-[3.8rem] w-auto object-contain"
+            className="h-14 lg:h-12 xl:h-[3.8rem] w-auto max-w-full min-w-0 object-contain"
           />
         </Link>
 
@@ -120,7 +120,7 @@ function Navbar() {
                       <a
                         href={link.href}
                         onClick={() => setOpen(false)}
-                        className="block text-[var(--color-primary-dark)]/90 hover:text-[var(--color-primary)] py-2 px-3 text-sm font-medium rounded-xl hover:bg-slate-50 transition-colors"
+                        className="block text-[var(--color-primary-dark)]/90 hover:text-[var(--color-primary)] py-3 px-3 text-sm font-medium rounded-xl hover:bg-slate-50 transition-colors"
                       >
                         {link.label}
                       </a>
@@ -128,7 +128,7 @@ function Navbar() {
                       <Link
                         to={link.href}
                         onClick={() => setOpen(false)}
-                        className="block text-[var(--color-primary-dark)]/90 hover:text-[var(--color-primary)] py-2 px-3 text-sm font-medium rounded-xl hover:bg-slate-50 transition-colors"
+                        className="block text-[var(--color-primary-dark)]/90 hover:text-[var(--color-primary)] py-3 px-3 text-sm font-medium rounded-xl hover:bg-slate-50 transition-colors"
                       >
                         {link.label}
                       </Link>

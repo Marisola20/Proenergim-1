@@ -9,6 +9,9 @@ import compraRoutes from "./routes/compraRoutes.js";
 import suscriptorRoutes from "./routes/suscriptorRoutes.js";
 import visitRoutes from "./routes/visitRoutes.js";
 import resenaRoutes from "./routes/resenaRoutes.js";
+import adminRoutes from "./routes/adminRoutes.js";
+import productoRoutes from "./routes/productoRoutes.js";
+import uploadRoutes from "./routes/uploadRoutes.js";
 
 dotenv.config();
 
@@ -26,16 +29,22 @@ const app = express();
 const allowedOrigins = [
   "https://proenergim.com",
   "https://www.proenergim.com",
-  // Permitir previews de Vercel (*.vercel.app) automáticamente
-  process.env.NODE_ENV !== "production" && "http://localhost:5173",
-  process.env.NODE_ENV !== "production" && "http://localhost:5000",
-].filter(Boolean);
+];
+
+const isLocalDevelopmentOrigin = (origin) =>
+  process.env.NODE_ENV !== "production" &&
+  /^http:\/\/(localhost|127\.0\.0\.1)(:\d+)?$/.test(origin);
 
 app.use(cors({
   origin: (origin, cb) => {
     // Permitir sin origin (apps móviles, Postman, mismo servidor)
     // También permitir subdominios de vercel.app para previews
-    if (!origin || allowedOrigins.includes(origin) || /\.vercel\.app$/.test(origin)) {
+    if (
+      !origin ||
+      allowedOrigins.includes(origin) ||
+      isLocalDevelopmentOrigin(origin) ||
+      /^https:\/\/[a-z0-9-]+\.vercel\.app$/.test(origin)
+    ) {
       cb(null, true);
     } else {
       cb(new Error("CORS bloqueado: " + origin));
@@ -54,6 +63,9 @@ app.use("/api/compra", compraRoutes);
 app.use("/api/suscriptors", suscriptorRoutes);
 app.use("/api/visits", visitRoutes);
 app.use("/api/resenas", resenaRoutes);
+app.use("/api/admin", adminRoutes);
+app.use("/api/productos", productoRoutes);
+app.use("/api/upload", uploadRoutes);
 
 // Health check
 app.get("/api/health", (req, res) => {

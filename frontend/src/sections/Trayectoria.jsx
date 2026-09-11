@@ -317,11 +317,11 @@ function Trayectoria() {
                 className="w-8 h-8 sm:w-11 sm:h-11 rounded-xl flex items-center justify-center shrink-0 shadow-inner"
                 style={{ backgroundColor: `${color}10`, color: color }}
               >
-                <Icon size={16} sm:size={20} strokeWidth={2.5} />
+                <Icon className="w-4 h-4 sm:w-5 sm:h-5" strokeWidth={2.5} />
               </div>
               <div className="flex flex-col">
                 <div className="text-[var(--color-primary-dark)] font-black text-sm sm:text-xl leading-none">+{value}</div>
-                <div className="text-slate-400 text-[7px] sm:text-[9px] uppercase font-black tracking-wider leading-tight mt-1">{label}</div>
+                <div className="text-slate-400 text-[10px] sm:text-[11px] uppercase font-black tracking-wider leading-tight mt-1">{label}</div>
               </div>
             </div>
           ))}

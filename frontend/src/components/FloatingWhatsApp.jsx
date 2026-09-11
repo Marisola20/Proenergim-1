@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef, useCallback } from "react"
+import { useState, useEffect, useRef } from "react"
 import { useNavigate } from "react-router-dom"
 import { motion, AnimatePresence } from "framer-motion"
 import { X, Send, Trash2, Clock, RefreshCcw, MessageSquarePlus, ExternalLink } from "lucide-react"
@@ -237,8 +237,10 @@ export default function FloatingWhatsApp() {
   const [showDeleteModal, setShowDeleteModal] = useState(false)
   const [topicModal, setTopicModal] = useState(null)
   const [historyList, setHistoryList] = useState([])
+  const [leadStatus, setLeadStatus] = useState("idle")
   const chatRef = useRef(null)
   const inputRef = useRef(null)
+  const activeLeadKeyRef = useRef("")
   const initialized = useRef(!!saved?.messages?.length)
 
   // Persistir estado
@@ -284,8 +286,13 @@ export default function FloatingWhatsApp() {
     }, d)
   }
 
+  function resetLeadStatus() {
+    activeLeadKeyRef.current = ""
+    setLeadStatus("idle")
+  }
+
   // ─── Armado y envío del mensaje final ───────────────────────────────────────
-  async function sendFinalLead(name, location, topicKey, skipWaOpen = false) {
+  async function sendFinalLead(name, phone, location, topicKey, skipWaOpen = false) {
     const topicObj = getThemeObj(topicKey);
     const topicLabel = topicObj?.msg || topicKey;
 
@@ -301,32 +308,77 @@ export default function FloatingWhatsApp() {
       `Quedo atento a su asesoría. ¡Gracias!`
     ].join("\n")
 
-    // Abrir WhatsApp directamente SIN setTimeout para evitar que el navegador bloquee la ventana pop-up (popup blocker)
+    // Debe ejecutarse dentro del clic del usuario. Si el navegador/WebView bloquea
+    // la pestaña nueva, usamos la navegación actual como alternativa.
+    let fallbackWaUrl = ""
     if (!skipWaOpen) {
-      window.open(`https://wa.me/${WHATSAPP}?text=${encodeURIComponent(waMsg)}`, "_blank")
+      const waUrl = `https://wa.me/${WHATSAPP}?text=${encodeURIComponent(waMsg)}`
+      const waWindow = window.open(waUrl, "_blank")
+      if (waWindow) {
+        waWindow.opener = null
+      } else {
+        fallbackWaUrl = waUrl
+      }
     }
 
-    // Guardar en MongoDB
-    try {
-      await fetch(`${API_URL}/api/chat-leads`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ nombre: `${name} (${userPhone})`, ciudad: location, tema: topicLabel, origen: "chat_flotante" })
-      })
-    } catch {}
+    const leadKey = JSON.stringify([name, phone, location, topicLabel])
+    if (leadStatus === "sent" && activeLeadKeyRef.current === leadKey) {
+      if (fallbackWaUrl) window.location.assign(fallbackWaUrl)
+      return
+    }
 
-    // Enviar email
-    try {
-      await fetch(`${API_URL}/api/chat-leads/email`, {
+    activeLeadKeyRef.current = leadKey
+
+    if (!API_URL) {
+      setLeadStatus("error")
+      if (fallbackWaUrl) window.location.assign(fallbackWaUrl)
+      return
+    }
+
+    setLeadStatus("sending")
+
+    const postJson = async (path, body) => {
+      const response = await fetch(`${API_URL}${path}`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ nombre: `${name} (${userPhone})`, ubicacion: location, tema: topicLabel })
+        body: JSON.stringify(body),
+        keepalive: true
       })
-    } catch {}
+      if (!response.ok) throw new Error(`API ${path}: ${response.status}`)
+      return response
+    }
+
+    const nombre = `${name} (${phone})`
+    const request = Promise.allSettled([
+      postJson("/api/chat-leads", {
+        nombre,
+        ciudad: location,
+        tema: topicLabel,
+        origen: "chat_flotante"
+      }),
+      postJson("/api/chat-leads/email", {
+        nombre,
+        ubicacion: location,
+        tema: topicLabel
+      })
+    ])
+
+    // Iniciamos las peticiones antes de abandonar la vista en el fallback móvil.
+    if (fallbackWaUrl) window.location.assign(fallbackWaUrl)
+
+    const results = await request
+    if (activeLeadKeyRef.current !== leadKey) return
+
+    const completed = results.every(result => result.status === "fulfilled")
+    setLeadStatus(completed ? "sent" : "error")
+
+    if (!completed) {
+      console.error("No se pudo completar el registro del chat", results)
+    }
   }
 
   // ─── Manejo de envío de mensajes ─────────────────────────────────────────────
-  const handleSend = useCallback((textOverride) => {
+  function handleSend(textOverride) {
     const raw = (textOverride ?? inputValue).trim()
     if (!raw) return
     setInputValue("")
@@ -394,21 +446,23 @@ export default function FloatingWhatsApp() {
 
     // ETAPA: Tema o texto libre final
     if (stage === STAGE.TOPIC || stage === STAGE.SUBTOPIC) {
-      handleTopicSelected("otros")
+      setUserTopic(raw)
+      setStage(STAGE.DONE)
+      resetLeadStatus()
+      botReply(
+        `✅ *¡Entendido, ${userName || "visitante"}!*\n\n*Resumen de lo solicitado:*\n• *Consulta:* ${raw}\n\nPulsa *Comunicarme con un asesor* para abrir WhatsApp y enviar tu solicitud.`,
+        0
+      )
       return;
     }
 
     if (stage === STAGE.DONE) {
-      const isSales = getThemeObj(userTopic)?.autoWA;
-      if (isSales) {
-        setUserTopic(raw);
-        botReply(`Anotado. Haz clic en el botón de abajo para enviar tu solicitud exacta al asesor: "${raw}".`, 0);
-      } else {
-        setStage(STAGE.TOPIC);
-        botReply(`¡Entendido! ¿Sobre qué otro tema te gustaría consultar ahora, ${userName}?`, 300, { showTopics: true });
-      }
+      setUserTopic(raw)
+      resetLeadStatus()
+      botReply(`Anotado. Pulsa el botón de abajo para enviar esta consulta al asesor: "${raw}".`, 0)
+      return
     }
-  }, [inputValue, stage, userName, userLocation, userPhone])
+  }
 
   function handleTopicSelected(key) {
     const tema = getThemeObj(key)
@@ -425,6 +479,7 @@ export default function FloatingWhatsApp() {
 
     setUserTopic(key)
     setStage(STAGE.DONE)
+    resetLeadStatus()
 
     const loc = userLocation || "(no especificada)"
     const name = userName || "visitante"
@@ -436,7 +491,7 @@ export default function FloatingWhatsApp() {
     if (tema.link) {
       confirmMsg += `Tenemos una sección dedicada para *${tema.label}*. En un momento verás las opciones disponibles 🔍`;
     } else if (tema.autoWA) {
-      confirmMsg += `*Resumen de lo solicitado:*\n• *Tema:* ${tema.msg}\n\nTe comunicaremos con un asesor. En breve se abrirá WhatsApp. 🚀`;
+      confirmMsg += `*Resumen de lo solicitado:*\n• *Tema:* ${tema.msg}\n\nPulsa *Comunicarme con un asesor* para abrir WhatsApp y enviar tu solicitud. 🚀`;
     } else {
       confirmMsg += `*Resumen de lo solicitado:*\n• *Tema:* ${tema.msg}\n\nHaz clic abajo para contactar a un asesor cuando lo desees. 👇`;
     }
@@ -452,15 +507,6 @@ export default function FloatingWhatsApp() {
       return;
     }
     
-    // Si no tiene link, seguimos el flujo regular de ventas
-    const shouldSkipWa = !tema.autoWA;
-    
-    if (!shouldSkipWa) {
-      // Damos 5.5 segundos para que puedan leer el párrafo informativo tranquilamente
-      setTimeout(() => {
-        sendFinalLead(name, loc, key, false);
-      }, 5500);
-    }
   }
 
   function deleteHistoryItem(id) {
@@ -494,6 +540,7 @@ export default function FloatingWhatsApp() {
     setUserLocation(h.userLocation || "")
     setUserTopic(h.userTopic || "")
     setStage(h.stage || STAGE.DONE)
+    resetLeadStatus()
     setShowHistory(false)
   }
 
@@ -520,6 +567,7 @@ export default function FloatingWhatsApp() {
     setUserPhone("")
     setUserLocation("")
     setUserTopic("")
+    resetLeadStatus()
     setInputValue("")
     setShowDistrictList(false)
     initialized.current = true
@@ -651,19 +699,13 @@ export default function FloatingWhatsApp() {
                                className="w-full py-2.5 rounded-xl font-bold text-xs bg-[#075e54] text-white hover:bg-[#064e46] shadow-md transition-all active:scale-95 flex items-center justify-center gap-2">
                               {topicModal.linkLabel || "Visitar Página"}
                            </button>
-                           {topicModal.autoWA ? (
-                             <button onClick={() => {
-                                   const tm = topicModal;
-                                   setTopicModal(null);
-                                   setIsTyping(true);
-                                   setTimeout(() => {
-                                     setIsTyping(false);
-                                     botReply(`⏳ *Preparando conexión...*\n\nConectando tu solicitud sobre *${tm.msg}* con nuestro especialista. Se abrirá WhatsApp en unos segundos 🚀`, 0);
-                                     setTimeout(() => {
-                                       sendFinalLead(tm.name, tm.loc, tm.key, false);
-                                     }, 4500);
-                                   }, 800);
-                                 }}
+                            {topicModal.autoWA ? (
+                              <button onClick={() => {
+                                    const tm = topicModal;
+                                    void sendFinalLead(tm.name, userPhone, tm.loc, tm.key, false);
+                                    setTopicModal(null);
+                                    botReply(`✅ Abrimos WhatsApp con tu solicitud sobre *${tm.msg}*. Si no cambiaste de pantalla, pulsa el botón nuevamente.`, 0);
+                                  }}
                                  className="w-full py-2.5 rounded-xl font-bold text-xs bg-gray-100 text-gray-600 hover:bg-gray-200 transition-all active:scale-95 flex items-center justify-center gap-2">
                                 Continuar a WhatsApp
                              </button>
@@ -860,36 +902,45 @@ export default function FloatingWhatsApp() {
               {!showHistory && isDone && (
                 <button onClick={() => {
                   setStage(STAGE.TOPIC)
+                  resetLeadStatus()
                   botReply(`¡Claro! ¿Sobre qué otro tema te puedo ayudar, ${userName}?`, 300, { showTopics: true })
                 }} className="w-full flex items-center justify-center gap-1.5 font-bold text-[11px] py-1.5 rounded-full transition-all shadow-sm bg-gray-50 hover:bg-gray-100 text-gray-600 active:scale-95 border border-gray-200">
                   <RefreshCcw size={12}/> Realizar otra consulta
                 </button>
               )}
               <button 
-                disabled={showHistory || !isDone}
+                disabled={showHistory || !isDone || leadStatus === "sending"}
                 onClick={() => {
                   const key = userTopic;
                   const name = userName || "visitante";
                   const loc = userLocation || "(no especificada)";
                   const msgName = getThemeObj(key)?.msg || key;
-                  
-                  setIsTyping(true);
-                  setTimeout(() => {
-                    setIsTyping(false);
-                    botReply(`⏳ *Preparando conexión...*\n\nConectando tu solicitud sobre *${msgName}* con nuestro especialista. Se abrirá WhatsApp en unos segundos 🚀`, 0);
-                    setTimeout(() => {
-                      sendFinalLead(name, loc, key, false);
-                    }, 4500);
-                  }, 800);
+
+                  void sendFinalLead(name, userPhone, loc, key, false);
+                  botReply(`✅ Abrimos WhatsApp con tu solicitud sobre *${msgName}*. Si no cambiaste de pantalla, pulsa el botón nuevamente.`, 0);
                 }}
                 className={`w-full flex items-center justify-center gap-2 font-semibold text-xs py-2.5 rounded-full transition-all shadow-sm ${
-                  isDone && !showHistory
+                  isDone && !showHistory && leadStatus !== "sending"
                     ? "bg-[#25D366] hover:bg-[#20BE5C] text-white active:scale-95 cursor-pointer" 
                     : "bg-gray-100 text-gray-400 cursor-not-allowed"
                 }`}>
                 <WAIcon size={13}/>
-                Comunicarme con un asesor
+                {leadStatus === "sending"
+                  ? "Registrando solicitud..."
+                  : leadStatus === "sent"
+                    ? "Abrir WhatsApp nuevamente"
+                    : "Comunicarme con un asesor"}
               </button>
+              {leadStatus === "sent" && (
+                <p className="text-[10px] text-center font-semibold text-emerald-700">
+                  Solicitud registrada correctamente.
+                </p>
+              )}
+              {leadStatus === "error" && (
+                <p className="text-[10px] text-center font-semibold text-red-600">
+                  WhatsApp está listo, pero no pudimos registrar la solicitud. Intenta nuevamente.
+                </p>
+              )}
             </div>
 
             {/* ── Input ── */}
