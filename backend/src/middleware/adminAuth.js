@@ -1,10 +1,13 @@
 import crypto from "node:crypto"
 
-const LEGACY_ADMIN_PASSWORD = "pro2026-energim"
 const TOKEN_DURATION_MS = 8 * 60 * 60 * 1000
 
-const getAdminPassword = () => process.env.ADMIN_PASSWORD || LEGACY_ADMIN_PASSWORD
-const getTokenSecret = () => process.env.ADMIN_TOKEN_SECRET || getAdminPassword()
+// Sin valores de respaldo a propósito: antes había una contraseña escrita en
+// este archivo, y como el repositorio es público equivalía a publicar la llave
+// del panel. Si falta configuración se deniega el acceso; el arranque del
+// servidor ya exige ambas variables (ver REQUIRED_ENV en server.js).
+const getAdminPassword = () => process.env.ADMIN_PASSWORD || ""
+const getTokenSecret = () => process.env.ADMIN_TOKEN_SECRET || ""
 
 const safeEqual = (left, right) => {
   const leftBuffer = Buffer.from(String(left))
@@ -12,12 +15,22 @@ const safeEqual = (left, right) => {
   return leftBuffer.length === rightBuffer.length && crypto.timingSafeEqual(leftBuffer, rightBuffer)
 }
 
-const signPayload = (payload) => crypto
-  .createHmac("sha256", getTokenSecret())
-  .update(payload)
-  .digest("base64url")
+const signPayload = (payload) => {
+  const secreto = getTokenSecret()
+  if (!secreto) throw new Error("ADMIN_TOKEN_SECRET no está configurado")
 
-export const isValidAdminPassword = (password) => safeEqual(password, getAdminPassword())
+  return crypto
+    .createHmac("sha256", secreto)
+    .update(payload)
+    .digest("base64url")
+}
+
+export const isValidAdminPassword = (password) => {
+  const esperada = getAdminPassword()
+  if (!esperada) return false // sin contraseña configurada no entra nadie
+
+  return safeEqual(password, esperada)
+}
 
 export const createAdminToken = () => {
   const payload = Buffer.from(JSON.stringify({
@@ -33,11 +46,11 @@ export const requireAdmin = (req, res, next) => {
   const tokenParts = token?.split(".") || []
   const [payload, signature] = tokenParts
 
-  if (tokenParts.length !== 2 || !payload || !signature || !safeEqual(signature, signPayload(payload))) {
-    return res.status(401).json({ message: "Sesión administrativa inválida" })
-  }
-
   try {
+    if (tokenParts.length !== 2 || !payload || !signature || !safeEqual(signature, signPayload(payload))) {
+      return res.status(401).json({ message: "Sesión administrativa inválida" })
+    }
+
     const data = JSON.parse(Buffer.from(payload, "base64url").toString("utf8"))
     if (data.role !== "admin" || !data.expiresAt || data.expiresAt < Date.now()) {
       return res.status(401).json({ message: "La sesión administrativa expiró" })

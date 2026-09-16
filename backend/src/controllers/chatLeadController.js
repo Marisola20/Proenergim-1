@@ -1,5 +1,6 @@
 import ChatLead from "../models/ChatLead.js";
 import nodemailer from "nodemailer";
+import { escaparHtml } from "../config/mailer.js";
 
 export const crearChatLead = async (req, res) => {
   try {
@@ -12,7 +13,13 @@ export const crearChatLead = async (req, res) => {
 }
 
 export const enviarEmailChatLead = async (req, res) => {
-  const { nombre, ubicacion, tema } = req.body;
+  // Entrada pública sin autenticar: se escapa antes de entrar al HTML del
+  // correo, o cualquiera podría inyectar enlaces y marcado en el mensaje
+  // que llega a la bandeja de la empresa.
+  const nombre = escaparHtml(req.body?.nombre)
+  const ubicacion = escaparHtml(req.body?.ubicacion)
+  const tema = escaparHtml(req.body?.tema)
+
   try {
     const transporter = nodemailer.createTransport({
       service: "gmail",

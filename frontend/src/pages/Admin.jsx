@@ -3,7 +3,7 @@ import {
   LogOut, Trash2, FileText, Users, MessageSquare, 
   RefreshCw, Eye, EyeOff, Search, Download, CheckCircle, 
   Mail, MousePointer2, Menu, X, LayoutDashboard, Package, Pencil, Save,
-  TrendingUp, TrendingDown, Calendar, BarChart3, Globe, ExternalLink, Plus
+  TrendingUp, TrendingDown, Calendar, BarChart3, Globe, ExternalLink, Plus, Send
 } from "lucide-react"
 import { jsPDF } from "jspdf"
 import autoTable from "jspdf-autotable"
@@ -11,6 +11,8 @@ import {
   AreaChart, Area, BarChart, Bar, XAxis, YAxis, CartesianGrid,
   Tooltip, ResponsiveContainer, Legend
 } from "recharts"
+
+import CorreosView from "../components/CorreosView.jsx"
 
 // Logos
 import logoMovil from "../assets/logo-movile.webp"
@@ -37,6 +39,10 @@ export default function Admin() {
   const [verPass, setVerPass] = useState(false)
   const [error, setError] = useState("")
   const [loginLoading, setLoginLoading] = useState(false)
+  // Verificación en dos pasos: "password" → "codigo"
+  const [pasoLogin, setPasoLogin] = useState("password")
+  const [codigo, setCodigo] = useState("")
+  const [enviadoA, setEnviadoA] = useState([])
   const [loading, setLoading] = useState(false)
   const [activeTab, setActiveTab] = useState("dashboard")
   const [searchQuery, setSearchQuery] = useState("")
@@ -80,6 +86,7 @@ export default function Admin() {
     return () => clearInterval(timer)
   }, [])
 
+  // Paso 1: la contraseña solo dispara el envío del código; no entrega sesión.
   const handleLogin = async () => {
     if (!password || loginLoading) return
     setLoginLoading(true)
@@ -91,18 +98,51 @@ export default function Admin() {
         body: JSON.stringify({ password }),
       })
       const data = await res.json()
-      if (!res.ok || !data.token) throw new Error(data.message || "No se pudo iniciar sesión")
+      if (!res.ok) throw new Error(data.message || "No se pudo iniciar sesión")
 
-      sessionStorage.setItem(ADMIN_TOKEN_KEY, data.token)
-      sessionStorage.removeItem("admin_auth")
-      setAdminToken(data.token)
-      setAuth(true)
+      setEnviadoA(data.enviadoA || [])
+      setPasoLogin("codigo")
       setPassword("")
     } catch (loginError) {
       setError(loginError.message || "Error de conexión con el servidor")
     } finally {
       setLoginLoading(false)
     }
+  }
+
+  // Paso 2: el código de 6 dígitos es lo que entrega el token.
+  const handleVerificarCodigo = async () => {
+    if (codigo.length !== 6 || loginLoading) return
+    setLoginLoading(true)
+    setError("")
+    try {
+      const res = await fetch(`${API_URL}/api/admin/verificar`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ codigo }),
+      })
+      const data = await res.json()
+      if (!res.ok || !data.token) throw new Error(data.message || "No se pudo verificar el código")
+
+      sessionStorage.setItem(ADMIN_TOKEN_KEY, data.token)
+      sessionStorage.removeItem("admin_auth")
+      setAdminToken(data.token)
+      setAuth(true)
+      setCodigo("")
+      setPasoLogin("password")
+    } catch (verifyError) {
+      setError(verifyError.message || "Error de conexión con el servidor")
+      setCodigo("")
+    } finally {
+      setLoginLoading(false)
+    }
+  }
+
+  const volverAContrasena = () => {
+    setPasoLogin("password")
+    setCodigo("")
+    setError("")
+    setEnviadoA([])
   }
 
   const handleLogout = useCallback(() => {
@@ -112,31 +152,40 @@ export default function Admin() {
     setAuth(false)
   }, [])
 
+  // Cabecera de sesión: los listados y las acciones de escritura exigen administrador
+  const authHeaders = useMemo(() => ({ Authorization: `Bearer ${adminToken}` }), [adminToken])
+
+  const handleSesionExpirada = useCallback(() => {
+    setError("Tu sesión expiró. Vuelve a iniciar sesión.")
+    handleLogout()
+  }, [handleLogout])
+
   const fetchData = useCallback(async () => {
     setLoading(true)
     try {
       const [rLeads, rChat, rCompras, rSus, rVisits, rVisitLogs, rProductos] = await Promise.all([
-        fetch(`${API_URL}/api/leads`),
-        fetch(`${API_URL}/api/chat-leads`),
-        fetch(`${API_URL}/api/compra`),
-        fetch(`${API_URL}/api/suscriptors`),
+        fetch(`${API_URL}/api/leads`, { headers: authHeaders }),
+        fetch(`${API_URL}/api/chat-leads`, { headers: authHeaders }),
+        fetch(`${API_URL}/api/compra`, { headers: authHeaders }),
+        fetch(`${API_URL}/api/suscriptors`, { headers: authHeaders }),
         fetch(`${API_URL}/api/visits`),
-        fetch(`${API_URL}/api/visits/logs`),
+        fetch(`${API_URL}/api/visits/logs`, { headers: authHeaders }),
         fetch(`${API_URL}/api/productos/admin`, {
-          headers: { Authorization: `Bearer ${adminToken}` },
+          headers: authHeaders,
           cache: "no-store",
         }),
       ])
 
-      if (rProductos.status === 401) {
-        setError("Tu sesión expiró. Vuelve a iniciar sesión.")
-        handleLogout()
+      const respuestas = [rLeads, rChat, rCompras, rSus, rVisits, rVisitLogs, rProductos]
+
+      if (respuestas.some(res => res.status === 401)) {
+        handleSesionExpirada()
         throw new Error("Tu sesión expiró. Vuelve a iniciar sesión.")
       }
-      if (![rLeads, rChat, rCompras, rSus, rVisits, rVisitLogs, rProductos].every(res => res.ok)) {
+      if (!respuestas.every(res => res.ok)) {
         throw new Error("No se pudieron sincronizar todos los datos")
       }
-      
+
       setLeads(await rLeads.json())
       setChatLeads(await rChat.json())
       setCompras(await rCompras.json())
@@ -150,7 +199,7 @@ export default function Admin() {
       showToast(e.message || "Error de conexión con el servidor")
     }
     setLoading(false)
-  }, [adminToken, handleLogout, showToast])
+  }, [authHeaders, handleSesionExpirada, showToast])
 
   useEffect(() => {
     if (auth) fetchData()
@@ -159,10 +208,16 @@ export default function Admin() {
   const handleDelete = async (id, category) => {
     if (!window.confirm("¿Estás seguro de eliminar este registro permanentemente?")) return
     try {
-      const res = await fetch(`${API_URL}/api/${category}/${id}`, { method: "DELETE" })
+      const res = await fetch(`${API_URL}/api/${category}/${id}`, {
+        method: "DELETE",
+        headers: authHeaders,
+      })
+      if (res.status === 401) return handleSesionExpirada()
       if (res.ok) {
         showToast("Registro eliminado")
         fetchData()
+      } else {
+        showToast("No se pudo eliminar el registro")
       }
     } catch { showToast("Error al eliminar") }
   }
@@ -171,12 +226,15 @@ export default function Admin() {
     try {
       const res = await fetch(`${API_URL}/api/${category}/${id}/status`, {
         method: "PATCH",
-        headers: { "Content-Type": "application/json" },
+        headers: { "Content-Type": "application/json", ...authHeaders },
         body: JSON.stringify({ estado: newStatus })
       })
+      if (res.status === 401) return handleSesionExpirada()
       if (res.ok) {
         showToast("Estado actualizado")
         fetchData()
+      } else {
+        showToast("No se pudo actualizar el estado")
       }
     } catch { showToast("Error al actualizar") }
   }
@@ -1025,6 +1083,7 @@ export default function Admin() {
     { id: "compras", label: "Solicitudes", icon: FileText, category: "compra" },
     { id: "productos", label: "Productos", icon: Package, category: "productos" },
     { id: "suscriptors", label: "Suscriptores", icon: Mail, category: "suscriptors" },
+    { id: "correos", label: "Correos", icon: Send },
   ]
 
   // ── Pantalla de Login Limpia ────────────────────────────────
@@ -1037,35 +1096,81 @@ export default function Admin() {
                  <img src={logoMovil} alt="Logo" className="w-10 h-10 object-contain drop-shadow" />
               </div>
               <h1 className="text-2xl font-bold text-slate-800">Panel Administrativo</h1>
-              <p className="text-sm text-slate-500 mt-1">Ingreso seguro Proenergim</p>
+              <p className="text-sm text-slate-500 mt-1">
+                {pasoLogin === "password" ? "Ingreso seguro Proenergim" : "Verificación en dos pasos"}
+              </p>
            </div>
-           
-           <div className="space-y-5">
-              <div>
-                <label className="block text-sm font-semibold text-slate-700 mb-2">Código de Acceso</label>
-                <div className="relative">
-                  <input 
-                    type={verPass ? "text" : "password"}
-                    placeholder="Ingresa la contraseña maestra..."
-                    value={password}
-                    onChange={e => setPassword(e.target.value)}
-                    onKeyDown={e => e.key === "Enter" && handleLogin()}
-                    className="w-full px-4 py-3 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors pr-12 text-slate-800"
-                  />
-                  <button onClick={() => setVerPass(!verPass)} className="absolute right-4 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600">
-                    {verPass ? <EyeOff size={20} /> : <Eye size={20} />}
-                  </button>
+
+           {pasoLogin === "password" ? (
+             <div className="space-y-5">
+                <div>
+                  <label className="block text-sm font-semibold text-slate-700 mb-2">Contraseña</label>
+                  <div className="relative">
+                    <input
+                      type={verPass ? "text" : "password"}
+                      placeholder="Ingresa la contraseña maestra..."
+                      value={password}
+                      onChange={e => setPassword(e.target.value)}
+                      onKeyDown={e => e.key === "Enter" && handleLogin()}
+                      className="w-full px-4 py-3 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors pr-12 text-slate-800"
+                    />
+                    <button onClick={() => setVerPass(!verPass)} className="absolute right-4 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600">
+                      {verPass ? <EyeOff size={20} /> : <Eye size={20} />}
+                    </button>
+                  </div>
+                  {error && <p className="text-red-500 text-sm mt-2 font-medium">{error}</p>}
                 </div>
-                {error && <p className="text-red-500 text-sm mt-2 font-medium">{error}</p>}
-              </div>
-              <button 
-                onClick={handleLogin} 
-                disabled={loginLoading}
-                className="w-full py-3 bg-[#1959ad] text-white rounded-lg font-bold hover:bg-[#124180] transition-colors disabled:opacity-60"
-              >
-                {loginLoading ? "Ingresando..." : "Iniciar sesión"}
-              </button>
-           </div>
+                <button
+                  onClick={handleLogin}
+                  disabled={loginLoading}
+                  className="w-full py-3 bg-[#1959ad] text-white rounded-lg font-bold hover:bg-[#124180] transition-colors disabled:opacity-60"
+                >
+                  {loginLoading ? "Enviando código..." : "Continuar"}
+                </button>
+             </div>
+           ) : (
+             <div className="space-y-5">
+                <div className="bg-blue-50 border border-blue-200 rounded-lg px-4 py-3">
+                  <p className="text-sm text-slate-700 leading-relaxed">
+                    Enviamos un código de 6 dígitos a
+                    {enviadoA.length > 0
+                      ? <span className="font-semibold text-blue-800"> {enviadoA.join(", ")}</span>
+                      : " el correo autorizado"}.
+                  </p>
+                  <p className="text-xs text-slate-500 mt-1">Caduca en 10 minutos y solo sirve una vez.</p>
+                </div>
+
+                <div>
+                  <label className="block text-sm font-semibold text-slate-700 mb-2">Código de verificación</label>
+                  <input
+                    autoFocus
+                    inputMode="numeric"
+                    maxLength={6}
+                    placeholder="000000"
+                    value={codigo}
+                    onChange={e => setCodigo(e.target.value.replace(/\D/g, "").slice(0, 6))}
+                    onKeyDown={e => e.key === "Enter" && handleVerificarCodigo()}
+                    className="w-full px-4 py-3 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors text-center text-3xl font-bold tracking-[0.5em] text-slate-800"
+                  />
+                  {error && <p className="text-red-500 text-sm mt-2 font-medium">{error}</p>}
+                </div>
+
+                <button
+                  onClick={handleVerificarCodigo}
+                  disabled={loginLoading || codigo.length !== 6}
+                  className="w-full py-3 bg-[#1959ad] text-white rounded-lg font-bold hover:bg-[#124180] transition-colors disabled:opacity-60 disabled:cursor-not-allowed"
+                >
+                  {loginLoading ? "Verificando..." : "Entrar al panel"}
+                </button>
+
+                <button
+                  onClick={volverAContrasena}
+                  className="w-full text-sm font-semibold text-slate-500 hover:text-slate-700 transition-colors"
+                >
+                  Volver e intentar de nuevo
+                </button>
+             </div>
+           )}
         </div>
       </div>
     )
@@ -1227,6 +1332,14 @@ export default function Admin() {
                   { key: "email", label: "Dirección de Correo", render: (v) => <span className="font-medium text-slate-800">{v}</span> },
                   { key: "createdAt", label: "Fecha Suscripción", render: (v) => <span>{new Date(v).toLocaleDateString()}</span> },
                 ]}
+              />
+            )}
+            {activeTab === "correos" && (
+              <CorreosView
+                suscriptors={suscriptors}
+                adminToken={adminToken}
+                showToast={showToast}
+                onSesionExpirada={handleLogout}
               />
             )}
           </div>

@@ -1,7 +1,13 @@
-import Suscriptor from "../models/suscriptor.js"
+import Suscriptor, { EMAIL_UNICO } from "../models/suscriptor.js"
 
 export const suscribir = async (req, res) => {
-  const { email } = req.body
+  // String() antes de consultar: sin esto, un body como {"email":{"$ne":null}}
+  // llegaría como operador a la consulta en vez de como texto.
+  const email = String(req.body?.email ?? "").toLowerCase().trim()
+
+  if (!EMAIL_UNICO.test(email)) {
+    return res.status(400).json({ success: false, message: "Ingresa un correo válido" })
+  }
 
   try {
     const existe = await Suscriptor.findOne({ email })

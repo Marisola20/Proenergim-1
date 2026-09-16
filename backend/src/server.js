@@ -12,11 +12,19 @@ import resenaRoutes from "./routes/resenaRoutes.js";
 import adminRoutes from "./routes/adminRoutes.js";
 import productoRoutes from "./routes/productoRoutes.js";
 import uploadRoutes from "./routes/uploadRoutes.js";
+import correoRoutes from "./routes/correoRoutes.js";
 
 dotenv.config();
 
 // ── Validar variables de entorno críticas ───────────────────────────────────
-const REQUIRED_ENV = ["MONGO_URI", "EMAIL_USER", "EMAIL_PASS", "EMAIL_DESTINO"];
+const REQUIRED_ENV = [
+  "MONGO_URI", "EMAIL_USER", "EMAIL_PASS", "EMAIL_DESTINO",
+  // Sin estas dos el panel administrativo no tiene llave propia: se exigen
+  // explícitamente para que nunca vuelva a existir una contraseña de respaldo.
+  "ADMIN_PASSWORD", "ADMIN_TOKEN_SECRET",
+  // Destinatarios del código de verificación en dos pasos (separados por comas)
+  "ADMIN_2FA_EMAILS",
+];
 const missing = REQUIRED_ENV.filter(k => !process.env[k]);
 if (missing.length > 0) {
   console.error(`Variables de entorno faltantes: ${missing.join(", ")}`);
@@ -66,6 +74,7 @@ app.use("/api/resenas", resenaRoutes);
 app.use("/api/admin", adminRoutes);
 app.use("/api/productos", productoRoutes);
 app.use("/api/upload", uploadRoutes);
+app.use("/api/correos", correoRoutes);
 
 // Health check
 app.get("/api/health", (req, res) => {

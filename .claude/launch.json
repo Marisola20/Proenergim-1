@@ -3,8 +3,15 @@
   "configurations": [
     {
       "name": "proenergim-web",
-      "url": "http://localhost:5173",
+      "runtimeExecutable": "npm",
+      "runtimeArgs": ["--prefix", "frontend", "run", "dev"],
       "port": 5173
+    },
+    {
+      "name": "proenergim-api",
+      "runtimeExecutable": "npm",
+      "runtimeArgs": ["--prefix", "backend", "run", "dev"],
+      "port": 5000
     }
   ]
 }
