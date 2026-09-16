@@ -28,6 +28,14 @@ const textoAHtml = (texto) => escaparHtml(texto)
   .map(parrafo => `<p style="margin:0 0 14px;">${parrafo.replace(/\n/g, "<br>")}</p>`)
   .join("")
 
+// Cabecera y pie propios del boletín: estos correos sí van a suscriptores, así
+// que el pie explica por qué lo reciben (y no el genérico de sistema interno).
+const MARCA_BOLETIN = {
+  titulo: "Proenergim E.I.R.L.",
+  subtitulo: "Energía solar que transforma tu mundo",
+  pie: `Recibes este correo porque te suscribiste en <a href="https://proenergim.com" style="color:#0f4c81;text-decoration:none;">proenergim.com</a>.`,
+}
+
 // ── Envío ────────────────────────────────────────────────────────────────────
 export const enviarCorreo = async (req, res) => {
   const { asunto, cuerpo, emails, plantilla = null } = req.body
@@ -95,6 +103,7 @@ export const enviarCorreo = async (req, res) => {
             to: { name: "", address: suscriptor.email },
             subject: renderizar(asunto, datos, false),
             html: maquetarCorreo({
+              ...MARCA_BOLETIN,
               asunto,
               cuerpoHtml: renderizar(cuerpoHtmlBase, datos, true),
             }),
@@ -157,6 +166,7 @@ export const previsualizarCorreo = async (req, res) => {
       success: true,
       asunto: renderizar(asunto, datos, false),
       html: maquetarCorreo({
+        ...MARCA_BOLETIN,
         asunto,
         cuerpoHtml: renderizar(textoAHtml(cuerpo), datos, true),
       }),

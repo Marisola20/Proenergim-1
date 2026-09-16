@@ -8,7 +8,8 @@ const router = express.Router();
 router.get("/", getVisits);
 router.post("/increment", incrementVisits);
 
-// Privado: el detalle de visitas del panel (IP, navegador, procedencia).
+// Privado: el historial de visitas del panel. El modelo VisitLog solo guarda
+// la marca de tiempo de cada visita — no registra IP ni navegador.
 router.get("/logs", requireAdmin, getVisitLogs);
 
 export default router;

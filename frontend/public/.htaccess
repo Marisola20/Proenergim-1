@@ -18,7 +18,15 @@
   RewriteCond %{REQUEST_FILENAME} -d
   RewriteRule ^ - [L]
 
-  # Todo lo demas (/nosotros, /proyecto/5, /admin/...) lo maneja React Router
+  # Si existe un HTML con metadatos propios para esta ruta, servirlo.
+  # Asi WhatsApp, Facebook y los rastreadores de IA -que no ejecutan
+  # JavaScript- reciben el titulo y la imagen de la pagina correcta.
+  # React arranca igual y toma el control de la navegacion.
+  # Los genera scripts/generar-html-rutas.js al final del build.
+  RewriteCond %{DOCUMENT_ROOT}/$1.html -f
+  RewriteRule ^([^/.]+)/?$ /$1.html [L]
+
+  # Todo lo demas (/proyecto/5, /admin/...) lo maneja React Router
   RewriteRule . /index.html [L]
 </IfModule>
 

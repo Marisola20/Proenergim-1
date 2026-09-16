@@ -30,4 +30,12 @@ export default [
       ],
     },
   },
+  {
+    // Los scripts de build corren en Node, no en el navegador:
+    // ahí `process` y `console` existen y no son errores.
+    files: ['scripts/**/*.js'],
+    languageOptions: {
+      globals: globals.node,
+    },
+  },
 ]

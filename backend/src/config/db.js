@@ -6,8 +6,11 @@ const connectDB = async () => {
 
     console.log("MongoDB conectado");
   } catch (error) {
-    console.error("Error MongoDB:", error);
-    process.exit(1);
+    // No se mata el proceso a propósito. En una función serverless, process.exit()
+    // la deja muerta y sin logs: cualquier ruta responde un 500 opaco y no hay
+    // forma de saber qué pasó. Mejor registrar el motivo y que las peticiones
+    // que necesiten la base de datos fallen con un error legible.
+    console.error("Error de conexión a MongoDB:", error.message);
   }
 };
 

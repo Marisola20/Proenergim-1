@@ -28,7 +28,10 @@ const REQUIRED_ENV = [
 const missing = REQUIRED_ENV.filter(k => !process.env[k]);
 if (missing.length > 0) {
   console.error(`Variables de entorno faltantes: ${missing.join(", ")}`);
-  process.exit(1);
+  // En local conviene parar en seco para darse cuenta enseguida. En serverless
+  // no: matar el proceso deja la función sin logs y devolviendo 500 en todo,
+  // que es justo lo que impide diagnosticar el problema.
+  if (!process.env.VERCEL) process.exit(1);
 }
 
 const app = express();
@@ -76,13 +79,26 @@ app.use("/api/productos", productoRoutes);
 app.use("/api/upload", uploadRoutes);
 app.use("/api/correos", correoRoutes);
 
+// Raíz: para que entrar a la URL del API no devuelva un "Cannot GET /" que
+// parece un error. No expone versiones ni nada del entorno.
+app.get("/", (req, res) => {
+  res.json({
+    api: "Proenergim",
+    estado: "ok",
+    web: "https://proenergim.com",
+  });
+});
+
 // Health check
 app.get("/api/health", (req, res) => {
   res.json({ status: "ok", message: "Proenergim API funcionando" });
 });
 
-// ✅ Solo escuchar en local; en Vercel el export es suficiente
-if (process.env.NODE_ENV !== "production") {
+// Solo escuchar en local; en Vercel basta con exportar la app.
+// Se comprueba VERCEL, que la propia plataforma define, en vez de NODE_ENV:
+// si alguien borra o escribe mal NODE_ENV, la función intentaría abrir un
+// puerto y moriría sin dejar rastro.
+if (!process.env.VERCEL) {
   const PORT = process.env.PORT || 5000;
   app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
 }
