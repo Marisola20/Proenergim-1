@@ -11,17 +11,29 @@ Sitio web oficial de **Proenergim**, empresa peruana especializada en soluciones
 update
 
 proenergim/
+
 ├── frontend/ # React + Vite
+
 │ ├── src/
+
 │ │ ├── components/
+
 │ │ ├── pages/
+
 │ │ └── assets/
+
 │ └── public/
+
 └── backend/ # Node.js + Express
+
 └── src/
+
 ├── config/
+
 ├── controllers/
+
 ├── models/
+
 └── routes/
 
 ## Instalación local
